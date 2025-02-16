@@ -1,0 +1,23 @@
+# Example .gitignore file for custom card.
+# An * ensures that everything will be ignored.
+*
+
+# Don't ignore directories (so we can look inside them, for other files)
+!*/
+
+# You can whitelist files/folders with !, these will not be ignored.
+!*.json
+!*.ts
+!.prettierrc
+!assets/**
+!dist/**
+!.github/**
+!.gitignore
+!*.md
+!LICENSE
+
+# Ignore folders.
+node_modules
+.vscode
+dist
+.DS_Store
