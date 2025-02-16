@@ -20,7 +20,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@cards/*": ["./src/cards/*"],
+      "@node-states/*": ["./src/cards/node-states/*"],
       "@test/*": ["./test/*"]
     }
   }

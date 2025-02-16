@@ -47,27 +47,27 @@ If you have a suggestion for improving the project, we'd love to hear it. Please
 
 ### Prerequisites
 
-Before getting started with room-summary-card, ensure your runtime environment meets the following requirements:
+Before getting started with zooz-card-set, ensure your runtime environment meets the following requirements:
 
 - **Programming Language:** TypeScript
 - **Package Manager:** Npm
 
 ### Installation
 
-Install room-summary-card using one of the following methods:
+Install zooz-card-set using one of the following methods:
 
 **Build from source:**
 
-1. Clone the room-summary-card repository:
+1. Clone the zooz-card-set repository:
 
 ```sh
-❯ git clone https://github.com/homeassistant-extras/room-summary-card
+❯ git clone https://github.com/homeassistant-extras/zooz-card-set
 ```
 
 2. Navigate to the project directory:
 
 ```sh
-❯ cd room-summary-card
+❯ cd zooz-card-set
 ```
 
 3. Install the project dependencies:
@@ -135,6 +135,7 @@ If you have any questions, please feel free to:
 
 ---
 
+// todo - project structure
 
 <!-- prettier-ignore-end -->
 
