@@ -73,7 +73,6 @@ describe('fire-event.ts', () => {
 
     // Retrieve the event argument passed to dispatchEvent
     const event = windowStub.firstCall.args[0] as CustomEvent;
-
     expect(event.type).to.equal('hass-action');
     expect(event.bubbles).to.be.true;
     expect(event.composed).to.be.true;
