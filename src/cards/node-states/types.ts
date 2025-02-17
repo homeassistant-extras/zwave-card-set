@@ -67,5 +67,25 @@ type State = {
  */
 export interface Config {
   /** The name or title of the system */
-  title: string;
+  title?: string;
+
+  /** The number of columns to display in the UI */
+  columns?: number;
+}
+
+/**
+ * Event emitted when the configuration changes
+ */
+export interface ConfigChangedEvent {
+  config: Config;
+}
+
+/**
+ * Global interface for Home Assistant DOM events
+ */
+declare global {
+  // eslint-disable-next-line
+  interface HASSDomEvents {
+    'config-changed': ConfigChangedEvent;
+  }
 }

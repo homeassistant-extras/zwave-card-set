@@ -21,6 +21,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@node-states/*": ["./src/cards/node-states/*"],
+      "@common/*": ["./src/common/*"],
+      "@type/*": ["./src/types/*"],
       "@test/*": ["./test/*"]
     }
   }

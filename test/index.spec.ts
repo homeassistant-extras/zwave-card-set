@@ -41,7 +41,7 @@ describe('index.ts', () => {
 
   it('should register zooz-nodes-status', () => {
     require('@/index.ts');
-    expect(customElementsStub.calledOnce).to.be.true;
+    expect(customElementsStub.calledTwice).to.be.true;
     expect(customElementsStub.firstCall.args[0]).to.equal('zooz-nodes-status');
   });
 
@@ -88,7 +88,7 @@ describe('index.ts', () => {
     require('@/index.ts');
 
     expect(window.customCards).to.have.lengthOf(1);
-    expect(customElementsStub.callCount).to.equal(1);
+    expect(customElementsStub.callCount).to.equal(2);
   });
 
   it('should log the version with proper formatting', () => {

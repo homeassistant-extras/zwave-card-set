@@ -1,9 +1,9 @@
 <p align="center">
-    <img src="assets/room-cards.png" align="center" width="50%">
+    <img src="assets/zooz.png" align="center" width="50%">
 </p>
-<p align="center"><h1 align="center">Room Summary Card</h1></p>
+<p align="center"><h1 align="center">Zooz Z-Wave Card Set</h1></p>
 <p align="center">
-	<em>Room Data at Your Fingertips</em>
+	<em>Boosting your Zooz integration.</em>
 </p>
 
 ![Home Assistant](https://img.shields.io/badge/home%20assistant-%2341BDF5.svg?style=for-the-badge&logo=home-assistant&logoColor=white)
@@ -31,51 +31,15 @@
 
 ## Overview
 
-A custom card for Home Assistant that provides a comprehensive room overview, including climate information, device states, and problem indicators. The card displays room temperature, humidity, connected devices, and entity states in an organized grid layout.
+This project brings a set of cards to display info about your Zooz devices. Many of these are great if you have a dedicated status view for your network or connected devices.
 
-## Features
+## Cards
 
-### Climate Information
+### [Zooz Nodes Status Card](src/cards//node-states/README.md)
 
-- Displays room temperature and humidity
-  - this can be turned off with an optional flag
-- Visual indicators for temperature and humidity thresholds
-- Border colors indicate climate status:
-  - Red: Temperature above threshold (default: 80°F)
-  - Blue: Humidity above threshold (default: 60%)
+Shows status and last seen time of all your nodes.
 
-![climate](assets/climate.png)
-
-### Entity Status
-
-- Color-coded icons indicating entity states
-- Interactive icons with tap/hold actions
-- Climate entity colors:
-  - Auto: Green
-  - Cool: Blue
-  - Heat: Red
-  - Dry: Yellow
-  - Heat/Cool: Purple
-  - Fan Only: Green
-  - Off: Grey
-
-![icons](assets/icons.png)
-
-### Problem Detection
-
-- Automatically detects entities labeled as "problem" in the area based on area and labels
-- Shows count of problem entities
-- Color-coded indicator:
-  - Red: Active problems
-  - Green: No active problems
-
-![problems](assets/problems.png)
-
-### Room Statistics
-
-- Shows total number of devices in the room
-- Shows total number of entities in the room
-- Automatic entity discovery based on area
+![card](assets/cards/node-status//card.png)
 
 ## Installation
 
@@ -100,300 +64,19 @@ lovelace:
       type: module
 ```
 
-## Usage
-
-![WIP](https://img.shields.io/badge/Work%20In%20Progress-gold?style=for-the-badge&logo=internetcomputer)
-
-Add the card to your dashboard using the UI editor or YAML:
-
-### Card Editor
-
-Slowly I'm enabling all the features in the card editor. Note that as things get converted to there some yaml settings may move / rename.
-
-![editor](assets/editor.png)
-
-### YAML
-
-This is the most minimal configuarion needed to get started. See below for advanced usage.
-
-```yaml
-type: custom:zooz-card-set
-area: living_room
-```
-
-The card will automatically:
-
-- Display count + status for any entity labeled with "status" that is in the area
-- Display fan/light entities based on area naming
-- Update in real-time as entity states change
-- Light up icons when entities are in 'on' state, 'True', or a positive numeric state
+Add the cards to your dashboard using the UI editor or YAML.
 
 ## Configuration Options
 
-Most of these are optional if you setup the entities a certain way using labels and attributes. For example, see my HA configuration for my dashboard home page: [01-home.yaml](https://github.com/warmfire540/home-assistant-config-public/blob/home/ui_lovelace_minimalist/dashboard/views/01-home.yaml)
+See the README files of the individual cards for configuration and detailed information.
 
-| Name                | Type             | Default                                 | Description                                                       |
-| ------------------- | ---------------- | --------------------------------------- | ----------------------------------------------------------------- |
-| area                | string           | **Required**                            | The area identifier for the room (e.g., 'living_room', 'kitchen') |
-| entity              | string \| object | `light.<area>_light`                    | Main entity for the room                                          |
-| entities            | array            | See below                               | Additional entities to display                                    |
-| temperature_sensor  | string           | `sensor.<area>_climate_air_temperature` | Temperature sensor entity ID                                      |
-| humidity_sensor     | string           | `sensor.<area>_climate_humidity`        | Humidity sensor entity ID                                         |
-| skip_climate_colors | boolean          | false                                   | Disable climate-based color coding                                |
-| navigate            | string           | area name (dash-separated)              | Custom navigation path when clicking the room name / icon         |
-| features            | list             | See below                               | Optional flags to toggle different features                       |
-
-### Feature Options
-
-| Name                     | Type | Description                            |
-| ------------------------ | ---- | -------------------------------------- |
-| hide_climate_label       | flag | Show the climate label or not          |
-| hide_area_stats          | flag | Show the area statistics label or not  |
-| exclude_default_entities | flag | Exclude the default light/fan entities |
-
-### Default Entities
-
-By default, the card will include (if found):
-
-- Room light (`light.<area>_light`)
-  - this is also the main entity of the card by default for coloring
-- Room fan (`switch.<area>_fan`) unless `remove_fan` is true
-
-### Entity Configuration
-
-Entities can be specified in two ways:
-
-1. Simple string format:
-
-```yaml
-entities:
-  - light.living_room_lamp
-  - switch.living_room_tv
-```
-
-2. Detailed configuration object:
-
-```yaml
-entities:
-  - entity_id: light.living_room_lamp
-    icon: mdi:lamp
-    tap_action:
-      action: toggle
-    hold_action:
-      action: more-info
-    double_tap_action:
-      action: none
-```
-
-### Entity Configuration Options
-
-| Name              | Type   | Default                 | Description                 |
-| ----------------- | ------ | ----------------------- | --------------------------- |
-| entity_id         | string | **Required**            | Entity ID in Home Assistant |
-| icon              | string | entity default          | Custom MDI icon             |
-| tap_action        | object | `{action: "toggle"}`    | Action on single tap        |
-| hold_action       | object | `{action: "more-info"}` | Action on hold              |
-| double_tap_action | object | `{action: "none"}`      | Action on double tap        |
-
-### Action Configuration
-
-Available actions for `tap_action`, `hold_action`, and `double_tap_action`:
-
-| Action    | Parameters      | Description                  |
-| --------- | --------------- | ---------------------------- |
-| toggle    | none            | Toggle entity state          |
-| more-info | none            | Show more info dialog        |
-| navigate  | navigation_path | Navigate to a different view |
-| none      | none            | Disable the action           |
-
-Example action configuration:
-
-```yaml
-tap_action:
-  action: navigate
-  navigation_path: /lovelace/living-room
-```
-
-### Entity Attributes Configuration
-
-You can add attributes to entities to customize the functionality further.
-
-| Name                  | Type   | Default         | Description                             |
-| --------------------- | ------ | --------------- | --------------------------------------- |
-| on_color              | string | yellow          | Color when the entity is on or positive |
-| off_color             | string | theme off color | Color when the entity is off or 0       |
-| temperature_threshold | number | 80              | Threshold to show red border.           |
-| humidity_threshold    | number | 60              | Threshold to show blue border.          |
-| icon                  | string | entity default  | Custom MDI icon                         |
-
-You can customize entity attributes several ways.
-
-For entities you don't control, use [customizations](https://www.home-assistant.io/docs/configuration/customizing-devices/).
-
-```yaml
-customize:
-	switch.garage_opener_plug:
-		on_color: green
-		off_color: red
-
-	switch.water_softener_plug:
-		on_color: green
-		off_color: red
-
-	sensor.garage_climate_air_temperature:
-		temperature_threshold: 90
-
-	sensor.shed_climate_air_temperature:
-		temperature_threshold: 90
-		humidity_threshold: 70
-```
-
-For entities you template, just set the attributes then.
-
-```yaml
-sensor:
-  - name: Printer Left On
-    unique_id: b4081d9f-24f3-4083-9fa6-70c30a432c26
-    state: "{{ not is_state('sensor.mfc_7860dw_page_counter', 'unavailable') and (now() - states.sensor.mfc_7860dw_page_counter.last_updated) > timedelta(minutes=5) }}"
-    icon: mdi:printer-alert
-    attributes:
-      icon: mdi:printer-alert
-      on_color: blue
-```
-
-### Problem Entities
-
-> [!IMPORTANT]  
-> Using this setting requires a label.
-
-Give entities a label of "Status". These entities will be tracked and the icon will show red if any are "on" or have a positive state.
-
-## Example Configurations
-
-### Basic Configuration
-
-```yaml
-type: custom:zooz-card-set
-area: living_room
-```
-
-### Full Configuration
-
-```yaml
-type: custom:zooz-card-set
-area: living_room
-entity:
-  entity_id: light.living_room_main
-  icon: mdi:ceiling-light
-  tap_action:
-    action: toggle
-  hold_action:
-    action: more-info
-entities:
-  - entity_id: switch.living_room_tv
-    icon: mdi:television
-  - light.living_room_lamp
-  - switch.living_room_fan
-temperature_sensor: sensor.living_room_temperature
-humidity_sensor: sensor.living_room_humidity
-skip_climate_colors: false
-navigate: /lovelace/living-room
-features:
-  - hide_climate_label
-```
-
-### Custom Entities Only
-
-```yaml
-type: custom:zooz-card-set
-area: office
-remove_fan: true
-entities:
-  - entity_id: light.office_desk
-    icon: mdi:desk-lamp
-  - entity_id: switch.office_computer
-    icon: mdi:desktop-tower
-  - entity_id: climate.office_ac
-    icon: mdi:air-conditioner
-```
-
-For examples, see my HA configuration for my dashboard home page: [01-home.yaml](https://github.com/warmfire540/home-assistant-config-public/blob/home/ui_lovelace_minimalist/dashboard/views/01-home.yaml)
-
-## Themes and coloring
-
-The card will match the following themes
-
-- [default styling of Home Assistant](https://github.com/home-assistant/frontend/blob/master/src/resources/ha-style.ts)
-- [UI Minimalist](https://ui-lovelace-minimalist.github.io/UI/)
-
-Default HA Example
-
-![ha-theme](assets/ha-theme.png)
-
-UI Minimalist Example
-
-![minimalist-theme](assets/minimalist-theme.png)
-
-### Active Colors by Domain
-
-Active entities will be colored based on their domain unless overriden.
-
-| Domain Category              | Domains                                           | Active Color |
-| ---------------------------- | ------------------------------------------------- | ------------ |
-| **Lighting**                 | `light`, `switch_as_x`                            | Amber        |
-| **Switches & Electric**      | `switch`, `input_boolean`, `automation`, `script` | Blue         |
-| **Climate & Environment**    | `climate`, `fan`                                  | Teal         |
-| **Security & Safety**        | `alarm_control_panel`, `lock`                     | Red          |
-| **Covers & Doors**           | `cover`, `garage_door`, `door`                    | Green        |
-| **Media**                    | `media_player`                                    | Indigo       |
-| **Sensors & Binary Sensors** | `binary_sensor`, `sensor`                         | Cyan         |
-| **Person & Presence**        | `person`, `device_tracker`                        | Purple       |
-| **Weather**                  | `weather`                                         | Orange       |
-| **Vacuum**                   | `vacuum`                                          | Deep Purple  |
-| **Timer & Schedule**         | `timer`, `schedule`                               | Pink         |
-| **Unknown Domains**          | Any other domain                                  | Amber        |
-
-Each domain has a predefined color to indicate its active status.
-
-### Available color codes
-
-The `on_color` and `off_color` attributes support these color stylings from the theme.
-
-- primary
-- accent
-- red
-- pink
-- purple
-- deep-purple
-- indigo
-- blue
-- light-blue
-- cyan
-- teal
-- green
-- light-green
-- lime
-- yellow
-- amber
-- orange
-- deep-orange
-- brown
-- light-grey
-- grey
-- dark-grey
-- blue-grey
-- black
-- white
-- disabled
+- [Zooz Nodes Status Card](src/cards//node-states/README.md)
 
 ## Project Roadmap
 
 - [x] **`Initial design`**: <strike>create initial room card based on button-card template in UI minimialist theme.</strike>
-- [x] **`Temperature`**: <strike>use uom from the device.</strike>
-- [x] **`Card Editor`**: <strike>ability to use the HA card editor.</strike>
-- [ ] **`Test on other themes`**: make sure it works elsewhere.
-- [ ] **`Flags`**: ability to disable features.
-- [ ] **`Sizing`**: ability to fit different size squares.
+- [ ] **`Node cards`**: show info about different nodes.
+- [ ] **`Node status card sizing`**: make sizing dynamic, can't figure it out.
 
 ## Contributing
 

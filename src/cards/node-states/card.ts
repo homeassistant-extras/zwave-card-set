@@ -43,6 +43,14 @@ export class ZoozNodesStatus extends LitElement {
     return styles;
   }
 
+  // getters
+  get isPreview(): boolean {
+    return (
+      (this as HTMLElement).parentElement?.classList.contains('preview') ||
+      false
+    );
+  }
+
   /**
    * Sets up the card configuration
    * @param {Config} config - The card configuration
@@ -133,14 +141,30 @@ export class ZoozNodesStatus extends LitElement {
     }
   }
 
+  // card configuration
+  static getConfigElement() {
+    return document.createElement('zooz-nodes-status-editor');
+  }
+
   /**
    * Renders the room summary card
    * @returns {TemplateResult} The rendered HTML template
    */
   override render(): TemplateResult {
+    if (this.isPreview) {
+      this._deadNodes.splice(1);
+      this._liveNodes.splice(1);
+      this._sleepingNodes.splice(1);
+    }
+
     return html`
       <ha-card header="${this._config.title || 'Zooz Nodes Status'}">
-        <div class="card-content">
+        <div
+          class="card-content"
+          style="${styleMap({
+            '--columns': this._config.columns,
+          })}"
+        >
           ${this._deadNodes.length === 0 &&
           this._liveNodes.length === 0 &&
           this._sleepingNodes.length === 0

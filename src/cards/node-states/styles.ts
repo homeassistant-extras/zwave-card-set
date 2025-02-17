@@ -16,6 +16,7 @@ export const styles = css`
     ${themeColors}
     --state-icon: rgb(var(--rgb-icon));
     --state-display: rgb(var(--rgb-text));
+    --columns: 3;
   }
 
   .card-content {
@@ -37,7 +38,7 @@ export const styles = css`
 
   .nodes-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(var(--columns), 1fr);
     gap: 16px;
     margin-bottom: 24px;
   }
