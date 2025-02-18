@@ -233,8 +233,10 @@ export class ZoozNodesStatus extends LitElement {
   }
 
   _renderNode(node: NodeInfo): TemplateResult {
+    const isCompact = this._config.features?.includes('compact');
+
     return html`
-      <div class="node-item">
+      <div class="node-item ${isCompact ? 'compact' : ''}">
         <div class="node-content">
           <div
             class="node-status-container"
@@ -251,6 +253,9 @@ export class ZoozNodesStatus extends LitElement {
                   ></ha-state-icon>
                 `
               : nothing}
+            ${isCompact
+              ? html`<div class="node-name">${node.name}</div>`
+              : nothing}
             ${node.lastSeenState
               ? html`
                   <state-display
@@ -260,7 +265,9 @@ export class ZoozNodesStatus extends LitElement {
                 `
               : nothing}
           </div>
-          <div class="node-name">${node.name}</div>
+          ${!isCompact
+            ? html`<div class="node-name">${node.name}</div>`
+            : nothing}
         </div>
       </div>
     `;

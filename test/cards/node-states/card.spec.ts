@@ -869,6 +869,16 @@ describe('ZoozNodesStatus', () => {
 
         const el = await fixture((card as any)._renderNode(mockNode));
 
+        const nodeitem = document.querySelector('.node-item')!;
+        expect(nodeitem).to.exist;
+        expect([...nodeitem.classList]).to.not.contain('compact');
+
+        const statusContainer = document.querySelector(
+          '.node-status-container',
+        )!;
+        expect(statusContainer).to.exist;
+        expect(statusContainer.children[1]?.tagName).to.equal('STATE-DISPLAY');
+
         const nameElement = el.querySelector('.node-name')!;
         expect(nameElement).to.exist;
         expect(nameElement.textContent).to.equal('Test Node');
@@ -919,6 +929,37 @@ describe('ZoozNodesStatus', () => {
 
         const stateDisplay = el.querySelector('state-display');
         expect(stateDisplay).to.exist;
+      });
+
+      it('should apply the compact class when the compact feature is enabled', async () => {
+        const mockNode: NodeInfo = {
+          name: 'Test Node',
+          device_id: 'test-device',
+          statusState: { entity_id: 'switch.test_node_status', state: 'alive' },
+          lastSeenState: {
+            entity_id: 'sensor.test_node_last_seen',
+            state: new Date().toISOString(),
+          },
+          lastSeen: Date.now(),
+        };
+        card.setConfig({
+          features: ['compact'],
+        });
+
+        const el = await fixture((card as any)._renderNode(mockNode));
+
+        const nodeitem = document.querySelector('.node-item')!;
+        expect(nodeitem).to.exist;
+        expect([...nodeitem.classList]).to.contain('compact');
+
+        const statusContainer = document.querySelector(
+          '.node-status-container',
+        )!;
+        expect(statusContainer).to.exist;
+        expect(statusContainer.children[1]?.tagName).to.equal('DIV');
+        expect([...statusContainer.children[1]!.classList]).to.contain(
+          'node-name',
+        );
       });
     });
   });

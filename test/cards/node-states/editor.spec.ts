@@ -97,6 +97,23 @@ describe('ZoozNodesStatus', () => {
             required: false,
             selector: { number: { min: 1, max: 3 } },
           },
+          {
+            name: 'features',
+            label: 'Features',
+            required: false,
+            selector: {
+              select: {
+                multiple: true,
+                mode: 'list',
+                options: [
+                  {
+                    label: 'Show the card more compact.',
+                    value: 'compact',
+                  },
+                ],
+              },
+            },
+          },
         ]);
       });
     });

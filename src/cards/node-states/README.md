@@ -15,10 +15,20 @@ A custom card for Home Assistant that displays the status of all your Zooz Z-Wav
 
 ## Configuration
 
-| Name    | Type   | Default             | Description                         |
-| ------- | ------ | ------------------- | ----------------------------------- |
-| title   | string | "Zooz Nodes Status" | Card title                          |
-| columns | number | 3                   | Number of columns in the grid (1-3) |
+| Name     | Type   | Default             | Description                                 |
+| -------- | ------ | ------------------- | ------------------------------------------- |
+| title    | string | "Zooz Nodes Status" | Card title                                  |
+| columns  | number | 3                   | Number of columns in the grid (1-3)         |
+| features | list   | See below           | Optional flags to toggle different features |
+
+### Feature Options
+
+| Name    | Type | Description                |
+| ------- | ---- | -------------------------- |
+| compact | flag | Make the view more compact |
+
+Compact Card:
+![card](../../../assets/cards/node-status/compact.png)
 
 ## Usage
 

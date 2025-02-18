@@ -32,13 +32,42 @@ export interface HaFormSelector extends HaFormBaseSchema {
  * Union type for supported selector types
  * This simplified version only supports area and select selectors
  */
-export type Selector = NumberSelector | StringSelector;
+export type Selector = NumberSelector | SelectSelector | StringSelector;
 
+/**
+ * Select for numeric type
+ */
 export interface NumberSelector {
   number: {
     min?: number;
     max?: number;
   } | null;
+}
+
+/**
+ * Selector for dropdown or multi-select inputs
+ */
+export interface SelectSelector {
+  select: {
+    /** When true, allows selecting multiple options */
+    multiple?: boolean;
+    /** When true, allows entering custom values not in the options list */
+    custom_value?: boolean;
+    /** Defines the display mode for the options */
+    mode?: 'list';
+    /** Available options, either as simple strings or as value-label pairs */
+    options: string[] | SelectOption[];
+  };
+}
+
+/**
+ * Interface for defining select options with separate values and display labels
+ */
+export interface SelectOption {
+  /** The data value to be stored when this option is selected */
+  value: string;
+  /** The human-readable text shown for this option in the UI */
+  label: string;
 }
 
 /**

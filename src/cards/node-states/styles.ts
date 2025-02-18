@@ -25,7 +25,7 @@ export const styles = css`
 
   .not-found {
     text-align: center;
-    padding: 16px;
+    padding: 0px 16px;
     color: var(--secondary-text-color);
   }
 
@@ -43,8 +43,22 @@ export const styles = css`
     margin-bottom: 24px;
   }
 
-  .node-item {
-    padding: 12px;
+  .node-item.compact .node-content {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .node-item.compact .node-status-container {
+    flex: 1;
+  }
+
+  .node-item.compact .node-name {
+    margin: 0 8px;
+    flex: 2;
+  }
+
+  .node-item:not(.compact) .node-name {
+    margin-top: 8px;
   }
 
   .node-content {
@@ -52,7 +66,6 @@ export const styles = css`
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 12px;
   }
 
   .node-status-container {
