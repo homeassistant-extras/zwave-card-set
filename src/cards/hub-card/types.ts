@@ -1,38 +1,15 @@
 /**
  * System-wide configuration settings
  */
-export interface Config {
-  /** The name or title of the system */
-  title?: string;
+export interface Config {}
 
-  /** The number of columns to display in the UI */
-  columns?: number;
-
-  /** Options to enable disable features **/
-  features?: Features[];
-}
-
-/** Features to enable or disable functionality */
-export type Features = 'compact';
-
-/**
- * Represents information about a node (device) in the system
- */
-export interface NodeInfo {
-  /** Human-readable name of the node */
+// todo doc
+export interface Hub {
   name: string;
-
-  /** Unique identifier for the device */
-  device_id: string;
-
-  /** Current state of the node */
-  statusState: State;
-
-  /** State when the node was last seen/detected */
-  lastSeenState: State;
-
-  /** Timestamp (Unix time) when the node was last detected */
-  lastSeen: number;
+  statusEntity: State;
+  rssiEntities: State[];
+  connectedDevices: Device[];
+  error: string;
 }
 
 /**
@@ -85,10 +62,13 @@ type Entity = {
 /**
  * Represents the current condition or value of an entity
  */
-type State = {
+export type State = {
   /** ID of the entity this state belongs to */
   entity_id: string;
 
   /** Current state value as a string (e.g., "on", "off", "25.5") */
   state: string;
+
+  /** Additional attributes associated with the state */
+  attributes: Record<string, any>;
 };

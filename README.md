@@ -35,11 +35,17 @@ This project brings a set of cards to display info about your Zooz devices. Many
 
 ## Cards
 
-### [Zooz Nodes Status Card](src/cards//node-states/README.md)
+### [Zooz Nodes Status Card](src/cards/node-states/README.md)
 
 Shows status and last seen time of all your nodes.
 
-![card](assets/cards/node-status//card.png)
+![card](assets/cards/node-status/card.png)
+
+### [Hub Card](src/cards/hub-card/README.md)
+
+Shows info about the Zooz Hub.
+
+![card](assets/cards/hub-card/card.png)
 
 ## Installation
 
@@ -70,7 +76,12 @@ Add the cards to your dashboard using the UI editor or YAML.
 
 See the README files of the individual cards for configuration and detailed information.
 
-- [Zooz Nodes Status Card](src/cards//node-states/README.md)
+- [Zooz Nodes Status Card](src/cards/node-states/README.md)
+- [Zooz Hub Card](src/cards/hub-card/README.md)
+
+Some cards may require the hub to be labeled with a "Hub" label:
+
+![hub](assets/hub.png)
 
 ## Project Roadmap
 

@@ -28,12 +28,30 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import type { Config as HubCardConfig } from '@/cards/hub-card/types';
+import type { Config as NodeStatusConfig } from '@/cards/node-states/types';
 import type { ActionParams } from '@type/action';
+
+/**
+ * Event emitted when the configuration changes
+ */
+export interface ConfigChangedEvent {
+  config: NodeStatusConfig | HubCardConfig;
+}
+
+/**
+ * Global interface for Home Assistant DOM events
+ */
+declare global {
+  // eslint-disable-next-line
+  interface HASSDomEvents {}
+}
 
 declare global {
   // eslint-disable-next-line
   interface HASSDomEvents {
     'hass-action': ActionParams;
+    'config-changed': ConfigChangedEvent;
   }
 }
 

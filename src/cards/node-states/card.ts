@@ -73,7 +73,7 @@ export class ZoozNodesStatus extends LitElement {
     Object.values(hass.devices).forEach((device) => {
       if (device.manufacturer === 'Zooz' && !device.labels.includes('hub')) {
         zoozNodes[device.id] = {
-          name: device.name_by_user,
+          name: device.name_by_user || device.name,
           device_id: device.id,
         } as NodeInfo;
       }
@@ -130,6 +130,7 @@ export class ZoozNodesStatus extends LitElement {
         return 0;
       });
 
+    // todo - don't set raw objects to properties of this...
     if (!equal(deadNodes, this._deadNodes)) {
       this._deadNodes = deadNodes;
     }

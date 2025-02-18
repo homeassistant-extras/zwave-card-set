@@ -1,3 +1,4 @@
+import '@hub-card/index';
 import '@node-states/index';
 import { version } from '../package.json';
 

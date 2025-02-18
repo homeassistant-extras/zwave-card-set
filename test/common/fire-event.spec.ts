@@ -1,5 +1,4 @@
-import { fireEvent } from '@common/fire-event';
-import type { ConfigChangedEvent } from '@node-states/types';
+import { fireEvent, type ConfigChangedEvent } from '@common/fire-event';
 import { expect } from 'chai';
 import { stub } from 'sinon';
 

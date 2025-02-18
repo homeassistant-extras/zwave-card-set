@@ -37,12 +37,25 @@ describe('index.ts', () => {
     customCardsStub = undefined;
     delete require.cache[require.resolve('@/index.ts')];
     delete require.cache[require.resolve('@node-states/index.ts')];
+    delete require.cache[require.resolve('@hub-card/index.ts')];
   });
 
   it('should register zooz-nodes-status', () => {
     require('@/index.ts');
-    expect(customElementsStub.calledTwice).to.be.true;
-    expect(customElementsStub.firstCall.args[0]).to.equal('zooz-nodes-status');
+    expect(customElementsStub.callCount).to.be.equal(4);
+    expect(customElementsStub.getCall(0).args[0]).to.equal('zooz-hub-card');
+    expect(customElementsStub.getCall(1).args[0]).to.equal(
+      'zooz-hub-card-editor',
+    );
+  });
+
+  it('should register zooz-hub-card', () => {
+    require('@/index.ts');
+    expect(customElementsStub.callCount).to.be.equal(4);
+    expect(customElementsStub.getCall(2).args[0]).to.equal('zooz-nodes-status');
+    expect(customElementsStub.getCall(3).args[0]).to.equal(
+      'zooz-nodes-status-editor',
+    );
   });
 
   it('should initialize window.customCards if undefined', () => {
@@ -55,8 +68,15 @@ describe('index.ts', () => {
   it('should add card configuration with all fields to window.customCards', () => {
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(1);
+    expect(window.customCards).to.have.lengthOf(2);
     expect(window.customCards[0]).to.deep.equal({
+      type: 'zooz-hub-card',
+      name: 'Zooz Hub Card',
+      description: 'A card to summarize information about the hub.',
+      preview: true,
+      documentationURL: 'https://github.com/homeassistant-extras/zooz-card-set',
+    });
+    expect(window.customCards[1]).to.deep.equal({
       type: 'zooz-nodes-status',
       name: 'Zooz Nodes Status Card',
       description: 'A card to summarize the status of all the Zooz nodes.',
@@ -76,7 +96,7 @@ describe('index.ts', () => {
 
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(2);
+    expect(window.customCards).to.have.lengthOf(3);
     expect(window.customCards[0]).to.deep.equal({
       type: 'existing-card',
       name: 'Existing Card',
@@ -87,8 +107,8 @@ describe('index.ts', () => {
     require('@/index.ts');
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(1);
-    expect(customElementsStub.callCount).to.equal(2);
+    expect(window.customCards).to.have.lengthOf(2);
+    expect(customElementsStub.callCount).to.equal(4);
   });
 
   it('should log the version with proper formatting', () => {
