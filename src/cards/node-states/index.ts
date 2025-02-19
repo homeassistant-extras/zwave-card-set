@@ -22,7 +22,7 @@ window.customCards.push({
   type: 'zooz-nodes-status',
 
   // Display name in the UI
-  name: 'Zooz Nodes Status Card',
+  name: 'Zooz Nodes Status',
 
   // Card description for the UI
   description: 'A card to summarize the status of all the Zooz nodes.',

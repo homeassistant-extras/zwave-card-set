@@ -1,6 +1,7 @@
 import { ZoozNodesStatusEditor } from '@node-states/editor';
-import type { Config, HomeAssistant } from '@node-states/types';
+import type { Config } from '@node-states/types';
 import { fixture } from '@open-wc/testing-helpers';
+import type { HomeAssistant } from '@type/homeassistant';
 import { expect } from 'chai';
 import { nothing, type TemplateResult } from 'lit';
 import { stub } from 'sinon';

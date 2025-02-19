@@ -19,12 +19,14 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
+      "@z55/*": ["./src/cards/info/dc-signal-sensor/*"],
       "@hub-card/*": ["./src/cards/hub-card/*"],
       "@node-states/*": ["./src/cards/node-states/*"],
       "@common/*": ["./src/common/*"],
       "@type/*": ["./src/types/*"],
-      "@test/*": ["./test/*"]
+      "@test/*": ["./test/*"],
+      "@util/*": ["./src/util/*"],
+      "@/*": ["./src/*"]
     }
   }
 }

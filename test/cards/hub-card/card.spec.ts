@@ -1,6 +1,7 @@
 import { ZoozHubCard } from '@hub-card/card';
-import type { Config, Device, HomeAssistant } from '@hub-card/types';
+import type { Config } from '@hub-card/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
+import type { Device, HomeAssistant } from '@type/homeassistant';
 import { expect } from 'chai';
 
 describe('ZoozHubCard', () => {

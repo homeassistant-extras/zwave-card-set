@@ -1,6 +1,7 @@
 import { ZoozNodesStatus } from '@node-states/card';
-import type { Config, HomeAssistant, NodeInfo } from '@node-states/types';
+import type { Config, NodeInfo } from '@node-states/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
+import type { HomeAssistant } from '@type/homeassistant';
 import { expect } from 'chai';
 import { nothing } from 'lit';
 

@@ -57,7 +57,7 @@ describe('ZoozHubCard', () => {
       expect(window.customCards).to.have.lengthOf(1);
       expect(window.customCards[0]).to.deep.equal({
         type: 'zooz-hub-card',
-        name: 'Zooz Hub Card',
+        name: 'Zooz Hub Info',
         description: 'A card to summarize information about the hub.',
         preview: true,
         documentationURL:

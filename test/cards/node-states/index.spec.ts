@@ -59,7 +59,7 @@ describe('ZoozNodesStatus', () => {
       expect(window.customCards).to.have.lengthOf(1);
       expect(window.customCards[0]).to.deep.equal({
         type: 'zooz-nodes-status',
-        name: 'Zooz Nodes Status Card',
+        name: 'Zooz Nodes Status',
         description: 'A card to summarize the status of all the Zooz nodes.',
         preview: true,
         documentationURL:

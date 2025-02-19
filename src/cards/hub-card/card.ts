@@ -1,7 +1,9 @@
+import type { Device, HomeAssistant, State } from '@type/homeassistant';
+import { processDeviceEntities } from '@util/hass';
 import { CSSResult, LitElement, html, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
-import type { Config, Device, HomeAssistant, Hub, State } from './types';
+import type { Config, Hub } from './types';
 const equal = require('fast-deep-equal');
 
 export class ZoozHubCard extends LitElement {
@@ -74,20 +76,14 @@ export class ZoozHubCard extends LitElement {
     const hubDevice = devices[0]!;
     hub.name = hubDevice.name_by_user || hubDevice.name || 'Zooz Hub';
 
-    Object.values(hass.entities).forEach((entity) => {
-      if (entity.device_id !== hubDevice.id) {
-        return;
-      }
-
+    processDeviceEntities(hass, hubDevice.id, (entity, state) => {
       if (entity.entity_id.includes('status')) {
-        const state = hass.states[entity.entity_id]!;
         hub.statusEntity = {
           state: state.state,
           entity_id: state.entity_id,
           attributes: state.attributes,
         };
       } else if (entity.entity_id.includes('rssi')) {
-        const state = hass.states[entity.entity_id]!;
         hub.rssiEntities.push({
           state: state.state,
           entity_id: state.entity_id,

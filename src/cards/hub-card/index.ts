@@ -22,7 +22,7 @@ window.customCards.push({
   type: 'zooz-hub-card',
 
   // Display name in the UI
-  name: 'Zooz Hub Card',
+  name: 'Zooz Hub Info',
 
   // Card description for the UI
   description: 'A card to summarize information about the hub.',

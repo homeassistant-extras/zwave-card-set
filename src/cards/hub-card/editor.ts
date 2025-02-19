@@ -1,8 +1,9 @@
 import { fireEvent } from '@common/fire-event';
 import type { HaFormSchema } from '@type/ha-form';
+import type { HomeAssistant } from '@type/homeassistant';
 import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
-import type { Config, HomeAssistant } from './types';
+import type { Config } from './types';
 
 const SCHEMA: HaFormSchema[] = [];
 

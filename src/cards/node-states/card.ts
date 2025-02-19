@@ -1,8 +1,9 @@
+import type { HomeAssistant } from '@type/homeassistant';
 import { CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
-import type { Config, HomeAssistant, NodeInfo } from './types';
+import type { Config, NodeInfo } from './types';
 const equal = require('fast-deep-equal');
 
 export class ZoozNodesStatus extends LitElement {

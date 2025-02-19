@@ -29,17 +29,53 @@ export interface HaFormSelector extends HaFormBaseSchema {
 }
 
 /**
- * Union type for supported selector types
- * This simplified version only supports area and select selectors
+ * Union type representing different selector types.
+ * This version supports DeviceSelector, NumberSelector, SelectSelector, and StringSelector.
  */
-export type Selector = NumberSelector | SelectSelector | StringSelector;
+export type Selector =
+  | DeviceSelector
+  | NumberSelector
+  | SelectSelector
+  | StringSelector;
 
 /**
- * Select for numeric type
+ * Selector for devices, allowing filtering by integration, manufacturer, and model.
+ * Can also filter by entity and specify if multiple selections are allowed.
+ */
+export interface DeviceSelector {
+  device: {
+    /**
+     * Optional filter criteria for selecting devices.
+     * Can be a single filter or an array of filters.
+     */
+    filter?: DeviceSelectorFilter | readonly DeviceSelectorFilter[];
+
+    /**
+     * Optional filter criteria for selecting entities.
+     * Can be a single filter or an array of filters.
+     */
+    entity?: EntitySelectorFilter | readonly EntitySelectorFilter[];
+
+    /**
+     * Indicates whether multiple devices can be selected.
+     */
+    multiple?: boolean;
+  } | null;
+}
+
+/**
+ * Selector for numeric values, defining an optional min and max range.
  */
 export interface NumberSelector {
   number: {
+    /**
+     * Minimum allowed value (optional).
+     */
     min?: number;
+
+    /**
+     * Maximum allowed value (optional).
+     */
     max?: number;
   } | null;
 }
@@ -95,4 +131,52 @@ export interface StringSelector {
     /** Text to display after the input field (e.g., units like "°C" or "%") */
     suffix?: string;
   };
+}
+
+/**
+ * Criteria for filtering devices based on integration, manufacturer, or model.
+ */
+interface DeviceSelectorFilter {
+  /**
+   * Specifies the integration the device belongs to.
+   */
+  integration?: string;
+
+  /**
+   * Specifies the manufacturer of the device.
+   */
+  manufacturer?: string;
+
+  /**
+   * Specifies the model of the device.
+   */
+  model?: string;
+}
+
+/**
+ * Filter criteria for selecting entities based on various attributes.
+ */
+interface EntitySelectorFilter {
+  /**
+   * Specifies the integration the entity belongs to.
+   */
+  integration?: string;
+
+  /**
+   * Specifies the domain of the entity (e.g., "light", "switch").
+   * Can be a single domain or an array of domains.
+   */
+  domain?: string | readonly string[];
+
+  /**
+   * Specifies the device class of the entity (e.g., "motion", "temperature").
+   * Can be a single class or an array of classes.
+   */
+  device_class?: string | readonly string[];
+
+  /**
+   * Specifies the supported features of the entity using numeric flags.
+   * Can be a single number or an array with one number.
+   */
+  supported_features?: number | [number];
 }
