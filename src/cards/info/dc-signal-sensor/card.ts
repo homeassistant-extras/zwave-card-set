@@ -1,6 +1,8 @@
-import type { HomeAssistant } from '@type/homeassistant';
+import { actionHandler, handleClickAction } from '@common/action-handler';
+import type { ActionConfigParams } from '@type/action';
+import type { HomeAssistant, State } from '@type/homeassistant';
 import { processDeviceEntities } from '@util/hass';
-import { CSSResult, LitElement, html, nothing } from 'lit';
+import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
 import type { Config, Sensor } from './types';
@@ -78,7 +80,11 @@ export class DcSignalSensorCard extends LitElement {
     return document.createElement('dc-signal-sensor-editor');
   }
 
-  protected override render() {
+  /**
+   * Renders the room summary card
+   * @returns {TemplateResult} The rendered HTML template
+   */
+  override render(): TemplateResult | typeof nothing {
     if (!this._sensor) {
       return nothing;
     }
@@ -87,51 +93,91 @@ export class DcSignalSensorCard extends LitElement {
       <ha-card class="grid">
         <div class=" firmware">
           <div class="icon">
-            <ha-state-icon
-              .hass=${this._hass}
-              .stateObj=${this._sensor.firmwareState}
-              icon="${this._config.icon || 'mdi:fire'}"
-            ></ha-state-icon>
+            ${this._renderIcon(
+              this._sensor.firmwareState,
+              undefined,
+              this._config.icon || 'mdi:fire',
+            )}
           </div>
-          <div class="firmware-info">
-            <div class="title">${this._config.title || 'Smoke Sensor'}</div>
-            <state-display
-              .hass=${this._hass}
-              .stateObj=${this._sensor.firmwareState}
-            ></state-display>
+          ${this._renderStateDisplay(
+            this._sensor.firmwareState,
+            ['firmware-info'],
+            'title',
+            this._config.title || 'Smoke Sensor',
+          )}
           </div>
         </div>
 
-        <div class="status-section seen">
-          <span class="status-label">Last Seen</span>
-          <state-display
-            .hass=${this._hass}
-            .stateObj=${this._sensor.lastSeenState}
-          ></state-display>
-        </div>
-
-        <div class="status-section status">
-          <span class="status-label">Status</span>
-          <state-display
-            .hass=${this._hass}
-            .stateObj=${this._sensor.nodeStatusState}
-          ></state-display>
-        </div>
-
-        <div class="icon smoke">
-          <ha-state-icon
-            .hass=${this._hass}
-            .stateObj=${this._sensor.smokeDetectedState}
-          ></ha-state-icon>
-        </div>
-
-        <div class="icon co">
-          <ha-state-icon
-            .hass=${this._hass}
-            .stateObj=${this._sensor.carbonMonoxideDetectedState}
-          ></ha-state-icon>
-        </div>
+        ${this._renderStateDisplay(
+          this._sensor.lastSeenState,
+          ['status-section', 'seen'],
+          'status-label',
+          'Last Seen',
+        )}
+        ${this._renderStateDisplay(
+          this._sensor.nodeStatusState,
+          ['status-section', 'status'],
+          'status-label',
+          'Status',
+        )}
+        ${this._renderIcon(this._sensor.smokeDetectedState, 'smoke')}
+        ${this._renderIcon(this._sensor.carbonMonoxideDetectedState, 'co')}
       </ha-card>
     `;
   }
+
+  private _renderStateDisplay = (
+    state: State | undefined,
+    divClasses: string[],
+    spanClass: string,
+    title: string,
+  ): TemplateResult | typeof nothing => {
+    if (!state) {
+      return nothing;
+    }
+
+    const entity: ActionConfigParams = {
+      entity: state.entity_id,
+      tap_action: { action: 'more-info' },
+      hold_action: { action: 'more-info' },
+      double_tap_action: { action: 'more-info' },
+    };
+
+    return html`<div
+      class="${divClasses.filter((c) => c !== undefined).join(' ')}"
+      @action=${handleClickAction(this, entity)}
+      .actionHandler=${actionHandler(entity)}
+    >
+      <span class="${spanClass}">${title}</span>
+      <state-display .hass=${this._hass} .stateObj=${state}></state-display>
+    </div>`;
+  };
+
+  private _renderIcon = (
+    state: State | undefined,
+    className: string | undefined = undefined,
+    icon: string | undefined = undefined,
+  ): TemplateResult | typeof nothing => {
+    if (!state) {
+      return nothing;
+    }
+
+    const entity: ActionConfigParams = {
+      entity: state.entity_id,
+      tap_action: { action: 'more-info' },
+      hold_action: { action: 'more-info' },
+      double_tap_action: { action: 'more-info' },
+    };
+    return html` <div
+      class="${['icon', className].filter((c) => c !== undefined).join(' ')}"
+      @action=${handleClickAction(this, entity)}
+      .actionHandler=${actionHandler(entity)}
+    >
+      <ha-state-icon
+        .hass=${this._hass}
+        .stateObj=${state}
+        .icon="${icon}"
+      ></ha-state-icon>
+    </div>`;
+  };
 }

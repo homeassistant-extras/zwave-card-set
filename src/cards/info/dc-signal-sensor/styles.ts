@@ -28,6 +28,7 @@ export const styles = css`
     justify-content: center;
     width: 42px;
     height: 42px;
+    cursor: pointer;
   }
 
   /* State icon styling */
@@ -49,7 +50,7 @@ export const styles = css`
 
   .grid {
     display: grid;
-    grid-template-areas: 'firmware firmware firmware seen seen status . smoke co';
+    grid-template-areas: 'firmware firmware firmware seen seen status . . smoke co';
   }
 
   .firmware {
@@ -77,14 +78,19 @@ export const styles = css`
   .firmware-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    cursor: pointer;
+  }
+
+  .firmware-info state-display {
+    font-size: 0.9rem;
+    color: var(--secondary-text-color);
   }
 
   .status-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    cursor: pointer;
   }
 
   .title {

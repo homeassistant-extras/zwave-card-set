@@ -122,4 +122,7 @@ export type ActionConfigParams = {
   double_tap_action?: ActionConfig;
 };
 
+/**
+ * Parameters for configuring actions.
+ */
 export type ActionParams = { config: ActionConfigParams; action: string };
