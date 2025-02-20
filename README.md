@@ -47,6 +47,14 @@ Shows info about the Zooz Hub.
 
 ![card](assets/cards/hub-card/card.png)
 
+### Info Cards
+
+#### [ZEN55 LR - DC Signal Sensor](src/cards/info/dc-signal-sensor/README.md)
+
+Shows info about the Zooz Hub.
+
+![card](assets/cards/info/dc-signal-sensor/card.png)
+
 ## Installation
 
 ### HACS (Recommended)
@@ -78,6 +86,8 @@ See the README files of the individual cards for configuration and detailed info
 
 - [Zooz Nodes Status Card](src/cards/node-states/README.md)
 - [Zooz Hub Card](src/cards/hub-card/README.md)
+- Info Cards
+  - [ZEN55 LR - DC Signal Sensor](src/cards/info/dc-signal-sensor/README.md)
 
 Some cards may require the hub to be labeled with a "Hub" label:
 
