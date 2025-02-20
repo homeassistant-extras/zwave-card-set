@@ -6,6 +6,9 @@ import { styles } from './styles';
 import type { Config, NodeInfo } from './types';
 const equal = require('fast-deep-equal');
 
+/**
+ * Zooz Nodes Status Card
+ */
 export class ZoozNodesStatus extends LitElement {
   /**
    * Card configuration object
@@ -149,7 +152,7 @@ export class ZoozNodesStatus extends LitElement {
   }
 
   /**
-   * Renders the room summary card
+   * Renders the lit element card
    * @returns {TemplateResult} The rendered HTML template
    */
   override render(): TemplateResult {

@@ -10,8 +10,8 @@ import { DcSignalSensorCard } from './card';
 import { DcSignalSensorCardEditor } from './editor';
 
 // Register the custom element with the browser
-customElements.define('dc-signal-sensor', DcSignalSensorCard);
-customElements.define('dc-signal-sensor-editor', DcSignalSensorCardEditor);
+customElements.define('zooz-dc-signal-sensor', DcSignalSensorCard);
+customElements.define('zooz-dc-signal-sensor-editor', DcSignalSensorCardEditor);
 
 // Ensure the customCards array exists on the window object
 window.customCards = window.customCards || [];
@@ -19,7 +19,7 @@ window.customCards = window.customCards || [];
 // Register the card with Home Assistant's custom card registry
 window.customCards.push({
   // Unique identifier for the card type
-  type: 'dc-signal-sensor',
+  type: 'zooz-dc-signal-sensor',
 
   // Display name in the UI
   name: 'ZEN55 LR - DC Signal Sensor',

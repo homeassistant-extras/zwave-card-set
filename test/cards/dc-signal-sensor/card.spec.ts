@@ -114,7 +114,9 @@ describe('DcSignalSensorCard', () => {
   describe('getConfigElement', () => {
     it('should return correct editor element', () => {
       const editor = DcSignalSensorCard.getConfigElement();
-      expect(editor.tagName.toLowerCase()).to.equal('dc-signal-sensor-editor');
+      expect(editor.tagName.toLowerCase()).to.equal(
+        'zooz-dc-signal-sensor-editor',
+      );
     });
   });
 

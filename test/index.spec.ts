@@ -62,9 +62,11 @@ describe('index.ts', () => {
   it('should register dc-signal-sensor', () => {
     require('@/index.ts');
     expect(customElementsStub.callCount).to.be.equal(6);
-    expect(customElementsStub.getCall(4).args[0]).to.equal('dc-signal-sensor');
+    expect(customElementsStub.getCall(4).args[0]).to.equal(
+      'zooz-dc-signal-sensor',
+    );
     expect(customElementsStub.getCall(5).args[0]).to.equal(
-      'dc-signal-sensor-editor',
+      'zooz-dc-signal-sensor-editor',
     );
   });
 
@@ -94,7 +96,7 @@ describe('index.ts', () => {
       documentationURL: 'https://github.com/homeassistant-extras/zooz-card-set',
     });
     expect(window.customCards[2]).to.deep.equal({
-      type: 'dc-signal-sensor',
+      type: 'zooz-dc-signal-sensor',
       name: 'ZEN55 LR - DC Signal Sensor',
       description:
         'A card to summarize the status of a ZEN55 DC Signal Sensor.',

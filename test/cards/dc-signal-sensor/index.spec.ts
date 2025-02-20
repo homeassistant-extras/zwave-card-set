@@ -38,9 +38,11 @@ describe('DcSignalSensorCard', () => {
     it('should register both dc-signal-sensor and editor custom elements', () => {
       require('@z55/index.ts');
       expect(customElementsStub.calledTwice).to.be.true;
-      expect(customElementsStub.firstCall.args[0]).to.equal('dc-signal-sensor');
+      expect(customElementsStub.firstCall.args[0]).to.equal(
+        'zooz-dc-signal-sensor',
+      );
       expect(customElementsStub.secondCall.args[0]).to.equal(
-        'dc-signal-sensor-editor',
+        'zooz-dc-signal-sensor-editor',
       );
     });
 
@@ -56,7 +58,7 @@ describe('DcSignalSensorCard', () => {
 
       expect(window.customCards).to.have.lengthOf(1);
       expect(window.customCards[0]).to.deep.equal({
-        type: 'dc-signal-sensor',
+        type: 'zooz-dc-signal-sensor',
         name: 'ZEN55 LR - DC Signal Sensor',
         description:
           'A card to summarize the status of a ZEN55 DC Signal Sensor.',

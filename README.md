@@ -98,6 +98,8 @@ Some cards may require the hub to be labeled with a "Hub" label:
 - [x] **`Initial design`**: <strike>create initial room card based on button-card template in UI minimialist theme.</strike>
 - [ ] **`Node cards`**: show info about different nodes.
 - [ ] **`Node status card sizing`**: make sizing dynamic, can't figure it out.
+- [ ] **`Themes`**: test default theme, etc.
+- [ ] **`Editors`**: make sure stub configs and previes are solid.
 
 ## Contributing
 

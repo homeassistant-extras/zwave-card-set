@@ -8,6 +8,9 @@ import { styles } from './styles';
 import type { Config, Sensor } from './types';
 const equal = require('fast-deep-equal');
 
+/**
+ * DC Signal Sensor Card
+ */
 export class DcSignalSensorCard extends LitElement {
   /**
    * Card configuration object
@@ -77,7 +80,7 @@ export class DcSignalSensorCard extends LitElement {
 
   // card configuration
   static getConfigElement() {
-    return document.createElement('dc-signal-sensor-editor');
+    return document.createElement('zooz-dc-signal-sensor-editor');
   }
 
   /**

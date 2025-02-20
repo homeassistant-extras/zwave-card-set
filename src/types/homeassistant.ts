@@ -34,8 +34,11 @@ export type Device = {
   /** Name of the company that produced the device */
   manufacturer?: string;
 
+  /** Model name or number of the device */
+  model?: string;
+
   /** Array of tags or categories associated with the device */
-  labels: string[];
+  labels?: string[];
 };
 
 /**

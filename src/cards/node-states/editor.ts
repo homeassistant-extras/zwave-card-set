@@ -51,7 +51,7 @@ export class ZoozNodesStatusEditor extends LitElement {
   public hass!: HomeAssistant;
 
   /**
-   * Renders the room summary card
+   * Renders the lit element card
    * @returns {TemplateResult} The rendered HTML template
    */
   override render(): TemplateResult | typeof nothing {

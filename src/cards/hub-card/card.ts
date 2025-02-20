@@ -6,6 +6,9 @@ import { styles } from './styles';
 import type { Config, Hub } from './types';
 const equal = require('fast-deep-equal');
 
+/**
+ * Zooz Hub Card
+ */
 export class ZoozHubCard extends LitElement {
   /**
    * Card configuration object
@@ -115,7 +118,7 @@ export class ZoozHubCard extends LitElement {
   }
 
   /**
-   * Renders the room summary card
+   * Renders the lit element card
    * @returns {TemplateResult} The rendered HTML template
    */
   override render(): TemplateResult {
