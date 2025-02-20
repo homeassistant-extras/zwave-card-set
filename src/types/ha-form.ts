@@ -34,6 +34,7 @@ export interface HaFormSelector extends HaFormBaseSchema {
  */
 export type Selector =
   | DeviceSelector
+  | IconSelector
   | NumberSelector
   | SelectSelector
   | StringSelector;
@@ -60,6 +61,22 @@ export interface DeviceSelector {
      * Indicates whether multiple devices can be selected.
      */
     multiple?: boolean;
+  } | null;
+}
+
+/**
+ * Represents an icon selector configuration.
+ */
+export interface IconSelector {
+  /**
+   * Icon configuration object or null if no icon is selected.
+   */
+  icon: {
+    /** Optional placeholder text for the icon selector */
+    placeholder?: string;
+
+    /** Optional fallback path to use if the icon fails to load */
+    fallbackPath?: string;
   } | null;
 }
 

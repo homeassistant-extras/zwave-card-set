@@ -76,7 +76,7 @@ export class ZoozHubCard extends LitElement {
     const hubDevice = devices[0]!;
     hub.name = hubDevice.name_by_user || hubDevice.name || 'Zooz Hub';
 
-    processDeviceEntities(hass, hubDevice.id, (entity, state) => {
+    processDeviceEntities(hass, hubDevice.id, ['sensor'], (entity, state) => {
       if (entity.entity_id.includes('status')) {
         hub.statusEntity = {
           state: state.state,

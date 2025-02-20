@@ -38,11 +38,12 @@ describe('index.ts', () => {
     delete require.cache[require.resolve('@/index.ts')];
     delete require.cache[require.resolve('@node-states/index.ts')];
     delete require.cache[require.resolve('@hub-card/index.ts')];
+    delete require.cache[require.resolve('@z55/index.ts')];
   });
 
   it('should register zooz-nodes-status', () => {
     require('@/index.ts');
-    expect(customElementsStub.callCount).to.be.equal(4);
+    expect(customElementsStub.callCount).to.be.equal(6);
     expect(customElementsStub.getCall(0).args[0]).to.equal('zooz-hub-card');
     expect(customElementsStub.getCall(1).args[0]).to.equal(
       'zooz-hub-card-editor',
@@ -51,10 +52,19 @@ describe('index.ts', () => {
 
   it('should register zooz-hub-card', () => {
     require('@/index.ts');
-    expect(customElementsStub.callCount).to.be.equal(4);
+    expect(customElementsStub.callCount).to.be.equal(6);
     expect(customElementsStub.getCall(2).args[0]).to.equal('zooz-nodes-status');
     expect(customElementsStub.getCall(3).args[0]).to.equal(
       'zooz-nodes-status-editor',
+    );
+  });
+
+  it('should register dc-signal-sensor', () => {
+    require('@/index.ts');
+    expect(customElementsStub.callCount).to.be.equal(6);
+    expect(customElementsStub.getCall(4).args[0]).to.equal('dc-signal-sensor');
+    expect(customElementsStub.getCall(5).args[0]).to.equal(
+      'dc-signal-sensor-editor',
     );
   });
 
@@ -68,18 +78,26 @@ describe('index.ts', () => {
   it('should add card configuration with all fields to window.customCards', () => {
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(2);
+    expect(window.customCards).to.have.lengthOf(3);
     expect(window.customCards[0]).to.deep.equal({
       type: 'zooz-hub-card',
-      name: 'Zooz Hub Card',
+      name: 'Zooz Hub Info',
       description: 'A card to summarize information about the hub.',
       preview: true,
       documentationURL: 'https://github.com/homeassistant-extras/zooz-card-set',
     });
     expect(window.customCards[1]).to.deep.equal({
       type: 'zooz-nodes-status',
-      name: 'Zooz Nodes Status Card',
+      name: 'Zooz Nodes Status',
       description: 'A card to summarize the status of all the Zooz nodes.',
+      preview: true,
+      documentationURL: 'https://github.com/homeassistant-extras/zooz-card-set',
+    });
+    expect(window.customCards[2]).to.deep.equal({
+      type: 'dc-signal-sensor',
+      name: 'ZEN55 LR - DC Signal Sensor',
+      description:
+        'A card to summarize the status of a ZEN55 DC Signal Sensor.',
       preview: true,
       documentationURL: 'https://github.com/homeassistant-extras/zooz-card-set',
     });
@@ -96,7 +114,7 @@ describe('index.ts', () => {
 
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(3);
+    expect(window.customCards).to.have.lengthOf(4);
     expect(window.customCards[0]).to.deep.equal({
       type: 'existing-card',
       name: 'Existing Card',
@@ -107,8 +125,8 @@ describe('index.ts', () => {
     require('@/index.ts');
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(2);
-    expect(customElementsStub.callCount).to.equal(4);
+    expect(window.customCards).to.have.lengthOf(3);
+    expect(customElementsStub.callCount).to.equal(6);
   });
 
   it('should log the version with proper formatting', () => {

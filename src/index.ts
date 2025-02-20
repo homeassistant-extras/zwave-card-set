@@ -1,5 +1,6 @@
 import '@hub-card/index';
 import '@node-states/index';
+import '@z55/index';
 import { version } from '../package.json';
 
 console.info(
