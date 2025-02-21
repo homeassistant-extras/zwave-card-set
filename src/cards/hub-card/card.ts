@@ -1,5 +1,5 @@
 import type { Device, HomeAssistant, State } from '@type/homeassistant';
-import { processDeviceEntities } from '@util/hass';
+import { getZoozHubs, getZoozNonHubs, processDeviceEntities } from '@util/hass';
 import { CSSResult, LitElement, html, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
@@ -64,9 +64,7 @@ export class ZoozHubCard extends LitElement {
       error: '',
     } as Hub;
 
-    const devices = Object.values(hass.devices).filter((device) => {
-      return device.manufacturer === 'Zooz' && device.labels.includes('hub');
-    });
+    const devices = getZoozHubs(hass);
 
     if (devices.length > 1) {
       this._hub.error = 'Multiple Zooz hubs found. Please specify one.';
@@ -95,17 +93,7 @@ export class ZoozHubCard extends LitElement {
       }
     });
 
-    hub.connectedDevices = Object.values(hass.devices)
-      .filter((device) => {
-        return device.manufacturer === 'Zooz' && !device.labels.includes('hub');
-      })
-      .map((device) => {
-        return {
-          id: device.id,
-          name_by_user: device.name_by_user,
-          name: device.name,
-        } as Device;
-      });
+    hub.connectedDevices = getZoozNonHubs(hass);
 
     if (!equal(hub, this._hub)) {
       this._hub = hub;

@@ -65,12 +65,8 @@ describe('index.ts', () => {
     const hasNodesStatus = calls.some(
       (call) => call.args[0] === 'zooz-nodes-status',
     );
-    const hasNodesStatusEditor = calls.some(
-      (call) => call.args[0] === 'zooz-nodes-status-editor',
-    );
 
     expect(hasNodesStatus).to.be.true;
-    expect(hasNodesStatusEditor).to.be.true;
   });
 
   it('should register dc-signal-sensor components', () => {
@@ -79,12 +75,8 @@ describe('index.ts', () => {
     const hasSignalSensor = calls.some(
       (call) => call.args[0] === 'zooz-dc-signal-sensor',
     );
-    const hasSignalSensorEditor = calls.some(
-      (call) => call.args[0] === 'zooz-dc-signal-sensor-editor',
-    );
 
     expect(hasSignalSensor).to.be.true;
-    expect(hasSignalSensorEditor).to.be.true;
   });
 
   it('should initialize window.customCards if undefined', () => {
@@ -173,7 +165,7 @@ describe('index.ts', () => {
     require('@/index.ts');
 
     expect(window.customCards).to.have.lengthOf(4);
-    expect(customElementsStub.callCount).to.equal(7);
+    expect(customElementsStub.callCount).to.equal(5);
   });
 
   it('should log the version with proper formatting', () => {

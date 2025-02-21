@@ -5,8 +5,6 @@ import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import type { Config } from '../cards/hub-card/types';
 
-const SCHEMA: HaFormSchema[] = [];
-
 export class ZoozBasicEditor extends LitElement {
   /**
    * Card configuration object
@@ -19,6 +17,8 @@ export class ZoozBasicEditor extends LitElement {
    * Not marked as @state as it's handled differently
    */
   public hass!: HomeAssistant;
+
+  public schema: HaFormSchema[] = [];
 
   /**
    * Renders the lit element card
@@ -33,7 +33,7 @@ export class ZoozBasicEditor extends LitElement {
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
-        .schema=${SCHEMA}
+        .schema=${this.schema}
         .computeLabel=${(s: HaFormSchema) => s.label}
         @value-changed=${this._valueChanged}
       ></ha-form>

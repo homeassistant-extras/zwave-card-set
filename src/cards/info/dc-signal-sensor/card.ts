@@ -1,7 +1,8 @@
 import { actionHandler, handleClickAction } from '@common/action-handler';
 import type { ActionConfigParams } from '@type/action';
+import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant, State } from '@type/homeassistant';
-import { processDeviceEntities } from '@util/hass';
+import { getZoozModels, processDeviceEntities } from '@util/hass';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
@@ -88,7 +89,54 @@ export class DcSignalSensorCard extends LitElement {
 
   // card configuration
   static getConfigElement() {
-    return document.createElement('zooz-dc-signal-sensor-editor');
+    const SCHEMA: HaFormSchema[] = [
+      {
+        name: 'device_id',
+        selector: {
+          device: {
+            filter: {
+              manufacturer: 'Zooz',
+              model: 'ZEN55 LR',
+            },
+          },
+        },
+        required: true,
+        label: 'ZEN55 LR Device',
+      },
+      {
+        name: 'title',
+        required: false,
+        label: 'Card Title',
+        selector: {
+          text: {},
+        },
+      },
+      {
+        name: 'icon',
+        required: false,
+        label: 'Icon',
+        selector: {
+          icon: {},
+        },
+      },
+    ];
+
+    const editor = document.createElement('zooz-basic-editor');
+    (editor as any).schema = SCHEMA;
+    return editor;
+  }
+
+  public static async getStubConfig(hass: HomeAssistant): Promise<Config> {
+    const devices = getZoozModels(hass, 'ZEN55 LR');
+    if (!devices.length) {
+      return {
+        device_id: '',
+      };
+    }
+
+    return {
+      device_id: devices[0]!.id,
+    };
   }
 
   /**

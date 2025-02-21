@@ -2,6 +2,7 @@ import * as actionHandlerModule from '@common/action-handler';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import type { ActionHandlerEvent } from '@type/action';
 import type { HomeAssistant, State } from '@type/homeassistant';
+import * as hassUtils from '@util/hass';
 import { DcSignalSensorCard } from '@z55/card';
 import type { Config } from '@z55/types';
 import { expect } from 'chai';
@@ -125,9 +126,38 @@ describe('DcSignalSensorCard', () => {
   describe('getConfigElement', () => {
     it('should return correct editor element', () => {
       const editor = DcSignalSensorCard.getConfigElement();
-      expect(editor.tagName.toLowerCase()).to.equal(
-        'zooz-dc-signal-sensor-editor',
-      );
+      expect(editor.tagName.toLowerCase()).to.equal('zooz-basic-editor');
+      expect((editor as any).schema).to.deep.equal([
+        {
+          name: 'device_id',
+          selector: {
+            device: {
+              filter: {
+                manufacturer: 'Zooz',
+                model: 'ZEN55 LR',
+              },
+            },
+          },
+          required: true,
+          label: 'ZEN55 LR Device',
+        },
+        {
+          name: 'title',
+          required: false,
+          label: 'Card Title',
+          selector: {
+            text: {},
+          },
+        },
+        {
+          name: 'icon',
+          required: false,
+          label: 'Icon',
+          selector: {
+            icon: {},
+          },
+        },
+      ]);
     });
   });
 
@@ -484,6 +514,29 @@ describe('DcSignalSensorCard', () => {
 
       // Verify just the base 'icon' class is present
       expect(el.className).to.equal('icon');
+    });
+  });
+
+  describe('getStubConfig', () => {
+    it('should return an empty device_id when no devices are found', async () => {
+      const getZoozModelsStub = stub(hassUtils, 'getZoozModels').returns([]);
+      const config = await DcSignalSensorCard.getStubConfig(mockHass);
+
+      expect(getZoozModelsStub.calledOnceWith(mockHass, 'ZEN55 LR')).to.be.true;
+      expect(config).to.deep.equal({ device_id: '' });
+      getZoozModelsStub.restore();
+    });
+
+    it('should return the first device id when devices are found', async () => {
+      const mockDevices = [{ id: 'device_123' }, { id: 'device_456' }];
+      const getZoozModelsStub = stub(hassUtils, 'getZoozModels').returns(
+        mockDevices,
+      );
+      const config = await DcSignalSensorCard.getStubConfig(mockHass);
+
+      expect(getZoozModelsStub.calledOnceWith(mockHass, 'ZEN55 LR')).to.be.true;
+      expect(config).to.deep.equal({ device_id: 'device_123' });
+      getZoozModelsStub.restore();
     });
   });
 });

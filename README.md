@@ -103,10 +103,10 @@ Some cards may require the hub to be labeled with a "Hub" label:
 ## Project Roadmap
 
 - [x] **`Initial design`**: <strike>create initial room card based on button-card template in UI minimialist theme.</strike>
+- [x] **`Editors`**: <strike>make sure stub configs and previews are solid.</strike>
 - [ ] **`Node cards`**: show info about different nodes.
 - [ ] **`Node status card sizing`**: make sizing dynamic, can't figure it out.
 - [ ] **`Themes`**: test default theme, etc.
-- [ ] **`Editors`**: make sure stub configs and previews are solid.
 - [ ] **`Device Center`**: add docs and pics towards end.
 
 ## Contributing

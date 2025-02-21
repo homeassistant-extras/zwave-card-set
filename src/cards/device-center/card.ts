@@ -1,5 +1,6 @@
 import type { Config } from '@hub-card/types';
 import type { HomeAssistant } from '@type/homeassistant';
+import { getZoozDevices } from '@util/hass';
 import type { Config as DcSignalSensorConfig } from '@z55/types';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
@@ -53,16 +54,7 @@ export class ZoozDeviceCenter extends LitElement {
 
     const center: Center = {};
 
-    const devices = Object.values(hass.devices)
-      .filter((device) => {
-        return device.manufacturer === 'Zooz';
-      })
-      .map((device) => {
-        return {
-          id: device.id,
-          model: device.model,
-        };
-      });
+    const devices = getZoozDevices(hass);
 
     center.zen55 = devices.filter((device) => device.model === 'ZEN55 LR');
 

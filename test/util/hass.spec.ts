@@ -1,5 +1,10 @@
 import type { Entity, HomeAssistant, State } from '@type/homeassistant';
-import { processDeviceEntities } from '@util/hass';
+import {
+  getZoozDevices,
+  getZoozHubs,
+  getZoozNonHubs,
+  processDeviceEntities,
+} from '@util/hass';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -252,6 +257,373 @@ describe('util', () => {
 
         expect(callCount).to.equal(0);
       });
+    });
+  });
+
+  describe('getZoozDevices', () => {
+    let mockHass: HomeAssistant;
+
+    beforeEach(() => {
+      // Create a mock HomeAssistant object with various devices
+      mockHass = {
+        states: {},
+        entities: {},
+        devices: {
+          'zooz-hub-1': {
+            id: 'zooz-hub-1',
+            manufacturer: 'Zooz',
+            model: 'ZST10',
+            name: 'Zooz Hub',
+            labels: ['hub', 'controller'],
+            name_by_user: 'Living Room Hub',
+          },
+          'zooz-hub-2': {
+            id: 'zooz-hub-2',
+            manufacturer: 'Zooz',
+            model: 'ZST11',
+            name: 'Zooz Hub Pro',
+            labels: ['hub', 'premium'],
+          },
+          'zooz-switch-1': {
+            id: 'zooz-switch-1',
+            manufacturer: 'Zooz',
+            model: 'ZEN26',
+            name: 'Zooz Switch',
+            labels: ['switch', 'lighting'],
+          },
+          'zooz-dimmer-1': {
+            id: 'zooz-dimmer-1',
+            manufacturer: 'Zooz',
+            model: 'ZEN72',
+            name: 'Zooz Dimmer',
+            labels: ['dimmer', 'lighting'],
+            name_by_user: 'Kitchen Dimmer',
+          },
+          'zooz-sensor-1': {
+            id: 'zooz-sensor-1',
+            manufacturer: 'Zooz',
+            model: 'ZSE11',
+            name: 'Zooz Sensor',
+          },
+          'ge-switch-1': {
+            id: 'ge-switch-1',
+            manufacturer: 'GE',
+            model: 'Switch',
+            name: 'GE Switch',
+            labels: ['switch'],
+          },
+          'philips-hub-1': {
+            id: 'philips-hub-1',
+            manufacturer: 'Philips',
+            model: 'Hue Bridge',
+            name: 'Philips Hue Bridge',
+            labels: ['hub', 'lighting'],
+          },
+        },
+      };
+    });
+
+    it('should return all Zooz devices when no filters are applied', () => {
+      const result = getZoozDevices(mockHass);
+
+      expect(result.length).to.equal(5);
+      expect(result.map((d) => d.id)).to.have.members([
+        'zooz-hub-1',
+        'zooz-hub-2',
+        'zooz-switch-1',
+        'zooz-dimmer-1',
+        'zooz-sensor-1',
+      ]);
+      expect(result.every((d) => d.manufacturer === 'Zooz')).to.be.true;
+    });
+
+    it('should return only Zooz hubs when hubOnly is true', () => {
+      const result = getZoozDevices(mockHass, true);
+
+      expect(result.length).to.equal(2);
+      expect(result.map((d) => d.id)).to.have.members([
+        'zooz-hub-1',
+        'zooz-hub-2',
+      ]);
+      expect(result.every((d) => d.labels?.includes('hub'))).to.be.true;
+    });
+
+    it('should return only non-hub Zooz devices when noHubs is true', () => {
+      const result = getZoozDevices(mockHass, false, true);
+
+      expect(result.length).to.equal(3);
+      expect(result.map((d) => d.id)).to.have.members([
+        'zooz-switch-1',
+        'zooz-dimmer-1',
+        'zooz-sensor-1',
+      ]);
+      expect(result.every((d) => !d.labels?.includes('hub'))).to.be.true;
+    });
+
+    it('should handle empty devices object', () => {
+      const emptyHass: HomeAssistant = {
+        states: {},
+        entities: {},
+        devices: {},
+      };
+
+      const result = getZoozDevices(emptyHass);
+      expect(result).to.deep.equal([]);
+    });
+
+    it('should handle when no Zooz devices exist', () => {
+      const noZoozHass: HomeAssistant = {
+        states: {},
+        entities: {},
+        devices: {
+          'ge-switch-1': {
+            id: 'ge-switch-1',
+            manufacturer: 'GE',
+            model: 'Switch',
+            name: 'GE Switch',
+          },
+        },
+      };
+
+      const result = getZoozDevices(noZoozHass);
+      expect(result).to.deep.equal([]);
+    });
+
+    it('should handle devices with undefined or null labels', () => {
+      mockHass.devices['zooz-unknown-1'] = {
+        id: 'zooz-unknown-1',
+        manufacturer: 'Zooz',
+        model: 'Unknown',
+        name: 'Unknown Zooz Device',
+        labels: undefined,
+      };
+
+      const result = getZoozDevices(mockHass);
+      expect(result.length).to.equal(6);
+      expect(result.some((d) => d.id === 'zooz-unknown-1')).to.be.true;
+
+      // Test that filtering still works with undefined labels
+      const hubResult = getZoozDevices(mockHass, true);
+      expect(hubResult.length).to.equal(2);
+      expect(hubResult.some((d) => d.id === 'zooz-unknown-1')).to.be.false;
+    });
+
+    it('should prioritize hubOnly over noHubs if both are true', () => {
+      const result = getZoozDevices(mockHass, true, true);
+
+      // hubOnly should take precedence
+      expect(result.length).to.equal(2);
+      expect(result.map((d) => d.id)).to.have.members([
+        'zooz-hub-1',
+        'zooz-hub-2',
+      ]);
+    });
+
+    it('should return exact device structure in the result', () => {
+      const result = getZoozDevices(mockHass);
+      const sampleDevice = result.find((d) => d.id === 'zooz-dimmer-1');
+
+      expect(sampleDevice).to.deep.equal({
+        id: 'zooz-dimmer-1',
+        manufacturer: 'Zooz',
+        model: 'ZEN72',
+        name: 'Zooz Dimmer',
+        labels: ['dimmer', 'lighting'],
+        name_by_user: 'Kitchen Dimmer',
+      });
+    });
+
+    it('should handle case with mixed label formats', () => {
+      mockHass.devices['zooz-mixed-1'] = {
+        id: 'zooz-mixed-1',
+        manufacturer: 'Zooz',
+        model: 'Mixed',
+        name: 'Mixed Zooz Device',
+        labels: ['hub'] as string[], // Cast to string[] to test type handling
+      };
+
+      const hubResult = getZoozDevices(mockHass, true);
+      expect(hubResult.some((d) => d.id === 'zooz-mixed-1')).to.be.true;
+      expect(hubResult.length).to.equal(3);
+    });
+  });
+
+  describe('getZoozHubs', () => {
+    let mockHass: HomeAssistant;
+
+    beforeEach(() => {
+      // Setup mock HomeAssistant object with various devices
+      mockHass = {
+        states: {},
+        entities: {},
+        devices: {
+          'zooz-hub-1': {
+            id: 'zooz-hub-1',
+            manufacturer: 'Zooz',
+            model: 'ZST10',
+            name: 'Zooz Hub',
+            labels: ['hub', 'controller'],
+          },
+          'zooz-hub-2': {
+            id: 'zooz-hub-2',
+            manufacturer: 'Zooz',
+            model: 'ZST11',
+            name: 'Zooz Hub Pro',
+            labels: ['hub', 'premium'],
+          },
+          'zooz-switch-1': {
+            id: 'zooz-switch-1',
+            manufacturer: 'Zooz',
+            model: 'ZEN26',
+            name: 'Zooz Switch',
+            labels: ['switch', 'lighting'],
+          },
+          'philips-hub-1': {
+            id: 'philips-hub-1',
+            manufacturer: 'Philips',
+            model: 'Hue Bridge',
+            name: 'Philips Hue Bridge',
+            labels: ['hub', 'lighting'],
+          },
+        },
+      };
+    });
+
+    it('should return only Zooz hub devices', () => {
+      const result = getZoozHubs(mockHass);
+
+      expect(result.length).to.equal(2);
+      expect(result.map((d) => d.id)).to.have.members([
+        'zooz-hub-1',
+        'zooz-hub-2',
+      ]);
+      expect(result.every((d) => d.manufacturer === 'Zooz')).to.be.true;
+      expect(result.every((d) => d.labels?.includes('hub'))).to.be.true;
+    });
+
+    it('should return empty array when no Zooz hub devices exist', () => {
+      const noZoozHubsHass: HomeAssistant = {
+        states: {},
+        entities: {},
+        devices: {
+          'zooz-switch-1': {
+            id: 'zooz-switch-1',
+            manufacturer: 'Zooz',
+            model: 'ZEN26',
+            name: 'Zooz Switch',
+            labels: ['switch'],
+          },
+          'philips-hub-1': {
+            id: 'philips-hub-1',
+            manufacturer: 'Philips',
+            model: 'Hue Bridge',
+            name: 'Philips Hue Bridge',
+            labels: ['hub'],
+          },
+        },
+      };
+
+      const result = getZoozHubs(noZoozHubsHass);
+      expect(result).to.deep.equal([]);
+    });
+  });
+
+  describe('getZoozNonHubs', () => {
+    let mockHass: HomeAssistant;
+
+    beforeEach(() => {
+      // Setup mock HomeAssistant object with various devices
+      mockHass = {
+        states: {},
+        entities: {},
+        devices: {
+          'zooz-hub-1': {
+            id: 'zooz-hub-1',
+            manufacturer: 'Zooz',
+            model: 'ZST10',
+            name: 'Zooz Hub',
+            labels: ['hub', 'controller'],
+          },
+          'zooz-switch-1': {
+            id: 'zooz-switch-1',
+            manufacturer: 'Zooz',
+            model: 'ZEN26',
+            name: 'Zooz Switch',
+            labels: ['switch', 'lighting'],
+          },
+          'zooz-dimmer-1': {
+            id: 'zooz-dimmer-1',
+            manufacturer: 'Zooz',
+            model: 'ZEN72',
+            name: 'Zooz Dimmer',
+            labels: ['dimmer', 'lighting'],
+          },
+          'zooz-sensor-1': {
+            id: 'zooz-sensor-1',
+            manufacturer: 'Zooz',
+            model: 'ZSE11',
+            name: 'Zooz Sensor',
+          },
+          'ge-switch-1': {
+            id: 'ge-switch-1',
+            manufacturer: 'GE',
+            model: 'Switch',
+            name: 'GE Switch',
+          },
+        },
+      };
+    });
+
+    it('should return only Zooz non-hub devices', () => {
+      const result = getZoozNonHubs(mockHass);
+
+      expect(result.length).to.equal(3);
+      expect(result.map((d) => d.id)).to.have.members([
+        'zooz-switch-1',
+        'zooz-dimmer-1',
+        'zooz-sensor-1',
+      ]);
+      expect(result.every((d) => d.manufacturer === 'Zooz')).to.be.true;
+      expect(result.every((d) => !d.labels?.includes('hub'))).to.be.true;
+    });
+
+    it('should return empty array when no Zooz non-hub devices exist', () => {
+      const onlyZoozHubsHass: HomeAssistant = {
+        states: {},
+        entities: {},
+        devices: {
+          'zooz-hub-1': {
+            id: 'zooz-hub-1',
+            manufacturer: 'Zooz',
+            model: 'ZST10',
+            name: 'Zooz Hub',
+            labels: ['hub'],
+          },
+          'philips-device-1': {
+            id: 'philips-device-1',
+            manufacturer: 'Philips',
+            model: 'Light',
+            name: 'Philips Light',
+          },
+        },
+      };
+
+      const result = getZoozNonHubs(onlyZoozHubsHass);
+      expect(result).to.deep.equal([]);
+    });
+
+    it('should handle devices with undefined labels', () => {
+      mockHass.devices['zooz-unlabeled-1'] = {
+        id: 'zooz-unlabeled-1',
+        manufacturer: 'Zooz',
+        model: 'Unknown',
+        name: 'Unlabeled Zooz Device',
+        labels: undefined,
+      };
+
+      const result = getZoozNonHubs(mockHass);
+      expect(result.length).to.equal(4);
+      expect(result.some((d) => d.id === 'zooz-unlabeled-1')).to.be.true;
     });
   });
 });

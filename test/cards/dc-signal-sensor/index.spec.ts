@@ -35,14 +35,11 @@ describe('DcSignalSensorCard', () => {
       delete require.cache[require.resolve('@z55/index.ts')];
     });
 
-    it('should register both dc-signal-sensor and editor custom elements', () => {
+    it('should register both dc-signal-sensor', () => {
       require('@z55/index.ts');
-      expect(customElementsStub.calledTwice).to.be.true;
+      expect(customElementsStub.calledOnce).to.be.true;
       expect(customElementsStub.firstCall.args[0]).to.equal(
         'zooz-dc-signal-sensor',
-      );
-      expect(customElementsStub.secondCall.args[0]).to.equal(
-        'zooz-dc-signal-sensor-editor',
       );
     });
 
@@ -91,7 +88,7 @@ describe('DcSignalSensorCard', () => {
       require('@z55/index.ts');
 
       expect(window.customCards).to.have.lengthOf(1);
-      expect(customElementsStub.callCount).to.equal(2); // Called twice for initial registration only
+      expect(customElementsStub.callCount).to.equal(1);
     });
   });
 });

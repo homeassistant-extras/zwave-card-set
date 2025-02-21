@@ -1,4 +1,6 @@
+import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant } from '@type/homeassistant';
+import { getZoozNonHubs } from '@util/hass';
 import { CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { state } from 'lit/decorators.js';
@@ -74,13 +76,11 @@ export class ZoozNodesStatus extends LitElement {
     const zoozNodes: Record<string, NodeInfo> = {};
 
     // Iterate through all devices
-    Object.values(hass.devices).forEach((device) => {
-      if (device.manufacturer === 'Zooz' && !device.labels.includes('hub')) {
-        zoozNodes[device.id] = {
-          name: device.name_by_user || device.name,
-          device_id: device.id,
-        } as NodeInfo;
-      }
+    getZoozNonHubs(hass).forEach((device) => {
+      zoozNodes[device.id] = {
+        name: device.name_by_user || device.name,
+        device_id: device.id,
+      } as NodeInfo;
     });
 
     // If no Zooz devices are found, return early
@@ -148,7 +148,41 @@ export class ZoozNodesStatus extends LitElement {
 
   // card configuration
   static getConfigElement() {
-    return document.createElement('zooz-nodes-status-editor');
+    const SCHEMA: HaFormSchema[] = [
+      {
+        name: 'title',
+        label: 'Card title.',
+        required: false,
+        selector: { text: {} },
+      },
+      {
+        name: 'columns',
+        label: 'Number of columns.',
+        required: false,
+        selector: { number: { min: 1, max: 3 } },
+      },
+      {
+        name: 'features',
+        label: 'Features',
+        required: false,
+        selector: {
+          select: {
+            multiple: true,
+            mode: 'list',
+            options: [
+              {
+                label: 'Show the card more compact.',
+                value: 'compact',
+              },
+            ],
+          },
+        },
+      },
+    ];
+
+    const editor = document.createElement('zooz-basic-editor');
+    (editor as any).schema = SCHEMA;
+    return editor;
   }
 
   /**

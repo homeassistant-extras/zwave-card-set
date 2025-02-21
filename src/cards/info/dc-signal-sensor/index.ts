@@ -7,11 +7,9 @@
  */
 
 import { DcSignalSensorCard } from './card';
-import { DcSignalSensorCardEditor } from './editor';
 
 // Register the custom element with the browser
 customElements.define('zooz-dc-signal-sensor', DcSignalSensorCard);
-customElements.define('zooz-dc-signal-sensor-editor', DcSignalSensorCardEditor);
 
 // Ensure the customCards array exists on the window object
 window.customCards = window.customCards || [];

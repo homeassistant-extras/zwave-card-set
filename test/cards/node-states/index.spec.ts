@@ -35,14 +35,11 @@ describe('ZoozNodesStatus', () => {
       delete require.cache[require.resolve('@node-states/index.ts')];
     });
 
-    it('should register both zooz-nodes-status and editor custom elements', () => {
+    it('should register both zooz-nodes-status', () => {
       require('@node-states/index.ts');
-      expect(customElementsStub.calledTwice).to.be.true;
+      expect(customElementsStub.calledOnce).to.be.true;
       expect(customElementsStub.firstCall.args[0]).to.equal(
         'zooz-nodes-status',
-      );
-      expect(customElementsStub.secondCall.args[0]).to.equal(
-        'zooz-nodes-status-editor',
       );
     });
 
@@ -90,7 +87,7 @@ describe('ZoozNodesStatus', () => {
       require('@node-states/index.ts');
 
       expect(window.customCards).to.have.lengthOf(1);
-      expect(customElementsStub.callCount).to.equal(2); // Called twice for initial registration only
+      expect(customElementsStub.callCount).to.equal(1);
     });
   });
 });

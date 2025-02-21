@@ -35,7 +35,7 @@ describe('ZoozDeviceCenter', () => {
       delete require.cache[require.resolve('@center/index.ts')];
     });
 
-    it('should register both zooz-device-center and editor custom elements', () => {
+    it('should register both zooz-device-center', () => {
       require('@center/index.ts');
       expect(customElementsStub.calledOnce).to.be.true;
       expect(customElementsStub.firstCall.args[0]).to.equal(

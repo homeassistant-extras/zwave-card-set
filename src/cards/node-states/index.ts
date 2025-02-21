@@ -7,11 +7,9 @@
  */
 
 import { ZoozNodesStatus } from './card';
-import { ZoozNodesStatusEditor } from './editor';
 
 // Register the custom element with the browser
 customElements.define('zooz-nodes-status', ZoozNodesStatus);
-customElements.define('zooz-nodes-status-editor', ZoozNodesStatusEditor);
 
 // Ensure the customCards array exists on the window object
 window.customCards = window.customCards || [];

@@ -46,9 +46,38 @@ describe('ZoozNodesStatus', () => {
     describe('getConfigElement', () => {
       it('should return correct editor element', () => {
         const editor = ZoozNodesStatus.getConfigElement();
-        expect(editor.tagName.toLowerCase()).to.equal(
-          'zooz-nodes-status-editor',
-        );
+        expect(editor.tagName.toLowerCase()).to.equal('zooz-basic-editor');
+        expect((editor as any).schema).to.deep.equal([
+          {
+            name: 'title',
+            label: 'Card title.',
+            required: false,
+            selector: { text: {} },
+          },
+          {
+            name: 'columns',
+            label: 'Number of columns.',
+            required: false,
+            selector: { number: { min: 1, max: 3 } },
+          },
+          {
+            name: 'features',
+            label: 'Features',
+            required: false,
+            selector: {
+              select: {
+                multiple: true,
+                mode: 'list',
+                options: [
+                  {
+                    label: 'Show the card more compact.',
+                    value: 'compact',
+                  },
+                ],
+              },
+            },
+          },
+        ]);
       });
     });
 
