@@ -39,35 +39,52 @@ describe('index.ts', () => {
     delete require.cache[require.resolve('@node-states/index.ts')];
     delete require.cache[require.resolve('@hub-card/index.ts')];
     delete require.cache[require.resolve('@z55/index.ts')];
+    delete require.cache[require.resolve('@center/index.ts')];
   });
 
-  it('should register zooz-nodes-status', () => {
+  it('should register device-center', () => {
     require('@/index.ts');
-    expect(customElementsStub.callCount).to.be.equal(6);
-    expect(customElementsStub.getCall(0).args[0]).to.equal('zooz-hub-card');
-    expect(customElementsStub.getCall(1).args[0]).to.equal(
-      'zooz-hub-card-editor',
+    const calls = customElementsStub.getCalls();
+    const hasDeviceCenter = calls.some(
+      (call) => call.args[0] === 'zooz-device-center',
     );
+    expect(hasDeviceCenter).to.be.true;
   });
 
-  it('should register zooz-hub-card', () => {
+  it('should register zooz-hub-card components', () => {
     require('@/index.ts');
-    expect(customElementsStub.callCount).to.be.equal(6);
-    expect(customElementsStub.getCall(2).args[0]).to.equal('zooz-nodes-status');
-    expect(customElementsStub.getCall(3).args[0]).to.equal(
-      'zooz-nodes-status-editor',
-    );
+    const calls = customElementsStub.getCalls();
+    const hasHubCard = calls.some((call) => call.args[0] === 'zooz-hub-card');
+
+    expect(hasHubCard).to.be.true;
   });
 
-  it('should register dc-signal-sensor', () => {
+  it('should register zooz-nodes-status components', () => {
     require('@/index.ts');
-    expect(customElementsStub.callCount).to.be.equal(6);
-    expect(customElementsStub.getCall(4).args[0]).to.equal(
-      'zooz-dc-signal-sensor',
+    const calls = customElementsStub.getCalls();
+    const hasNodesStatus = calls.some(
+      (call) => call.args[0] === 'zooz-nodes-status',
     );
-    expect(customElementsStub.getCall(5).args[0]).to.equal(
-      'zooz-dc-signal-sensor-editor',
+    const hasNodesStatusEditor = calls.some(
+      (call) => call.args[0] === 'zooz-nodes-status-editor',
     );
+
+    expect(hasNodesStatus).to.be.true;
+    expect(hasNodesStatusEditor).to.be.true;
+  });
+
+  it('should register dc-signal-sensor components', () => {
+    require('@/index.ts');
+    const calls = customElementsStub.getCalls();
+    const hasSignalSensor = calls.some(
+      (call) => call.args[0] === 'zooz-dc-signal-sensor',
+    );
+    const hasSignalSensorEditor = calls.some(
+      (call) => call.args[0] === 'zooz-dc-signal-sensor-editor',
+    );
+
+    expect(hasSignalSensor).to.be.true;
+    expect(hasSignalSensorEditor).to.be.true;
   });
 
   it('should initialize window.customCards if undefined', () => {
@@ -80,28 +97,56 @@ describe('index.ts', () => {
   it('should add card configuration with all fields to window.customCards', () => {
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(3);
-    expect(window.customCards[0]).to.deep.equal({
-      type: 'zooz-hub-card',
-      name: 'Zooz Hub Info',
-      description: 'A card to summarize information about the hub.',
-      preview: true,
-      documentationURL: 'https://github.com/homeassistant-extras/zooz-card-set',
-    });
-    expect(window.customCards[1]).to.deep.equal({
-      type: 'zooz-nodes-status',
-      name: 'Zooz Nodes Status',
-      description: 'A card to summarize the status of all the Zooz nodes.',
-      preview: true,
-      documentationURL: 'https://github.com/homeassistant-extras/zooz-card-set',
-    });
-    expect(window.customCards[2]).to.deep.equal({
-      type: 'zooz-dc-signal-sensor',
-      name: 'ZEN55 LR - DC Signal Sensor',
-      description:
-        'A card to summarize the status of a ZEN55 DC Signal Sensor.',
-      preview: true,
-      documentationURL: 'https://github.com/homeassistant-extras/zooz-card-set',
+    // Check total count is correct
+    expect(window.customCards).to.have.lengthOf(4);
+
+    // Define the expected card configurations
+    const expectedCards = [
+      {
+        type: 'zooz-hub-card',
+        name: 'Zooz Hub Info',
+        description: 'A card to summarize information about the hub.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
+        type: 'zooz-nodes-status',
+        name: 'Zooz Nodes Status',
+        description: 'A card to summarize the status of all the Zooz nodes.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
+        type: 'zooz-dc-signal-sensor',
+        name: 'ZEN55 LR - DC Signal Sensor',
+        description:
+          'A card to summarize the status of a ZEN55 DC Signal Sensor.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
+        type: 'zooz-device-center',
+        name: 'Zooz Device Center',
+        description: 'A card to summarize all your devices in one place.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+    ];
+
+    // Check that each expected card exists in window.customCards
+    expectedCards.forEach((expectedCard) => {
+      const matchingCard = window.customCards.find(
+        (card: any) => card.type === expectedCard.type,
+      );
+
+      expect(
+        matchingCard,
+        `Card with type ${expectedCard.type} should exist`,
+      ).to.deep.equal(expectedCard);
     });
   });
 
@@ -116,7 +161,7 @@ describe('index.ts', () => {
 
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(4);
+    expect(window.customCards).to.have.lengthOf(5);
     expect(window.customCards[0]).to.deep.equal({
       type: 'existing-card',
       name: 'Existing Card',
@@ -127,8 +172,8 @@ describe('index.ts', () => {
     require('@/index.ts');
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(3);
-    expect(customElementsStub.callCount).to.equal(6);
+    expect(window.customCards).to.have.lengthOf(4);
+    expect(customElementsStub.callCount).to.equal(7);
   });
 
   it('should log the version with proper formatting', () => {

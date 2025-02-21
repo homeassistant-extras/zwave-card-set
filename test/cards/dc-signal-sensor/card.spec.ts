@@ -111,6 +111,17 @@ describe('DcSignalSensorCard', () => {
     });
   });
 
+  describe('config property', () => {
+    it('should set the configuration correctly', () => {
+      const config: Config = {
+        device_id: 'new_device_id',
+        title: 'New Title',
+      };
+      card.config = config;
+      expect((card as any)._config).to.equal(config);
+    });
+  });
+
   describe('getConfigElement', () => {
     it('should return correct editor element', () => {
       const editor = DcSignalSensorCard.getConfigElement();
@@ -121,6 +132,15 @@ describe('DcSignalSensorCard', () => {
   });
 
   describe('hass property setter', () => {
+    it('should not set sensor if no config', () => {
+      // Set hass property
+      card.setConfig(undefined as any as Config);
+      card.hass = mockHass;
+
+      // Check firmware state was set correctly
+      expect((card as any)._sensor).to.be.undefined;
+    });
+
     it('should identify and set the firmware state', () => {
       // Set up state
       mockHass.states['update.test_device_sensor_firmware'] = createState(

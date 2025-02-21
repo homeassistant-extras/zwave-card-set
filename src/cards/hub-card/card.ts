@@ -114,7 +114,7 @@ export class ZoozHubCard extends LitElement {
 
   // card configuration
   static getConfigElement() {
-    return document.createElement('zooz-hub-card-editor');
+    return document.createElement('zooz-basic-editor');
   }
 
   /**

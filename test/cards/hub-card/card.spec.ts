@@ -43,7 +43,7 @@ describe('ZoozHubCard', () => {
     describe('getConfigElement', () => {
       it('should return correct editor element', () => {
         const editor = ZoozHubCard.getConfigElement();
-        expect(editor.tagName.toLowerCase()).to.equal('zooz-hub-card-editor');
+        expect(editor.tagName.toLowerCase()).to.equal('zooz-basic-editor');
       });
     });
 

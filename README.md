@@ -35,6 +35,12 @@ This project brings a set of cards to display info about your Zooz devices. Many
 
 ## Cards
 
+### [Device Center](src/cards/device-center/README.md)
+
+See all your devices and their states and some controls if applicable in one place.
+
+// pic todo
+
 ### [Zooz Nodes Status Card](src/cards/node-states/README.md)
 
 Shows status and last seen time of all your nodes.
@@ -84,6 +90,7 @@ Add the cards to your dashboard using the UI editor or YAML.
 
 See the README files of the individual cards for configuration and detailed information.
 
+- [Device Center](src/cards/device-center/README.md)
 - [Zooz Nodes Status Card](src/cards/node-states/README.md)
 - [Zooz Hub Card](src/cards/hub-card/README.md)
 - Info Cards
@@ -99,7 +106,8 @@ Some cards may require the hub to be labeled with a "Hub" label:
 - [ ] **`Node cards`**: show info about different nodes.
 - [ ] **`Node status card sizing`**: make sizing dynamic, can't figure it out.
 - [ ] **`Themes`**: test default theme, etc.
-- [ ] **`Editors`**: make sure stub configs and previes are solid.
+- [ ] **`Editors`**: make sure stub configs and previews are solid.
+- [ ] **`Device Center`**: add docs and pics towards end.
 
 ## Contributing
 

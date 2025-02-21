@@ -3,11 +3,11 @@ import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant } from '@type/homeassistant';
 import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
-import type { Config } from './types';
+import type { Config } from '../cards/hub-card/types';
 
 const SCHEMA: HaFormSchema[] = [];
 
-export class ZoozHubCardEditor extends LitElement {
+export class ZoozBasicEditor extends LitElement {
   /**
    * Card configuration object
    */

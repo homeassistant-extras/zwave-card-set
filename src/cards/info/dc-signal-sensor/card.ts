@@ -45,12 +45,20 @@ export class DcSignalSensorCard extends LitElement {
     this._config = config;
   }
 
+  set config(config: Config) {
+    this.setConfig(config);
+  }
+
   /**
    * Updates the card's state when Home Assistant state changes
    * @param {HomeAssistant} hass - The Home Assistant instance
    */
   set hass(hass: HomeAssistant) {
     this._hass = hass;
+
+    if (!this._config) {
+      return;
+    }
 
     const sensor: Sensor = {};
 

@@ -20,6 +20,7 @@
     "baseUrl": ".",
     "paths": {
       "@z55/*": ["./src/cards/info/dc-signal-sensor/*"],
+      "@center/*": ["./src/cards/device-center/*"],
       "@hub-card/*": ["./src/cards/hub-card/*"],
       "@node-states/*": ["./src/cards/node-states/*"],
       "@common/*": ["./src/common/*"],

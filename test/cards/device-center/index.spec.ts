@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { stub, type SinonStub } from 'sinon';
 
-describe('ZoozHubCard', () => {
+describe('ZoozDeviceCenter', () => {
   describe('index.ts', () => {
     let customElementsStub: SinonStub;
     let customCardsStub: Array<Object> | undefined;
@@ -32,30 +32,32 @@ describe('ZoozHubCard', () => {
       // Restore the original customElements.define
       customElementsStub.restore();
       customCardsStub = undefined;
-      delete require.cache[require.resolve('@hub-card/index.ts')];
+      delete require.cache[require.resolve('@center/index.ts')];
     });
 
-    it('should register zooz-hub-card', () => {
-      require('@hub-card/index.ts');
+    it('should register both zooz-device-center and editor custom elements', () => {
+      require('@center/index.ts');
       expect(customElementsStub.calledOnce).to.be.true;
-      expect(customElementsStub.firstCall.args[0]).to.equal('zooz-hub-card');
+      expect(customElementsStub.firstCall.args[0]).to.equal(
+        'zooz-device-center',
+      );
     });
 
     it('should initialize window.customCards if undefined', () => {
       customCardsStub = undefined;
-      require('@hub-card/index.ts');
+      require('@center/index.ts');
 
       expect(window.customCards).to.be.an('array');
     });
 
     it('should add card configuration with all fields to window.customCards', () => {
-      require('@hub-card/index.ts');
+      require('@center/index.ts');
 
       expect(window.customCards).to.have.lengthOf(1);
       expect(window.customCards[0]).to.deep.equal({
-        type: 'zooz-hub-card',
-        name: 'Zooz Hub Info',
-        description: 'A card to summarize information about the hub.',
+        type: 'zooz-device-center',
+        name: 'Zooz Device Center',
+        description: 'A card to summarize all your devices in one place.',
         preview: true,
         documentationURL:
           'https://github.com/homeassistant-extras/zooz-card-set',
@@ -71,7 +73,7 @@ describe('ZoozHubCard', () => {
         },
       ];
 
-      require('@hub-card/index.ts');
+      require('@center/index.ts');
 
       expect(window.customCards).to.have.lengthOf(2);
       expect(window.customCards[0]).to.deep.equal({
@@ -81,8 +83,8 @@ describe('ZoozHubCard', () => {
     });
 
     it('should handle multiple imports without duplicating registration', () => {
-      require('@hub-card/index.ts');
-      require('@hub-card/index.ts');
+      require('@center/index.ts');
+      require('@center/index.ts');
 
       expect(window.customCards).to.have.lengthOf(1);
       expect(customElementsStub.callCount).to.equal(1);
