@@ -144,3 +144,24 @@ export const handleClickAction = (
     },
   };
 };
+
+/**
+ * Creates an action configuration that sets all interaction types to trigger the 'more-info' action
+ * for a specified entity.
+ *
+ * @param {string} entity_id - The ID of the entity to associate with the action.
+ * @returns {ActionConfigParams} An object containing entity ID and action configurations for tap,
+ *                               hold, and double tap interactions.
+ *
+ * @example
+ * // Create more-info actions for a light entity
+ * const lightActions = moreInfoAction('light.living_room');
+ */
+export const moreInfoAction = (entity_id: string): ActionConfigParams => {
+  return {
+    entity: entity_id,
+    tap_action: { action: 'more-info' },
+    hold_action: { action: 'more-info' },
+    double_tap_action: { action: 'more-info' },
+  };
+};

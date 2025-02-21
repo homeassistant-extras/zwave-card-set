@@ -1,15 +1,20 @@
+import * as actionHandlerModule from '@common/action-handler';
 import { ZoozNodesStatus } from '@node-states/card';
 import type { Config, NodeInfo } from '@node-states/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
+import type { ActionHandlerEvent } from '@type/action';
 import type { HomeAssistant } from '@type/homeassistant';
 import { expect } from 'chai';
 import { nothing } from 'lit';
+import { stub } from 'sinon';
 
 describe('ZoozNodesStatus', () => {
   describe('card.ts', () => {
     let card: ZoozNodesStatus;
     let mockHass: HomeAssistant;
     let mockConfig: Config;
+    let actionHandlerStub: sinon.SinonStub;
+    let handleClickActionStub: sinon.SinonStub;
 
     beforeEach(() => {
       // Create a new card instance for each test
@@ -27,12 +32,27 @@ describe('ZoozNodesStatus', () => {
         devices: {},
       };
 
+      // Setup stubs for action handlers
+      actionHandlerStub = stub(actionHandlerModule, 'actionHandler').returns({
+        bind: () => {},
+        handleAction: () => {},
+      });
+
+      handleClickActionStub = stub(
+        actionHandlerModule,
+        'handleClickAction',
+      ).returns({
+        handleEvent: (ev: ActionHandlerEvent): void => {},
+      });
+
       // Initialize the card
       card.setConfig(mockConfig);
     });
 
     afterEach(async () => {
       await fixtureCleanup();
+      actionHandlerStub.restore();
+      handleClickActionStub.restore();
     });
 
     describe('setConfig', () => {
@@ -879,6 +899,10 @@ describe('ZoozNodesStatus', () => {
         expect(nodeNames).to.not.include('Dead Device 2');
         expect(nodeNames).to.not.include('Live Device 2');
         expect(nodeNames).to.not.include('Sleeping Device 2');
+
+        // Verify action handlers are attached
+        expect(actionHandlerStub.called).to.be.true;
+        expect(handleClickActionStub.called).to.be.true;
       });
     });
 
@@ -918,6 +942,10 @@ describe('ZoozNodesStatus', () => {
 
         const stateDisplay = el.querySelector('state-display');
         expect(stateDisplay).to.exist;
+
+        // Verify action handlers are attached
+        expect(actionHandlerStub.called).to.be.true;
+        expect(handleClickActionStub.called).to.be.true;
       });
 
       it('should handle nodes without lastSeenState', async () => {

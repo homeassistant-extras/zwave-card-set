@@ -1,3 +1,8 @@
+import {
+  actionHandler,
+  handleClickAction,
+  moreInfoAction,
+} from '@common/action-handler';
 import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant } from '@type/homeassistant';
 import { getZoozNonHubs } from '@util/hass';
@@ -273,9 +278,14 @@ export class ZoozNodesStatus extends LitElement {
 
   _renderNode(node: NodeInfo): TemplateResult {
     const isCompact = this._config.features?.includes('compact');
+    const entity = moreInfoAction(node.statusState?.entity_id);
 
     return html`
-      <div class="node-item ${isCompact ? 'compact' : ''}">
+      <div
+        class="node-item ${isCompact ? 'compact' : ''}"
+        @action=${handleClickAction(this, entity)}
+        .actionHandler=${actionHandler(entity)}
+      >
         <div class="node-content">
           <div
             class="node-status-container"

@@ -391,7 +391,6 @@ describe('DcSignalSensorCard', () => {
       const titleElement = el.querySelector('.title');
       const iconElement = el.querySelector('ha-state-icon');
 
-      console.log(el);
       // Verify custom title and icon
       expect(titleElement?.textContent).to.equal('Custom Sensor Title');
       expect(iconElement).to.exist;
@@ -493,7 +492,6 @@ describe('DcSignalSensorCard', () => {
       // Verify the icon is set correctly
       const iconElement = el.querySelector('ha-state-icon');
       expect(iconElement).to.exist;
-      console.log(iconElement);
       expect((iconElement as any).icon).to.equal('mdi:custom-icon');
 
       // Verify action handlers are attached

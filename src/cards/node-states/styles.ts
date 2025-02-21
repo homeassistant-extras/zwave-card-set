@@ -43,6 +43,10 @@ export const styles = css`
     margin-bottom: 24px;
   }
 
+  .node-item {
+    cursor: pointer;
+  }
+
   .node-item.compact .node-content {
     flex-direction: row;
     text-align: left;

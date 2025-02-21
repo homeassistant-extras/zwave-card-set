@@ -1,4 +1,8 @@
-import { actionHandler, handleClickAction } from '@common/action-handler';
+import {
+  actionHandler,
+  handleClickAction,
+  moreInfoAction,
+} from '@common/action-handler';
 import type { ActionConfigParams } from '@type/action';
 import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant, State } from '@type/homeassistant';
@@ -221,12 +225,8 @@ export class DcSignalSensorCard extends LitElement {
       return nothing;
     }
 
-    const entity: ActionConfigParams = {
-      entity: state.entity_id,
-      tap_action: { action: 'more-info' },
-      hold_action: { action: 'more-info' },
-      double_tap_action: { action: 'more-info' },
-    };
+    const entity = moreInfoAction(state.entity_id);
+
     return html` <div
       class="${['icon', className].filter((c) => c !== undefined).join(' ')}"
       @action=${handleClickAction(this, entity)}
