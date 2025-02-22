@@ -16,6 +16,8 @@ export const styles = css`
   :host {
     --icon-color: rgba(var(--rgb-icon), 0.2);
     --background-color: rgba(var(--rgb-icon-background), 0.05);
+    --icon-size: 42px;
+    --icon-gap: 12px;
   }
 
   /* Icon container styling */
@@ -26,8 +28,8 @@ export const styles = css`
     position: relative;
     display: flex;
     justify-content: center;
-    width: 42px;
-    height: 42px;
+    width: var(--icon-size);
+    height: var(--icon-size);
     cursor: pointer;
   }
 
@@ -55,29 +57,39 @@ export const styles = css`
 
   .grid {
     display: grid;
-    grid-template-areas: 'firmware firmware firmware seen seen status . . e1 e2';
+    grid-template-columns: auto minmax(200px, 1fr) auto auto minmax(
+        calc(var(--icon-size) * 2 + var(--icon-gap)),
+        auto
+      );
+    grid-gap: 12px;
+    align-items: center;
   }
 
   .firmware {
-    grid-area: firmware;
     display: flex;
     gap: 20px;
+    grid-column: 1 / 3;
+  }
+
+  .firmware-info {
+    min-width: 0;
+    flex: 1;
   }
 
   .seen {
-    grid-area: seen;
+    grid-column: 3;
   }
 
   .status {
-    grid-area: status;
+    grid-column: 4;
   }
 
-  .e1 {
-    grid-area: e1;
-  }
-
-  .e2 {
-    grid-area: e2;
+  .entities {
+    grid-column: 5;
+    display: flex;
+    gap: var(--icon-gap);
+    justify-content: flex-end;
+    min-width: calc(var(--icon-size) * 2 + var(--icon-gap));
   }
 
   .firmware-info {
@@ -102,6 +114,9 @@ export const styles = css`
     font-size: 1.1rem;
     font-weight: 500;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .status-value {

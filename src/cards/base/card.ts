@@ -273,9 +273,12 @@ export abstract class BaseZoozCard extends LitElement {
           'status-label',
           'Status',
         )}
-        ${this._sensor.entities.map((entity, index) => {
-          return this._renderIcon(entity, `e${index + 1}`);
-        })}
+
+        <div class="entities">
+          ${this._sensor.entities.map((entity, index) =>
+            this._renderIcon(entity, `e${index + 1}`),
+          )}
+        </div>
       </ha-card>
     `;
   }
