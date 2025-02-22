@@ -1,12 +1,24 @@
+import type { Config as BaseConfig } from '@base/types';
 import type { Config } from '@hub-card/types';
 import type { HomeAssistant } from '@type/homeassistant';
 import { getZoozDevices } from '@util/hass';
-import type { Config as DcSignalSensorConfig } from '@z55/types';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
+import { literal, html as staticHTML } from 'lit/static-html.js';
 import { styles } from './styles';
 import type { Center } from './types';
 const equal = require('fast-deep-equal');
+
+const DEVICES_CARD_MAP = {
+  'ZEN55 LR': {
+    type: literal`zooz-dc-signal-sensor`,
+    title: 'ZEN55 LR Sensors',
+  },
+  ZEN52: {
+    type: literal`zooz-double-relay`,
+    title: 'ZEN52 Double Relay',
+  },
+};
 
 /**
  * Zooz Device Center Card
@@ -52,11 +64,15 @@ export class ZoozDeviceCenter extends LitElement {
   set hass(hass: HomeAssistant) {
     this._hass = hass;
 
-    const center: Center = {};
+    const center: Center = {
+      devices: {},
+    };
 
     const devices = getZoozDevices(hass);
 
-    center.zen55 = devices.filter((device) => device.model === 'ZEN55 LR');
+    Object.keys(DEVICES_CARD_MAP).forEach((key) => {
+      center.devices![key] = devices.filter((device) => device.model === key);
+    });
 
     if (!equal(center, this._center)) {
       this._center = center;
@@ -76,17 +92,18 @@ export class ZoozDeviceCenter extends LitElement {
     return html`<span>Zooz Hub</span>
       <zooz-hub-card .hass=${this._hass}></zooz-hub-card>
 
-      <div class="devices">
-        <span>Zooz ZEN55 LR Sensors</span>
-        ${this._center.zen55?.map((device) => {
-          const config: DcSignalSensorConfig = {
-            device_id: device.id,
-          };
-          return html`<zooz-dc-signal-sensor
-            .config=${config}
-            .hass=${this._hass}
-          ></zooz-dc-signal-sensor>`;
-        })}
-      </div>`;
+      ${Object.entries(DEVICES_CARD_MAP).map(
+        ([model, { type, title }]) => html`
+          <div class="devices">
+            <span>${title}</span>
+            ${this._center.devices?.[model]?.map((device) => {
+              const config: BaseConfig = {
+                device_id: device.id,
+              };
+              return staticHTML`<${type} .config=${config} .hass=${this._hass}></${type}>`;
+            })}
+          </div>
+        `,
+      )}`;
   }
 }

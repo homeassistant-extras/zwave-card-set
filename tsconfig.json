@@ -19,10 +19,12 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
+      "@z52/*": ["./src/cards/info/double-relay/*"],
       "@z55/*": ["./src/cards/info/dc-signal-sensor/*"],
       "@center/*": ["./src/cards/device-center/*"],
       "@hub-card/*": ["./src/cards/hub-card/*"],
       "@node-states/*": ["./src/cards/node-states/*"],
+      "@base/*": ["./src/cards/base/*"],
       "@common/*": ["./src/common/*"],
       "@type/*": ["./src/types/*"],
       "@test/*": ["./test/*"],

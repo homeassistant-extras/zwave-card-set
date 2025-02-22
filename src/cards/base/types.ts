@@ -14,6 +14,20 @@ export interface Config {
   icon?: string;
 }
 
+export interface DefaultConfig {
+  /** Optional display title for the device */
+  title: string;
+
+  /** Optional icon representing the device */
+  icon: string;
+
+  /** Entity suffixes for the device */
+  entitySuffixes: string[];
+
+  /** Model identifier for the device */
+  model: string;
+}
+
 /**
  * Represents the states of various sensors in a device.
  */
@@ -27,9 +41,6 @@ export interface Sensor {
   /** The status of the node (e.g., online/offline) */
   nodeStatusState?: State;
 
-  /** Indicates if smoke has been detected */
-  smokeDetectedState?: State;
-
-  /** Indicates if carbon monoxide has been detected */
-  carbonMonoxideDetectedState?: State;
+  /** The status of the entities */
+  entities: State[];
 }

@@ -31,6 +31,11 @@ export const styles = css`
     cursor: pointer;
   }
 
+  /* Remove background if no ha-state-icon */
+  .icon:not(:has(ha-state-icon)) {
+    background-color: inherit;
+  }
+
   /* State icon styling */
   .icon ha-state-icon {
     width: 50%;
@@ -50,7 +55,7 @@ export const styles = css`
 
   .grid {
     display: grid;
-    grid-template-areas: 'firmware firmware firmware seen seen status . . smoke co';
+    grid-template-areas: 'firmware firmware firmware seen seen status . . e1 e2';
   }
 
   .firmware {
@@ -67,12 +72,12 @@ export const styles = css`
     grid-area: status;
   }
 
-  .smoke {
-    grid-area: smoke;
+  .e1 {
+    grid-area: e1;
   }
 
-  .co {
-    grid-area: co;
+  .e2 {
+    grid-area: e2;
   }
 
   .firmware-info {

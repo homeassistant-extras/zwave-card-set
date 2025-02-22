@@ -38,6 +38,7 @@ describe('index.ts', () => {
     delete require.cache[require.resolve('@/index.ts')];
     delete require.cache[require.resolve('@node-states/index.ts')];
     delete require.cache[require.resolve('@hub-card/index.ts')];
+    delete require.cache[require.resolve('@z52/index.ts')];
     delete require.cache[require.resolve('@z55/index.ts')];
     delete require.cache[require.resolve('@center/index.ts')];
   });
@@ -79,6 +80,16 @@ describe('index.ts', () => {
     expect(hasSignalSensor).to.be.true;
   });
 
+  it('should register double-relay components', () => {
+    require('@/index.ts');
+    const calls = customElementsStub.getCalls();
+    const hasSignalSensor = calls.some(
+      (call) => call.args[0] === 'zooz-double-relay',
+    );
+
+    expect(hasSignalSensor).to.be.true;
+  });
+
   it('should initialize window.customCards if undefined', () => {
     customCardsStub = undefined;
     require('@/index.ts');
@@ -90,7 +101,7 @@ describe('index.ts', () => {
     require('@/index.ts');
 
     // Check total count is correct
-    expect(window.customCards).to.have.lengthOf(4);
+    expect(window.customCards).to.have.lengthOf(5);
 
     // Define the expected card configurations
     const expectedCards = [
@@ -127,6 +138,14 @@ describe('index.ts', () => {
         documentationURL:
           'https://github.com/homeassistant-extras/zooz-card-set',
       },
+      {
+        type: 'zooz-double-relay',
+        name: 'ZEN52 - Double Relay',
+        description: 'A card to summarize the status of a ZEN52 Double Relay.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
     ];
 
     // Check that each expected card exists in window.customCards
@@ -153,7 +172,7 @@ describe('index.ts', () => {
 
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(5);
+    expect(window.customCards).to.have.lengthOf(6);
     expect(window.customCards[0]).to.deep.equal({
       type: 'existing-card',
       name: 'Existing Card',
@@ -164,8 +183,8 @@ describe('index.ts', () => {
     require('@/index.ts');
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(4);
-    expect(customElementsStub.callCount).to.equal(5);
+    expect(window.customCards).to.have.lengthOf(5);
+    expect(customElementsStub.callCount).to.equal(6);
   });
 
   it('should log the version with proper formatting', () => {

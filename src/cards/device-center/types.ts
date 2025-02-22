@@ -12,5 +12,5 @@ export interface Center {
   /**
    * List of devices
    */
-  zen55?: Device[] | undefined;
+  devices?: Record<string, Device[]>;
 }

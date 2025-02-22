@@ -2,6 +2,7 @@ import '@center/index';
 import { ZoozBasicEditor } from '@common/basic-editor';
 import '@hub-card/index';
 import '@node-states/index';
+import '@z52/index';
 import '@z55/index';
 import { version } from '../package.json';
 
