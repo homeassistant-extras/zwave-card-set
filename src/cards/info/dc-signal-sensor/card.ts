@@ -13,7 +13,6 @@ export class DcSignalSensorCard extends BaseZoozCard {
   static override defaultConfig(): DefaultConfig {
     return {
       icon: 'mdi:fire',
-      title: 'Smoke Sensor',
       model: 'ZEN55 LR',
       entitySuffixes: ['_smoke_detected', '_carbon_monoxide_detected'],
     };

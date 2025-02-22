@@ -15,9 +15,6 @@ export interface Config {
 }
 
 export interface DefaultConfig {
-  /** Optional display title for the device */
-  title: string;
-
   /** Optional icon representing the device */
   icon: string;
 
@@ -32,6 +29,9 @@ export interface DefaultConfig {
  * Represents the states of various sensors in a device.
  */
 export interface Sensor {
+  /** The name of the device */
+  name?: string;
+
   /** The current firmware state of the device */
   firmwareState?: State;
 

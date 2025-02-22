@@ -13,7 +13,6 @@ describe('DoubleRelayCard', () => {
       const config = DoubleRelayCard.defaultConfig();
       expect(config).to.deep.equal({
         icon: 'mdi:ceiling-fan-light',
-        title: 'Double Relay',
         entitySuffixes: ['_relay', '_relay_2'],
         model: 'ZEN52',
       });

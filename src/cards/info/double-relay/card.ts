@@ -14,7 +14,6 @@ export class DoubleRelayCard extends BaseZoozCard {
     return {
       entitySuffixes: ['_relay', '_relay_2'],
       icon: 'mdi:ceiling-fan-light',
-      title: 'Double Relay',
       model: 'ZEN52',
     };
   }

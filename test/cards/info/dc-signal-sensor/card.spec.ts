@@ -14,7 +14,6 @@ describe('DcSignalSensorCard', () => {
         const config = DcSignalSensorCard.defaultConfig();
         expect(config).to.deep.equal({
           icon: 'mdi:fire',
-          title: 'Smoke Sensor',
           entitySuffixes: ['_smoke_detected', '_carbon_monoxide_detected'],
           model: 'ZEN55 LR',
         });

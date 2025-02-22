@@ -27,7 +27,6 @@ class TestZoozCard extends BaseZoozCard {
   static override defaultConfig() {
     return {
       icon: 'mdi:test',
-      title: 'Test Device',
       entitySuffixes: ['_test_1', '_test_2'],
       model: 'TEST-MODEL',
     };
@@ -110,7 +109,6 @@ describe('BaseZoozCard', () => {
         const defaultConfig = card.defaultConfig;
         expect(defaultConfig).to.deep.equal({
           icon: 'mdi:test',
-          title: 'Test Device',
           entitySuffixes: ['_test_1', '_test_2'],
           model: 'TEST-MODEL',
         });
@@ -164,6 +162,26 @@ describe('BaseZoozCard', () => {
 
         expect((card as any)._sensor.entities).to.have.lengthOf(2);
       });
+
+      it('should set sensor name from device name_by_user if available', () => {
+        // Setup device with name_by_user
+        mockHass.devices.test_device_id!.name_by_user = 'Custom Device Name';
+        mockHass.devices.test_device_id!.name = 'Default Device Name';
+
+        card.hass = mockHass;
+
+        expect((card as any)._sensor.name).to.equal('Custom Device Name');
+      });
+
+      it('should fallback to device name if name_by_user not available', () => {
+        // Setup device with only name
+        mockHass.devices.test_device_id!.name_by_user = undefined;
+        mockHass.devices.test_device_id!.name = 'Default Device Name';
+
+        card.hass = mockHass;
+
+        expect((card as any)._sensor.name).to.equal('Default Device Name');
+      });
     });
 
     describe('render method', () => {
@@ -188,7 +206,6 @@ describe('BaseZoozCard', () => {
         );
 
         card.hass = mockHass;
-        (card as any)._hass = mockHass;
 
         const el = await fixture(card.render() as TemplateResult);
 
@@ -208,12 +225,26 @@ describe('BaseZoozCard', () => {
         );
 
         card.hass = mockHass;
-        (card as any)._hass = mockHass;
 
         const el = await fixture(card.render() as TemplateResult);
 
         expect(el.querySelector('.e1')).to.exist;
         expect(el.querySelector('.e2')).to.exist;
+      });
+
+      it('should render title using sensor name', async () => {
+        mockHass.states['update.test_device_firmware'] = createState(
+          'update.test_device_firmware',
+          'available',
+        );
+        mockHass.devices.test_device_id!.name_by_user = 'Custom Device Name';
+        card.hass = mockHass;
+
+        const el = await fixture(card.render() as TemplateResult);
+
+        expect(el.querySelector('.title')?.textContent).to.equal(
+          'Custom Device Name',
+        );
       });
     });
 

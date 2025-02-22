@@ -40,7 +40,6 @@ export abstract class BaseZoozCard extends LitElement {
   static defaultConfig(): DefaultConfig {
     return {
       icon: 'mdi:home',
-      title: 'Zooz Device',
       entitySuffixes: [],
       model: '',
     };
@@ -108,6 +107,11 @@ export abstract class BaseZoozCard extends LitElement {
         }
       },
     );
+
+    const device = hass.devices[this._config.device_id];
+    if (device) {
+      sensor.name = device.name_by_user || device.name;
+    }
 
     if (!equal(sensor, this._sensor)) {
       this._sensor = sensor;
@@ -257,7 +261,7 @@ export abstract class BaseZoozCard extends LitElement {
             this._sensor.firmwareState,
             ['firmware-info'],
             'title',
-            this._config.title || this.defaultConfig.title,
+            this._sensor.name!,
           )}
         </div>
 
