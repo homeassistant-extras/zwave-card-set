@@ -36,11 +36,6 @@ describe('index.ts', () => {
     consoleInfoStub.restore();
     customCardsStub = undefined;
     delete require.cache[require.resolve('@/index.ts')];
-    delete require.cache[require.resolve('@node-states/index.ts')];
-    delete require.cache[require.resolve('@hub-card/index.ts')];
-    delete require.cache[require.resolve('@z52/index.ts')];
-    delete require.cache[require.resolve('@z55/index.ts')];
-    delete require.cache[require.resolve('@center/index.ts')];
   });
 
   it('should register device-center', () => {
@@ -124,8 +119,7 @@ describe('index.ts', () => {
       {
         type: 'zooz-dc-signal-sensor',
         name: 'ZEN55 LR - DC Signal Sensor',
-        description:
-          'A card to summarize the status of a ZEN55 DC Signal Sensor.',
+        description: 'A card to monitor a Zooz DC signal sensor device.',
         preview: true,
         documentationURL:
           'https://github.com/homeassistant-extras/zooz-card-set',
@@ -141,7 +135,8 @@ describe('index.ts', () => {
       {
         type: 'zooz-double-relay',
         name: 'ZEN52 - Double Relay',
-        description: 'A card to summarize the status of a ZEN52 Double Relay.',
+        description:
+          'A card to control and monitor a Zooz double relay device.',
         preview: true,
         documentationURL:
           'https://github.com/homeassistant-extras/zooz-card-set',
