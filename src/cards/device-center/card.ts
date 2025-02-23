@@ -9,6 +9,11 @@ import type { Center, Config } from './types';
 const equal = require('fast-deep-equal');
 
 const DEVICES_CARD_MAP = {
+  // todo add ZEN30 test
+  ZEN30: {
+    type: literal`zooz-double-switch`,
+    title: 'ZEN30 Double Switch',
+  },
   'ZEN55 LR': {
     type: literal`zooz-dc-signal-sensor`,
     title: 'ZEN55 LR Sensors',

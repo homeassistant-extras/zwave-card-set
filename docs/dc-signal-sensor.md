@@ -2,7 +2,7 @@
 
 A custom card for Home Assistant that displays the status of your ZEN55 DC Signal Sensor with a clean interface. This card provides an at-a-glance view of your smoke and carbon monoxide detector's status, firmware information, and last seen timestamp.
 
-![card](../../../../assets/cards/info/dc-signal-sensor/card.png)
+![card](../assets/cards/info/dc-signal-sensor/card.png)
 
 ## Features
 

@@ -2,7 +2,7 @@
 
 A custom card for Home Assistant that displays and controls your ZEN52 Double Relay device with a clean interface. This card provides an at-a-glance view of both relay states, device status, and allows for easy control of connected devices.
 
-![card](../../../../assets/cards/info/double-relay/card.png)
+![card](../assets/cards/info/double-relay/card.png)
 
 ## Features
 

@@ -14,15 +14,31 @@ export interface Config {
   icon?: string;
 }
 
-export interface DefaultConfig {
+/**
+ * Configuration for the base info card.
+ */
+export interface BaseCardConfig {
+  /** The static configuration */
+  static: StaticCardConfig;
+
+  /** The instance configuration */
+  instance: InstanceCardConfig;
+}
+
+/**
+ * Configuration object for a basic Zooz card.
+ */
+export interface StaticCardConfig {
+  /** Model identifier for the device */
+  model: string;
+}
+
+export interface InstanceCardConfig {
   /** Optional icon representing the device */
   icon: string;
 
   /** Entity domains for the device */
   entityDomains: string[];
-
-  /** Model identifier for the device */
-  model: string;
 }
 
 /**

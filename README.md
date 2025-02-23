@@ -55,11 +55,19 @@ Shows info about the Zooz Hub.
 
 ### Info Cards
 
-#### [ZEN52 - Double Relay](src/cards/info/double-relay/README.md)
+#### [ZEN30 - Double Switch](docs/double-switch.md)
 
-Commonly used for light/fan combos.
+Commonly used for light/fan switches.
 
-#### [ZEN55 LR - DC Signal Sensor](src/cards/info/dc-signal-sensor/README.md)
+![card](assets/cards/info/double-switch/card.png)
+
+#### [ZEN52 - Double Relay](docs/double-relay.md)
+
+![card](assets/cards/info/double-relay/card.png)
+
+Commonly used for light/fan in wall.
+
+#### [ZEN55 LR - DC Signal Sensor](docs/dc-signal-sensor.md)
 
 Commonly used for smoke sensor detection
 
@@ -100,8 +108,9 @@ See the README files of the individual cards for configuration and detailed info
 - [Zooz Nodes Status Card](src/cards/node-states/README.md)
 - [Zooz Hub Card](src/cards/hub-card/README.md)
 - Info Cards
-  - [ZEN52 - Double Relay](src/cards/info/double-relay/README.md)
-  - [ZEN55 LR - DC Signal Sensor](src/cards/info/dc-signal-sensor/README.md)
+  - [ZEN30 - Double Switch](docs/double-switch.md)
+  - [ZEN52 - Double Relay](docs/double-relay.md)
+  - [ZEN55 LR - DC Signal Sensor](docs/dc-signal-sensor.md)
 
 Some cards may require the hub to be labeled with a "Hub" label:
 
@@ -115,9 +124,16 @@ These are tested, others may work.
 
 - ZST39 LR
 
-### Devices
+### Switches
+
+- ZEN30
+
+### Relays
 
 - ZEN52
+
+### Sensors
+
 - ZEN55 LR
 
 ## Project Roadmap

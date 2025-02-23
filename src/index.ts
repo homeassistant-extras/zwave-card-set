@@ -1,11 +1,10 @@
+import { BaseZoozCard } from '@base/card';
+import type { BaseCardConfig, StaticCardConfig } from '@base/types';
 import { ZoozDeviceCenter } from '@center/card';
 import { ZoozBasicEditor } from '@common/basic-editor';
 import { ZoozHubCard } from '@hub-card/card';
 import { ZoozNodesStatus } from '@node-states/card';
-import { DoubleRelayCard } from '@z52/card';
-import { DcSignalSensorCard } from '@z55/card';
 import { version } from '../package.json';
-import { DoubleSwitchCard } from './cards/info/double-switch/card';
 
 interface CardConfig {
   element: CustomElementConstructor;
@@ -14,7 +13,39 @@ interface CardConfig {
   description: string;
 }
 
-const CARDS: CardConfig[] = [
+// Device-specific card configurations
+const CARD_CONFIGS: Record<string, BaseCardConfig> = {
+  'zooz-double-relay': {
+    static: {
+      model: 'ZEN52',
+    },
+    instance: {
+      icon: 'mdi:lightbulb-on-outline',
+      entityDomains: ['switch'],
+    },
+  },
+  'zooz-dc-signal-sensor': {
+    static: {
+      model: 'ZEN55 LR',
+    },
+    instance: {
+      icon: 'mdi:fire',
+      entityDomains: ['binary_sensor'],
+    },
+  },
+  'zooz-double-switch': {
+    static: {
+      model: 'ZEN30',
+    },
+    instance: {
+      icon: 'mdi:ceiling-light-multiple-outline',
+      entityDomains: ['light', 'switch'],
+    },
+  },
+};
+
+// Base cards that aren't device-specific
+const BASE_CARDS: CardConfig[] = [
   {
     element: ZoozDeviceCenter,
     type: 'zooz-device-center',
@@ -33,32 +64,45 @@ const CARDS: CardConfig[] = [
     name: 'Zooz Nodes Status',
     description: 'A card to summarize the status of all the Zooz nodes.',
   },
+];
+
+// Device-specific cards using BaseZoozCard
+const INFO_CARDS: CardConfig[] = [
   {
-    element: DoubleRelayCard,
     type: 'zooz-double-relay',
     name: 'ZEN52 - Double Relay',
     description: 'A card to control and monitor a Zooz double relay device.',
   },
   {
-    element: DcSignalSensorCard,
     type: 'zooz-dc-signal-sensor',
     name: 'ZEN55 LR - DC Signal Sensor',
     description: 'A card to monitor a Zooz DC signal sensor device.',
   },
   {
-    element: DoubleSwitchCard,
     type: 'zooz-double-switch',
     name: 'ZEN30 - Double Switch',
     description: 'A card to monitor a Zooz double switch device.',
   },
-];
+].map((card) => ({
+  ...card,
+  element: class extends BaseZoozCard {
+    constructor() {
+      super();
+      const config: BaseCardConfig = CARD_CONFIGS[card.type]!;
+      this.instanceCardConfig = config.instance;
+    }
+
+    protected static override staticCardConfig: StaticCardConfig =
+      CARD_CONFIGS[card.type]!.static;
+  },
+}));
 
 // Register the basic editor
 customElements.define('zooz-basic-editor', ZoozBasicEditor);
 window.customCards = window.customCards || [];
 
 // Register all cards
-CARDS.forEach((card) => {
+[...BASE_CARDS, ...INFO_CARDS].forEach((card) => {
   // Register the custom element
   customElements.define(card.type, card.element);
 

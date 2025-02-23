@@ -38,6 +38,71 @@ describe('index.ts', () => {
     delete require.cache[require.resolve('@/index.ts')];
   });
 
+  describe('card configuration', () => {
+    it('should properly configure ZEN52 double relay card', () => {
+      require('@/index.ts');
+
+      // Get the double relay card registration
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-double-relay');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      // Check static config
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZEN52',
+      });
+
+      // Check instance config
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:lightbulb-on-outline',
+        entityDomains: ['switch'],
+      });
+    });
+
+    it('should properly configure ZEN55 DC signal sensor card', () => {
+      require('@/index.ts');
+
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-dc-signal-sensor');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZEN55 LR',
+      });
+
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:fire',
+        entityDomains: ['binary_sensor'],
+      });
+    });
+
+    it('should properly configure ZEN30 double switch card', () => {
+      require('@/index.ts');
+
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-double-switch');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZEN30',
+      });
+
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:ceiling-light-multiple-outline',
+        entityDomains: ['light', 'switch'],
+      });
+    });
+  });
+
   it('should register device-center', () => {
     require('@/index.ts');
     const calls = customElementsStub.getCalls();

@@ -1,5 +1,5 @@
 import { BaseZoozCard } from '@base/card';
-import type { Config } from '@base/types';
+import type { Config, InstanceCardConfig, StaticCardConfig } from '@base/types';
 import * as actionHandlerModule from '@common/action-handler';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import type { ActionHandlerEvent } from '@type/action';
@@ -22,15 +22,25 @@ const createState = (
   };
 };
 
-// Test implementation of BaseZoozCard for testing abstract class
+// Test implementation of BaseZoozCard
 class TestZoozCard extends BaseZoozCard {
-  static override defaultConfig() {
-    return {
+  constructor() {
+    super();
+    this.instanceCardConfig = {
       icon: 'mdi:test',
       entityDomains: ['sensor', 'switch'],
-      model: 'TEST-MODEL',
     };
+
+    this.myInstanceConfig = this.instanceCardConfig;
+    this.myStaticCardConfig = TestZoozCard.staticCardConfig;
   }
+
+  myInstanceConfig: InstanceCardConfig;
+  myStaticCardConfig: StaticCardConfig;
+
+  static override staticCardConfig: StaticCardConfig = {
+    model: 'TEST-MODEL',
+  };
 }
 
 describe('BaseZoozCard', () => {
@@ -111,12 +121,9 @@ describe('BaseZoozCard', () => {
   });
 
   describe('card.ts', () => {
-    describe('defaultConfig', () => {
-      it('should initialize with correct default config', () => {
-        const defaultConfig = card.defaultConfig;
-        expect(defaultConfig).to.deep.equal({
-          entityDomains: ['sensor', 'switch'],
-          icon: 'mdi:test',
+    describe('cardConfig', () => {
+      it('should have correct cardConfig', () => {
+        expect(card.myStaticCardConfig).to.deep.equal({
           model: 'TEST-MODEL',
         });
       });
@@ -171,7 +178,6 @@ describe('BaseZoozCard', () => {
       });
 
       it('should set sensor name from device name_by_user if available', () => {
-        // Setup device with name_by_user
         mockHass.devices.test_device_id!.name_by_user = 'Custom Device Name';
         mockHass.devices.test_device_id!.name = 'Default Device Name';
 
@@ -181,7 +187,6 @@ describe('BaseZoozCard', () => {
       });
 
       it('should fallback to device name if name_by_user not available', () => {
-        // Setup device with only name
         mockHass.devices.test_device_id!.name_by_user = undefined;
         mockHass.devices.test_device_id!.name = 'Default Device Name';
 
@@ -256,6 +261,19 @@ describe('BaseZoozCard', () => {
     });
 
     describe('configuration', () => {
+      it('should have correct static configuration', () => {
+        expect(TestZoozCard.staticCardConfig).to.deep.equal({
+          model: 'TEST-MODEL',
+        });
+      });
+
+      it('should have correct instance configuration', () => {
+        expect(card.myInstanceConfig).to.deep.equal({
+          icon: 'mdi:test',
+          entityDomains: ['sensor', 'switch'],
+        });
+      });
+
       it('should get config element with correct schema', () => {
         const editor = TestZoozCard.getConfigElement();
         expect(editor.tagName.toLowerCase()).to.equal('zooz-basic-editor');
@@ -297,7 +315,6 @@ describe('BaseZoozCard', () => {
 
     describe('_renderIcon method', () => {
       it('should use toggleAction for switch entities', async () => {
-        // Create a switch state
         mockHass.states['switch.test_device_test_1'] = createState(
           'switch.test_device_test_1',
           'on',
@@ -305,10 +322,8 @@ describe('BaseZoozCard', () => {
 
         card.hass = mockHass;
 
-        // Get the rendered element
         await fixture(card.render() as TemplateResult);
 
-        // Verify that toggleAction was used by checking the action handler
         expect(
           handleClickActionStub.calledWith(
             match.any,
@@ -323,7 +338,6 @@ describe('BaseZoozCard', () => {
       });
 
       it('should use moreInfoAction for non-switch entities', async () => {
-        // Create a sensor state
         mockHass.states['sensor.test_device_test_1'] = createState(
           'sensor.test_device_test_1',
           'active',
@@ -331,10 +345,8 @@ describe('BaseZoozCard', () => {
 
         card.hass = mockHass;
 
-        // Get the rendered element
         await fixture(card.render() as TemplateResult);
 
-        // Verify that moreInfoAction was used by checking the action handler
         expect(
           handleClickActionStub.calledWith(
             match.any,
@@ -349,7 +361,6 @@ describe('BaseZoozCard', () => {
       });
 
       it('should apply entity styles to icon', async () => {
-        // Create a state with known style properties
         mockHass.states['switch.test_device_test_1'] = createState(
           'switch.test_device_test_1',
           'on',
@@ -358,13 +369,10 @@ describe('BaseZoozCard', () => {
 
         card.hass = mockHass;
 
-        // Get the rendered element
         const el = await fixture(card.render() as TemplateResult);
 
-        // Find the icon element
         const iconElement = el.querySelector('.icon.e1');
 
-        // Verify styles were applied
         expect(
           (iconElement as any)?.style.getPropertyValue('--icon-color'),
         ).to.include('blue');
@@ -377,7 +385,6 @@ describe('BaseZoozCard', () => {
         const result = (card as any)._renderIcon(undefined);
         const el = await fixture(result);
 
-        // Should render an empty div with just the icon class
         expect(el.tagName.toLowerCase()).to.equal('div');
         expect(el.classList.contains('icon')).to.be.true;
         expect(el.children.length).to.equal(0);

@@ -10,7 +10,12 @@ import { getEntityIconStyles } from '@util/styles';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
-import type { Config, DefaultConfig, Sensor } from './types';
+import type {
+  Config,
+  InstanceCardConfig,
+  Sensor,
+  StaticCardConfig,
+} from './types';
 const equal = require('fast-deep-equal');
 
 /**
@@ -37,29 +42,16 @@ export abstract class BaseZoozCard extends LitElement {
   protected _hass!: HomeAssistant;
 
   /**
-   * Entity suffix for the device
+   * Configurtation for dynamic cards.
    */
-  static defaultConfig(): DefaultConfig {
-    return {
-      icon: 'mdi:home',
-      entityDomains: [],
-      model: '',
-    };
-  }
-  defaultConfig!: DefaultConfig;
+  protected static staticCardConfig: StaticCardConfig;
+  protected instanceCardConfig!: InstanceCardConfig;
 
   /**
    * Returns the component's styles
    */
   static override get styles(): CSSResult {
     return styles;
-  }
-
-  constructor() {
-    super();
-    this.defaultConfig = (
-      this.constructor as typeof BaseZoozCard
-    ).defaultConfig(); // Allows subclass to define different '.info()' method.
   }
 
   /**
@@ -92,7 +84,7 @@ export abstract class BaseZoozCard extends LitElement {
     processDeviceEntities(
       hass,
       this._config.device_id,
-      [...this.defaultConfig.entityDomains, 'sensor', 'update'],
+      [...this.instanceCardConfig.entityDomains, 'sensor', 'update'],
       (entity, state) => {
         switch (entity.entity_category) {
           case 'config':
@@ -135,12 +127,12 @@ export abstract class BaseZoozCard extends LitElement {
           device: {
             filter: {
               manufacturer: 'Zooz',
-              model: this.defaultConfig().model,
+              model: this.staticCardConfig.model,
             },
           },
         },
         required: true,
-        label: `${this.defaultConfig().model} Device`,
+        label: `${this.staticCardConfig.model} Device`,
       },
       {
         name: 'title',
@@ -170,7 +162,7 @@ export abstract class BaseZoozCard extends LitElement {
    * @param {HomeAssistant} hass - The Home Assistant instance
    */
   public static async getStubConfig(hass: HomeAssistant): Promise<Config> {
-    const devices = getZoozModels(hass, this.defaultConfig().model);
+    const devices = getZoozModels(hass, this.staticCardConfig.model);
     if (!devices.length) {
       return {
         device_id: '',
@@ -265,7 +257,7 @@ export abstract class BaseZoozCard extends LitElement {
           ${this._renderIcon(
             this._sensor.firmwareState,
             undefined,
-            this._config.icon || this.defaultConfig.icon,
+            this._config.icon || this.instanceCardConfig.icon,
           )}
           ${this._renderStateDisplay(
             this._sensor.firmwareState,
