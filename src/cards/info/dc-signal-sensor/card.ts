@@ -12,9 +12,9 @@ export class DcSignalSensorCard extends BaseZoozCard {
    */
   static override defaultConfig(): DefaultConfig {
     return {
+      entityDomains: ['binary_sensor'],
       icon: 'mdi:fire',
       model: 'ZEN55 LR',
-      entitySuffixes: ['_smoke_detected', '_carbon_monoxide_detected'],
     };
   }
 }

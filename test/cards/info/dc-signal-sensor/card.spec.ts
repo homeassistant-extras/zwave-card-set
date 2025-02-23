@@ -2,19 +2,13 @@ import { DcSignalSensorCard } from '@z55/card';
 import { expect } from 'chai';
 
 describe('DcSignalSensorCard', () => {
-  let card: DcSignalSensorCard;
-
-  beforeEach(() => {
-    card = new DcSignalSensorCard();
-  });
-
   describe('card.ts', () => {
     describe('defaultConfig', () => {
       it('should have correct default configuration', () => {
         const config = DcSignalSensorCard.defaultConfig();
         expect(config).to.deep.equal({
+          entityDomains: ['binary_sensor'],
           icon: 'mdi:fire',
-          entitySuffixes: ['_smoke_detected', '_carbon_monoxide_detected'],
           model: 'ZEN55 LR',
         });
       });

@@ -96,10 +96,18 @@ describe('index.ts', () => {
     require('@/index.ts');
 
     // Check total count is correct
-    expect(window.customCards).to.have.lengthOf(5);
+    expect(window.customCards).to.have.lengthOf(6);
 
     // Define the expected card configurations
     const expectedCards = [
+      {
+        type: 'zooz-device-center',
+        name: 'Zooz Device Center',
+        description: 'A card to summarize all your devices in one place.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
       {
         type: 'zooz-hub-card',
         name: 'Zooz Hub Info',
@@ -117,22 +125,6 @@ describe('index.ts', () => {
           'https://github.com/homeassistant-extras/zooz-card-set',
       },
       {
-        type: 'zooz-dc-signal-sensor',
-        name: 'ZEN55 LR - DC Signal Sensor',
-        description: 'A card to monitor a Zooz DC signal sensor device.',
-        preview: true,
-        documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
-      },
-      {
-        type: 'zooz-device-center',
-        name: 'Zooz Device Center',
-        description: 'A card to summarize all your devices in one place.',
-        preview: true,
-        documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
-      },
-      {
         type: 'zooz-double-relay',
         name: 'ZEN52 - Double Relay',
         description:
@@ -141,19 +133,26 @@ describe('index.ts', () => {
         documentationURL:
           'https://github.com/homeassistant-extras/zooz-card-set',
       },
+      {
+        type: 'zooz-dc-signal-sensor',
+        name: 'ZEN55 LR - DC Signal Sensor',
+        description: 'A card to monitor a Zooz DC signal sensor device.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
+        type: 'zooz-double-switch',
+        name: 'ZEN30 - Double Switch',
+        description: 'A card to monitor a Zooz double switch device.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
     ];
 
     // Check that each expected card exists in window.customCards
-    expectedCards.forEach((expectedCard) => {
-      const matchingCard = window.customCards.find(
-        (card: any) => card.type === expectedCard.type,
-      );
-
-      expect(
-        matchingCard,
-        `Card with type ${expectedCard.type} should exist`,
-      ).to.deep.equal(expectedCard);
-    });
+    expect(window.customCards).to.deep.equal(expectedCards);
   });
 
   it('should preserve existing cards when adding new card', () => {
@@ -167,7 +166,7 @@ describe('index.ts', () => {
 
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(6);
+    expect(window.customCards).to.have.lengthOf(7);
     expect(window.customCards[0]).to.deep.equal({
       type: 'existing-card',
       name: 'Existing Card',
@@ -178,8 +177,8 @@ describe('index.ts', () => {
     require('@/index.ts');
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(5);
-    expect(customElementsStub.callCount).to.equal(6);
+    expect(window.customCards).to.have.lengthOf(6);
+    expect(customElementsStub.callCount).to.equal(7);
   });
 
   it('should log the version with proper formatting', () => {

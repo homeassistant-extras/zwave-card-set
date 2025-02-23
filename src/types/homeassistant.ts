@@ -55,6 +55,9 @@ export type Entity = {
 
   /** ID of the device this entity belongs to */
   device_id: string;
+
+  /** Categorey the entity shows on the device */
+  entity_category?: string;
 };
 
 /**

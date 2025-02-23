@@ -5,6 +5,7 @@ import { ZoozNodesStatus } from '@node-states/card';
 import { DoubleRelayCard } from '@z52/card';
 import { DcSignalSensorCard } from '@z55/card';
 import { version } from '../package.json';
+import { DoubleSwitchCard } from './cards/info/double-switch/card';
 
 interface CardConfig {
   element: CustomElementConstructor;
@@ -43,6 +44,12 @@ const CARDS: CardConfig[] = [
     type: 'zooz-dc-signal-sensor',
     name: 'ZEN55 LR - DC Signal Sensor',
     description: 'A card to monitor a Zooz DC signal sensor device.',
+  },
+  {
+    element: DoubleSwitchCard,
+    type: 'zooz-double-switch',
+    name: 'ZEN30 - Double Switch',
+    description: 'A card to monitor a Zooz double switch device.',
   },
 ];
 

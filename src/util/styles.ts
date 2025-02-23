@@ -101,8 +101,9 @@ const activeColorFromDomain = (domain: string | undefined) => {
     case 'device_tracker':
       return 'purple';
 
-    // Weather
+    // Weather & Update
     case 'weather':
+    case 'update':
       return 'orange';
 
     // Vacuum

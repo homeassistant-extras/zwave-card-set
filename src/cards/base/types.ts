@@ -18,8 +18,8 @@ export interface DefaultConfig {
   /** Optional icon representing the device */
   icon: string;
 
-  /** Entity suffixes for the device */
-  entitySuffixes: string[];
+  /** Entity domains for the device */
+  entityDomains: string[];
 
   /** Model identifier for the device */
   model: string;

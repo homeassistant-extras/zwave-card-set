@@ -42,7 +42,7 @@ export abstract class BaseZoozCard extends LitElement {
   static defaultConfig(): DefaultConfig {
     return {
       icon: 'mdi:home',
-      entitySuffixes: [],
+      entityDomains: [],
       model: '',
     };
   }
@@ -92,20 +92,24 @@ export abstract class BaseZoozCard extends LitElement {
     processDeviceEntities(
       hass,
       this._config.device_id,
-      ['switch', 'binary_sensor', 'sensor', 'update'],
+      [...this.defaultConfig.entityDomains, 'sensor', 'update'],
       (entity, state) => {
-        if (entity.entity_id.endsWith('_firmware')) {
-          sensor.firmwareState = state;
-        } else if (entity.entity_id.endsWith('_last_seen')) {
-          sensor.lastSeenState = state;
-        } else if (entity.entity_id.endsWith('_node_status')) {
-          sensor.nodeStatusState = state;
-        } else if (
-          this.defaultConfig.entitySuffixes.some((suffix) =>
-            entity.entity_id.endsWith(suffix),
-          )
-        ) {
-          sensor.entities.push(state);
+        switch (entity.entity_category) {
+          case 'config':
+            if (entity.entity_id.endsWith('_firmware')) {
+              sensor.firmwareState = state;
+            }
+            break;
+          case 'diagnostic':
+            if (entity.entity_id.endsWith('_last_seen')) {
+              sensor.lastSeenState = state;
+            } else if (entity.entity_id.endsWith('_node_status')) {
+              sensor.nodeStatusState = state;
+            }
+            break;
+          default:
+            sensor.entities.push(state);
+            break;
         }
       },
     );
@@ -227,17 +231,16 @@ export abstract class BaseZoozCard extends LitElement {
 
     const domain = state.entity_id.split('.')[0]!;
 
-    const entity =
-      domain === 'switch'
-        ? toggleAction(state.entity_id)
-        : moreInfoAction(state.entity_id);
+    const params = ['switch', 'light'].includes(domain)
+      ? toggleAction(state.entity_id)
+      : moreInfoAction(state.entity_id);
     const styles = getEntityIconStyles(state);
 
     return html` <div
       style="${styles}"
       class="${classes}"
-      @action=${handleClickAction(this, entity)}
-      .actionHandler=${actionHandler(entity)}
+      @action=${handleClickAction(this, params)}
+      .actionHandler=${actionHandler(params)}
     >
       <ha-state-icon
         .hass=${this._hass}

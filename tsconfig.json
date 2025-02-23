@@ -19,6 +19,7 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
+      "@z30/*": ["./src/cards/info/double-switch/*"],
       "@z52/*": ["./src/cards/info/double-relay/*"],
       "@z55/*": ["./src/cards/info/dc-signal-sensor/*"],
       "@center/*": ["./src/cards/device-center/*"],

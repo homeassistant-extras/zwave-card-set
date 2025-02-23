@@ -27,7 +27,7 @@ class TestZoozCard extends BaseZoozCard {
   static override defaultConfig() {
     return {
       icon: 'mdi:test',
-      entitySuffixes: ['_test_1', '_test_2'],
+      entityDomains: ['sensor', 'switch'],
       model: 'TEST-MODEL',
     };
   }
@@ -67,14 +67,17 @@ describe('BaseZoozCard', () => {
         'update.test_device_firmware': {
           entity_id: 'update.test_device_firmware',
           device_id: 'test_device_id',
+          entity_category: 'config',
         },
         'sensor.test_device_last_seen': {
           entity_id: 'sensor.test_device_last_seen',
           device_id: 'test_device_id',
+          entity_category: 'diagnostic',
         },
         'sensor.test_device_node_status': {
           entity_id: 'sensor.test_device_node_status',
           device_id: 'test_device_id',
+          entity_category: 'diagnostic',
         },
         'sensor.test_device_test_1': {
           entity_id: 'sensor.test_device_test_1',
@@ -112,8 +115,8 @@ describe('BaseZoozCard', () => {
       it('should initialize with correct default config', () => {
         const defaultConfig = card.defaultConfig;
         expect(defaultConfig).to.deep.equal({
+          entityDomains: ['sensor', 'switch'],
           icon: 'mdi:test',
-          entitySuffixes: ['_test_1', '_test_2'],
           model: 'TEST-MODEL',
         });
       });
