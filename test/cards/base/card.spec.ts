@@ -7,7 +7,7 @@ import type { HomeAssistant, State } from '@type/homeassistant';
 import * as hassUtils from '@util/hass';
 import { expect } from 'chai';
 import { nothing, type TemplateResult } from 'lit';
-import { stub } from 'sinon';
+import { match, stub } from 'sinon';
 
 // Helper function to create state objects for testing
 const createState = (
@@ -82,6 +82,10 @@ describe('BaseZoozCard', () => {
         },
         'sensor.test_device_test_2': {
           entity_id: 'sensor.test_device_test_2',
+          device_id: 'test_device_id',
+        },
+        'switch.test_device_test_1': {
+          entity_id: 'switch.test_device_test_1',
           device_id: 'test_device_id',
         },
       },
@@ -285,6 +289,113 @@ describe('BaseZoozCard', () => {
         expect(config).to.deep.equal({ device_id: 'device_123' });
 
         getZoozModelsStub.restore();
+      });
+    });
+
+    describe('_renderIcon method', () => {
+      it('should use toggleAction for switch entities', async () => {
+        // Create a switch state
+        mockHass.states['switch.test_device_test_1'] = createState(
+          'switch.test_device_test_1',
+          'on',
+        );
+
+        card.hass = mockHass;
+
+        // Get the rendered element
+        await fixture(card.render() as TemplateResult);
+
+        // Verify that toggleAction was used by checking the action handler
+        expect(
+          handleClickActionStub.calledWith(
+            match.any,
+            match((config: any) => {
+              return (
+                config.tap_action?.action === 'toggle' &&
+                config.entity === 'switch.test_device_test_1'
+              );
+            }),
+          ),
+        ).to.be.true;
+      });
+
+      it('should use moreInfoAction for non-switch entities', async () => {
+        // Create a sensor state
+        mockHass.states['sensor.test_device_test_1'] = createState(
+          'sensor.test_device_test_1',
+          'active',
+        );
+
+        card.hass = mockHass;
+
+        // Get the rendered element
+        await fixture(card.render() as TemplateResult);
+
+        // Verify that moreInfoAction was used by checking the action handler
+        expect(
+          handleClickActionStub.calledWith(
+            match.any,
+            match((config: any) => {
+              return (
+                config.tap_action?.action === 'more-info' &&
+                config.entity === 'sensor.test_device_test_1'
+              );
+            }),
+          ),
+        ).to.be.true;
+      });
+
+      it('should apply entity styles to icon', async () => {
+        // Create a state with known style properties
+        mockHass.states['switch.test_device_test_1'] = createState(
+          'switch.test_device_test_1',
+          'on',
+          { on_color: 'blue' },
+        );
+
+        card.hass = mockHass;
+
+        // Get the rendered element
+        const el = await fixture(card.render() as TemplateResult);
+
+        // Find the icon element
+        const iconElement = el.querySelector('.icon.e1');
+
+        // Verify styles were applied
+        expect(
+          (iconElement as any)?.style.getPropertyValue('--icon-color'),
+        ).to.include('blue');
+        expect(
+          (iconElement as any)?.style.getPropertyValue('--background-color'),
+        ).to.exist;
+      });
+
+      it('should handle undefined state gracefully', async () => {
+        const result = (card as any)._renderIcon(undefined);
+        const el = await fixture(result);
+
+        // Should render an empty div with just the icon class
+        expect(el.tagName.toLowerCase()).to.equal('div');
+        expect(el.classList.contains('icon')).to.be.true;
+        expect(el.children.length).to.equal(0);
+      });
+
+      it('should apply custom class name when provided', async () => {
+        mockHass.states['sensor.test_device_test_1'] = createState(
+          'sensor.test_device_test_1',
+          'active',
+        );
+
+        card.hass = mockHass;
+
+        const result = (card as any)._renderIcon(
+          mockHass.states['sensor.test_device_test_1'],
+          'custom-class',
+        );
+        const el = await fixture(result);
+
+        expect(el.classList.contains('custom-class')).to.be.true;
+        expect(el.classList.contains('icon')).to.be.true;
       });
     });
   });

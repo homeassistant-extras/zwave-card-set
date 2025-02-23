@@ -165,3 +165,24 @@ export const moreInfoAction = (entity_id: string): ActionConfigParams => {
     double_tap_action: { action: 'more-info' },
   };
 };
+
+/**
+ * Creates an action configuration that sets tap action to 'toggle' and other interactions
+ * to trigger the 'more-info' action for a specified entity.
+ *
+ * @param {string} entity_id - The ID of the entity to associate with the action.
+ * @returns {ActionConfigParams} An object containing entity ID and action configurations where
+ *                              tap triggers toggle, while hold and double tap show more info.
+ *
+ * @example
+ * // Create toggle action for a light entity
+ * const lightActions = toggleAction('light.living_room');
+ */
+export const toggleAction = (entity_id: string): ActionConfigParams => {
+  return {
+    entity: entity_id,
+    tap_action: { action: 'toggle' },
+    hold_action: { action: 'more-info' },
+    double_tap_action: { action: 'more-info' },
+  };
+};

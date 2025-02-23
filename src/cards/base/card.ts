@@ -2,9 +2,11 @@ import {
   actionHandler,
   handleClickAction,
   moreInfoAction,
+  toggleAction,
 } from '@common/action-handler';
 import type { HomeAssistant, State } from '@type/homeassistant';
 import { getZoozModels, processDeviceEntities } from '@util/hass';
+import { getEntityIconStyles } from '@util/styles';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
@@ -223,9 +225,16 @@ export abstract class BaseZoozCard extends LitElement {
       return html`<div class="${classes}" />`;
     }
 
-    const entity = moreInfoAction(state.entity_id);
+    const domain = state.entity_id.split('.')[0]!;
+
+    const entity =
+      domain === 'switch'
+        ? toggleAction(state.entity_id)
+        : moreInfoAction(state.entity_id);
+    const styles = getEntityIconStyles(state);
 
     return html` <div
+      style="${styles}"
       class="${classes}"
       @action=${handleClickAction(this, entity)}
       .actionHandler=${actionHandler(entity)}
@@ -250,13 +259,11 @@ export abstract class BaseZoozCard extends LitElement {
     return html`
       <ha-card class="grid">
         <div class="firmware">
-          <div class="icon">
-            ${this._renderIcon(
-              this._sensor.firmwareState,
-              undefined,
-              this._config.icon || this.defaultConfig.icon,
-            )}
-          </div>
+          ${this._renderIcon(
+            this._sensor.firmwareState,
+            undefined,
+            this._config.icon || this.defaultConfig.icon,
+          )}
           ${this._renderStateDisplay(
             this._sensor.firmwareState,
             ['firmware-info'],

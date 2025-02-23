@@ -55,9 +55,13 @@ Shows info about the Zooz Hub.
 
 ### Info Cards
 
+#### [ZEN52 - Double Relay](src/cards/info/double-relay/README.md)
+
+Commonly used for light/fan combos.
+
 #### [ZEN55 LR - DC Signal Sensor](src/cards/info/dc-signal-sensor/README.md)
 
-Shows info about the Zooz Hub.
+Commonly used for smoke sensor detection
 
 ![card](assets/cards/info/dc-signal-sensor/card.png)
 
@@ -96,11 +100,25 @@ See the README files of the individual cards for configuration and detailed info
 - [Zooz Nodes Status Card](src/cards/node-states/README.md)
 - [Zooz Hub Card](src/cards/hub-card/README.md)
 - Info Cards
+  - [ZEN52 - Double Relay](src/cards/info/double-relay/README.md)
   - [ZEN55 LR - DC Signal Sensor](src/cards/info/dc-signal-sensor/README.md)
 
 Some cards may require the hub to be labeled with a "Hub" label:
 
 ![hub](assets/hub.png)
+
+## Supported Devices
+
+These are tested, others may work.
+
+### Hubs
+
+- ZST39 LR
+
+### Devices
+
+- ZEN52
+- ZEN55 LR
 
 ## Project Roadmap
 
