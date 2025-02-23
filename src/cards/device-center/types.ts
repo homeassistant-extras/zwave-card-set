@@ -3,7 +3,10 @@ import type { Device } from '@type/homeassistant';
 /**
  * System-wide configuration settings
  */
-export interface Config {}
+export interface Config {
+  /** Optional area to filter on */
+  area?: string;
+}
 
 /**
  * Device center state

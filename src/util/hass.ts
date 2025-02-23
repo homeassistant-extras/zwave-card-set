@@ -53,11 +53,12 @@ export const processDeviceEntities = (
  * // Get Zooz devices by model
  * const zen55Devices = getZoozDevices(hass, false, false, 'ZEN55 LR');
  */
-export const getZoozDevices = (
+const getZoozDevices = (
   hass: HomeAssistant,
   hubOnly: Boolean = false,
   noHubs: Boolean = false,
   model?: string,
+  area?: string,
 ): Device[] => {
   let devices = Object.values(hass.devices).filter((device) => {
     return device.manufacturer === 'Zooz';
@@ -69,16 +70,19 @@ export const getZoozDevices = (
     devices = devices.filter((device) => !device.labels?.includes('hub'));
   } else if (model) {
     devices = devices.filter((device) => device.model === model);
+  } else if (area) {
+    devices = devices.filter((device) => device.area_id === area);
   }
 
   return devices.map((device) => {
     return {
       id: device.id,
-      model: device.model,
       name: device.name,
-      labels: device.labels,
       manufacturer: device.manufacturer,
       name_by_user: device.name_by_user,
+      model: device.model,
+      area_id: device.area_id,
+      labels: device.labels,
     };
   });
 };
@@ -124,3 +128,6 @@ export const getZoozNonHubs = (hass: HomeAssistant): Device[] =>
  */
 export const getZoozModels = (hass: HomeAssistant, model: string): Device[] =>
   getZoozDevices(hass, false, false, model);
+
+export const getZoozByArea = (hass: HomeAssistant, area?: string): Device[] =>
+  getZoozDevices(hass, false, false, undefined, area);

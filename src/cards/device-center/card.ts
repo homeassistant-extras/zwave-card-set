@@ -1,12 +1,11 @@
 import type { Config as BaseConfig } from '@base/types';
-import type { Config } from '@hub-card/types';
 import type { HomeAssistant } from '@type/homeassistant';
-import { getZoozDevices } from '@util/hass';
+import { getZoozByArea } from '@util/hass';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { literal, html as staticHTML } from 'lit/static-html.js';
 import { styles } from './styles';
-import type { Center } from './types';
+import type { Center, Config } from './types';
 const equal = require('fast-deep-equal');
 
 const DEVICES_CARD_MAP = {
@@ -49,6 +48,14 @@ export class ZoozDeviceCenter extends LitElement {
     return styles;
   }
 
+  // getters
+  get isPreview(): boolean {
+    return (
+      (this as HTMLElement).parentElement?.classList.contains('preview') ||
+      false
+    );
+  }
+
   /**
    * Sets up the card configuration
    * @param {Config} config - The card configuration
@@ -68,10 +75,15 @@ export class ZoozDeviceCenter extends LitElement {
       devices: {},
     };
 
-    const devices = getZoozDevices(hass);
+    const devices = getZoozByArea(hass, this._config.area);
 
     Object.keys(DEVICES_CARD_MAP).forEach((key) => {
-      center.devices![key] = devices.filter((device) => device.model === key);
+      const models = devices.filter((device) => device.model === key);
+      if (!models.length) {
+        return;
+      }
+
+      center.devices![key] = models;
     });
 
     if (!equal(center, this._center)) {
@@ -80,8 +92,21 @@ export class ZoozDeviceCenter extends LitElement {
   }
 
   // card configuration
-  static getConfigElement() {
-    return document.createElement('zooz-basic-editor');
+  static getConfigElement(): Element {
+    const SCHEMA = [
+      {
+        name: 'area',
+        selector: {
+          area: {},
+        },
+        required: false,
+        label: 'Device Area',
+      },
+    ];
+
+    const editor = document.createElement('zooz-basic-editor');
+    (editor as any).schema = SCHEMA;
+    return editor;
   }
 
   /**
@@ -89,21 +114,44 @@ export class ZoozDeviceCenter extends LitElement {
    * @returns {TemplateResult} The rendered HTML template
    */
   override render(): TemplateResult | typeof nothing {
-    return html`<span>Zooz Hub</span>
-      <zooz-hub-card .hass=${this._hass}></zooz-hub-card>
+    if (this._config.area && !Object.keys(this._center.devices!).length) {
+      return html`<span>No devices found in area ${this._config.area}</span>`;
+    }
 
-      ${Object.entries(DEVICES_CARD_MAP).map(
-        ([model, { type, title }]) => html`
+    let deviceFound = false;
+    return html`<div>
+      ${this._config.area
+        ? nothing
+        : html`<span>Zooz Hub</span>
+            <zooz-hub-card .hass=${this._hass}></zooz-hub-card>`}
+      ${Object.entries(DEVICES_CARD_MAP).map(([model, { type, title }]) => {
+        const devices = this._center.devices?.[model];
+
+        if (!devices || devices.length === 0) {
+          return nothing;
+        }
+
+        // single device preview
+        if (this.isPreview) {
+          if (deviceFound) {
+            return nothing;
+          }
+          devices.splice(1);
+        }
+
+        return html`
           <div class="devices">
             <span>${title}</span>
-            ${this._center.devices?.[model]?.map((device) => {
+            ${devices.map((device) => {
+              deviceFound = true;
               const config: BaseConfig = {
                 device_id: device.id,
               };
               return staticHTML`<${type} .config=${config} .hass=${this._hass}></${type}>`;
             })}
           </div>
-        `,
-      )}`;
+        `;
+      })}
+    </div>`;
   }
 }

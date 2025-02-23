@@ -39,7 +39,7 @@ This project brings a set of cards to display info about your Zooz devices. Many
 
 See all your devices and their states and some controls if applicable in one place.
 
-// pic todo
+![card](assets/cards/device-center/card.png)
 
 ### [Zooz Nodes Status Card](src/cards/node-states/README.md)
 
@@ -60,6 +60,8 @@ Shows info about the Zooz Hub.
 Shows info about the Zooz Hub.
 
 ![card](assets/cards/info/dc-signal-sensor/card.png)
+
+More to come...
 
 ## Installation
 

@@ -37,6 +37,9 @@ export type Device = {
   /** Model name or number of the device */
   model?: string;
 
+  /** ID of the area this device is located in */
+  area_id?: string;
+
   /** Array of tags or categories associated with the device */
   labels?: string[];
 };
