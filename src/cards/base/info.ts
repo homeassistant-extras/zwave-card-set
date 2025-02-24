@@ -13,6 +13,15 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['switch'],
     },
   },
+  'zooz-multi-relay': {
+    static: {
+      model: 'ZEN16',
+    },
+    instance: {
+      icon: 'mdi:garage-open-variant',
+      entityDomains: ['switch'],
+    },
+  },
   'zooz-double-switch': {
     static: {
       model: 'ZEN30',
@@ -20,6 +29,15 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
     instance: {
       icon: 'mdi:ceiling-light-multiple-outline',
       entityDomains: ['light', 'switch'],
+    },
+  },
+  'zooz-scene-controller': {
+    static: {
+      model: 'ZEN32',
+    },
+    instance: {
+      icon: 'mdi:gesture-double-tap',
+      entityDomains: ['switch', 'light'],
     },
   },
   'zooz-dry-contact-relay': {
@@ -68,9 +86,19 @@ export const infoCards: CardConfig[] = [
     description: 'A card to control and monitor a Zooz smart plug device.',
   },
   {
+    type: 'zooz-multi-relay',
+    name: 'ZEN16 - Multi Relay',
+    description: 'A card to control and monitor a Zooz multi relay device.',
+  },
+  {
     type: 'zooz-double-switch',
     name: 'ZEN30 - Double Switch',
     description: 'A card to control and monitor a Zooz double switch device.',
+  },
+  {
+    type: 'zooz-scene-controller',
+    name: 'ZEN32 - Scene Controller',
+    description: 'A card to control and monitor a Zooz scene controller.',
   },
   {
     type: 'zooz-dry-contact-relay',

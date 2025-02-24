@@ -14,17 +14,19 @@ export const processDeviceEntities = (
   domains: string[],
   callback: (entity: Entity, state: State) => void,
 ): void => {
-  Object.values(hass.entities).forEach((entity) => {
-    if (!domains.includes(entity.entity_id.split('.')[0]!)) return;
-    if (entity.device_id !== device_id) return;
-    const state = hass.states[entity.entity_id]!;
-    if (!state) return;
-    callback(entity, {
-      state: state.state,
-      entity_id: state.entity_id,
-      attributes: state.attributes,
+  Object.values(hass.entities)
+    .filter((entity) => !entity.hidden)
+    .forEach((entity) => {
+      if (!domains.includes(entity.entity_id.split('.')[0]!)) return;
+      if (entity.device_id !== device_id) return;
+      const state = hass.states[entity.entity_id]!;
+      if (!state) return;
+      callback(entity, {
+        state: state.state,
+        entity_id: state.entity_id,
+        attributes: state.attributes,
+      });
     });
-  });
 };
 
 /**

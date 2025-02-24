@@ -14,9 +14,17 @@ const DEVICES_CARD_MAP = {
     type: literal`zooz-smart-plug`,
     title: 'ZEN04 800LR Smart Plug',
   },
+  ZEN16: {
+    type: literal`zooz-multi-relay`,
+    title: 'ZEN16 Multi Relay',
+  },
   ZEN30: {
     type: literal`zooz-double-switch`,
     title: 'ZEN30 Double Switch',
+  },
+  ZEN32: {
+    type: literal`zooz-scene-controller`,
+    title: 'ZEN32 Scene Controller',
   },
   ZEN51: {
     type: literal`zooz-dry-contact-relay`,

@@ -67,6 +67,53 @@ describe('util', () => {
         expect(calledState).to.deep.equal(mockState);
       });
 
+      it('should not process hidden entities', () => {
+        const mockHassWithHidden: HomeAssistant = {
+          entities: {
+            'sensor.living_room': {
+              entity_id: 'sensor.living_room',
+              device_id: 'device_123',
+              hidden: true,
+            },
+            'sensor.kitchen': {
+              entity_id: 'sensor.kitchen',
+              device_id: 'device_123',
+              hidden: false,
+            },
+          },
+          states: {
+            'sensor.living_room': {
+              entity_id: 'sensor.living_room',
+              state: 'on',
+              attributes: {},
+            },
+            'sensor.kitchen': {
+              entity_id: 'sensor.kitchen',
+              state: 'off',
+              attributes: {},
+            },
+          },
+          devices: {},
+        };
+
+        let callCount = 0;
+        const processedEntities: string[] = [];
+
+        processDeviceEntities(
+          mockHassWithHidden,
+          'device_123',
+          ['sensor'],
+          (entity) => {
+            callCount++;
+            processedEntities.push(entity.entity_id);
+          },
+        );
+
+        expect(callCount).to.equal(1);
+        expect(processedEntities).to.not.include('sensor.living_room');
+        expect(processedEntities).to.include('sensor.kitchen');
+      });
+
       it('should not call callback for non-matching device_id', () => {
         let callCount = 0;
 

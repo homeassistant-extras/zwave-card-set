@@ -52,6 +52,25 @@ describe('index.ts', () => {
       });
     });
 
+    it('should properly configure ZEN16 multi-relay card', () => {
+      require('@/index.ts');
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-multi-relay');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZEN16',
+      });
+
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:garage-open-variant',
+        entityDomains: ['switch'],
+      });
+    });
+
     it('should properly configure ZEN30 double switch card', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
@@ -68,6 +87,25 @@ describe('index.ts', () => {
       expect(card.instanceCardConfig).to.deep.equal({
         icon: 'mdi:ceiling-light-multiple-outline',
         entityDomains: ['light', 'switch'],
+      });
+    });
+
+    it('should properly configure ZEN32 scene controller card', () => {
+      require('@/index.ts');
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-scene-controller');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZEN32',
+      });
+
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:gesture-double-tap',
+        entityDomains: ['switch', 'light'],
       });
     });
 
@@ -177,6 +215,8 @@ describe('index.ts', () => {
     'zooz-double-relay',
     'zooz-dc-signal-sensor',
     'zooz-on-off-switch',
+    'zooz-scene-controller',
+    'zooz-multi-relay',
   ];
 
   deviceComponents.forEach((component) => {
@@ -197,7 +237,7 @@ describe('index.ts', () => {
     require('@/index.ts');
 
     // Updated expected length to include all cards
-    expect(window.customCards).to.have.lengthOf(9);
+    expect(window.customCards).to.have.lengthOf(11);
 
     const expectedCards = [
       {
@@ -233,10 +273,26 @@ describe('index.ts', () => {
           'https://github.com/homeassistant-extras/zooz-card-set',
       },
       {
+        type: 'zooz-multi-relay',
+        name: 'ZEN16 - Multi Relay',
+        description: 'A card to control and monitor a Zooz multi relay device.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
         type: 'zooz-double-switch',
         name: 'ZEN30 - Double Switch',
         description:
           'A card to control and monitor a Zooz double switch device.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
+        type: 'zooz-scene-controller',
+        name: 'ZEN32 - Scene Controller',
+        description: 'A card to control and monitor a Zooz scene controller.',
         preview: true,
         documentationURL:
           'https://github.com/homeassistant-extras/zooz-card-set',
@@ -291,7 +347,7 @@ describe('index.ts', () => {
 
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(10);
+    expect(window.customCards).to.have.lengthOf(12);
     expect(window.customCards[0]).to.deep.equal({
       type: 'existing-card',
       name: 'Existing Card',
@@ -302,8 +358,8 @@ describe('index.ts', () => {
     require('@/index.ts');
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(9);
-    expect(customElementsStub.callCount).to.equal(10); // 9 cards + 1 editor
+    expect(window.customCards).to.have.lengthOf(11);
+    expect(customElementsStub.callCount).to.equal(12); // 11 cards + 1 editor
   });
 
   it('should log the version with proper formatting', () => {

@@ -58,6 +58,9 @@ export type Entity = {
 
   /** Categorey the entity shows on the device */
   entity_category?: string;
+
+  /** If the entity is hidden or not */
+  hidden?: boolean;
 };
 
 /**
