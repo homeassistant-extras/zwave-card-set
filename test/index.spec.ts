@@ -8,18 +8,13 @@ describe('index.ts', () => {
   let consoleInfoStub: sinon.SinonStub;
 
   beforeEach(() => {
-    // Mock customElements if it doesn't exist
     if (!global.customElements) {
       global.customElements = {
         define: () => {},
       } as unknown as typeof customElements;
     }
     consoleInfoStub = stub(console, 'info');
-
-    // Stub customElements.define to prevent actual registration
     customElementsStub = stub(customElements, 'define');
-
-    // Create a stub for window.customCards
     customCardsStub = [];
     Object.defineProperty(window, 'customCards', {
       get: () => customCardsStub,
@@ -31,7 +26,6 @@ describe('index.ts', () => {
   });
 
   afterEach(() => {
-    // Restore the original customElements.define
     customElementsStub.restore();
     consoleInfoStub.restore();
     customCardsStub = undefined;
@@ -39,10 +33,65 @@ describe('index.ts', () => {
   });
 
   describe('card configuration', () => {
+    it('should properly configure ZEN04 smart plug card', () => {
+      require('@/index.ts');
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-smart-plug');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZEN04 800LR',
+      });
+
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:power-socket-us',
+        entityDomains: ['switch'],
+      });
+    });
+
+    it('should properly configure ZEN30 double switch card', () => {
+      require('@/index.ts');
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-double-switch');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZEN30',
+      });
+
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:ceiling-light-multiple-outline',
+        entityDomains: ['light', 'switch'],
+      });
+    });
+
+    it('should properly configure ZEN51 dry contact relay card', () => {
+      require('@/index.ts');
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-dry-contact-relay');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZEN51',
+      });
+
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:electric-switch',
+        entityDomains: ['switch'],
+      });
+    });
+
     it('should properly configure ZEN52 double relay card', () => {
       require('@/index.ts');
-
-      // Get the double relay card registration
       const cardRegistration = customElementsStub
         .getCalls()
         .find((call) => call.args[0] === 'zooz-double-relay');
@@ -50,12 +99,10 @@ describe('index.ts', () => {
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
 
-      // Check static config
       expect(CardClass.staticCardConfig).to.deep.equal({
         model: 'ZEN52',
       });
 
-      // Check instance config
       expect(card.instanceCardConfig).to.deep.equal({
         icon: 'mdi:lightbulb-on-outline',
         entityDomains: ['switch'],
@@ -64,7 +111,6 @@ describe('index.ts', () => {
 
     it('should properly configure ZEN55 DC signal sensor card', () => {
       require('@/index.ts');
-
       const cardRegistration = customElementsStub
         .getCalls()
         .find((call) => call.args[0] === 'zooz-dc-signal-sensor');
@@ -82,88 +128,77 @@ describe('index.ts', () => {
       });
     });
 
-    it('should properly configure ZEN30 double switch card', () => {
+    it('should properly configure ZEN71 on/off switch card', () => {
       require('@/index.ts');
-
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-double-switch');
+        .find((call) => call.args[0] === 'zooz-on-off-switch');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
 
       expect(CardClass.staticCardConfig).to.deep.equal({
-        model: 'ZEN30',
+        model: 'ZEN71',
       });
 
       expect(card.instanceCardConfig).to.deep.equal({
-        icon: 'mdi:ceiling-light-multiple-outline',
-        entityDomains: ['light', 'switch'],
+        icon: 'mdi:toggle-switch-variant-off',
+        entityDomains: ['switch'],
       });
     });
   });
 
+  // Base component registration tests
   it('should register device-center', () => {
     require('@/index.ts');
     const calls = customElementsStub.getCalls();
-    const hasDeviceCenter = calls.some(
-      (call) => call.args[0] === 'zooz-device-center',
-    );
-    expect(hasDeviceCenter).to.be.true;
+    expect(calls.some((call) => call.args[0] === 'zooz-device-center')).to.be
+      .true;
   });
 
   it('should register zooz-hub-card components', () => {
     require('@/index.ts');
     const calls = customElementsStub.getCalls();
-    const hasHubCard = calls.some((call) => call.args[0] === 'zooz-hub-card');
-
-    expect(hasHubCard).to.be.true;
+    expect(calls.some((call) => call.args[0] === 'zooz-hub-card')).to.be.true;
   });
 
   it('should register zooz-nodes-status components', () => {
     require('@/index.ts');
     const calls = customElementsStub.getCalls();
-    const hasNodesStatus = calls.some(
-      (call) => call.args[0] === 'zooz-nodes-status',
-    );
-
-    expect(hasNodesStatus).to.be.true;
+    expect(calls.some((call) => call.args[0] === 'zooz-nodes-status')).to.be
+      .true;
   });
 
-  it('should register dc-signal-sensor components', () => {
-    require('@/index.ts');
-    const calls = customElementsStub.getCalls();
-    const hasSignalSensor = calls.some(
-      (call) => call.args[0] === 'zooz-dc-signal-sensor',
-    );
+  // Device-specific component registration tests
+  const deviceComponents = [
+    'zooz-smart-plug',
+    'zooz-double-switch',
+    'zooz-dry-contact-relay',
+    'zooz-double-relay',
+    'zooz-dc-signal-sensor',
+    'zooz-on-off-switch',
+  ];
 
-    expect(hasSignalSensor).to.be.true;
-  });
-
-  it('should register double-relay components', () => {
-    require('@/index.ts');
-    const calls = customElementsStub.getCalls();
-    const hasSignalSensor = calls.some(
-      (call) => call.args[0] === 'zooz-double-relay',
-    );
-
-    expect(hasSignalSensor).to.be.true;
+  deviceComponents.forEach((component) => {
+    it(`should register ${component} component`, () => {
+      require('@/index.ts');
+      const calls = customElementsStub.getCalls();
+      expect(calls.some((call) => call.args[0] === component)).to.be.true;
+    });
   });
 
   it('should initialize window.customCards if undefined', () => {
     customCardsStub = undefined;
     require('@/index.ts');
-
     expect(window.customCards).to.be.an('array');
   });
 
   it('should add card configuration with all fields to window.customCards', () => {
     require('@/index.ts');
 
-    // Check total count is correct
-    expect(window.customCards).to.have.lengthOf(6);
+    // Updated expected length to include all cards
+    expect(window.customCards).to.have.lengthOf(9);
 
-    // Define the expected card configurations
     const expectedCards = [
       {
         type: 'zooz-device-center',
@@ -190,6 +225,32 @@ describe('index.ts', () => {
           'https://github.com/homeassistant-extras/zooz-card-set',
       },
       {
+        type: 'zooz-smart-plug',
+        name: 'ZEN04 800LR - Smart Plug',
+        description: 'A card to control and monitor a Zooz smart plug device.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
+        type: 'zooz-double-switch',
+        name: 'ZEN30 - Double Switch',
+        description:
+          'A card to control and monitor a Zooz double switch device.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
+        type: 'zooz-dry-contact-relay',
+        name: 'ZEN51 - Dry Contact Relay',
+        description:
+          'A card to control and monitor a Zooz dry contact relay device.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
         type: 'zooz-double-relay',
         name: 'ZEN52 - Double Relay',
         description:
@@ -207,21 +268,20 @@ describe('index.ts', () => {
           'https://github.com/homeassistant-extras/zooz-card-set',
       },
       {
-        type: 'zooz-double-switch',
-        name: 'ZEN30 - Double Switch',
-        description: 'A card to monitor a Zooz double switch device.',
+        type: 'zooz-on-off-switch',
+        name: 'ZEN71 - On/Off Switch',
+        description:
+          'A card to control and monitor a Zooz on/off switch device.',
         preview: true,
         documentationURL:
           'https://github.com/homeassistant-extras/zooz-card-set',
       },
     ];
 
-    // Check that each expected card exists in window.customCards
     expect(window.customCards).to.deep.equal(expectedCards);
   });
 
   it('should preserve existing cards when adding new card', () => {
-    // Add an existing card
     window.customCards = [
       {
         type: 'existing-card',
@@ -231,7 +291,7 @@ describe('index.ts', () => {
 
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(7);
+    expect(window.customCards).to.have.lengthOf(10);
     expect(window.customCards[0]).to.deep.equal({
       type: 'existing-card',
       name: 'Existing Card',
@@ -242,17 +302,13 @@ describe('index.ts', () => {
     require('@/index.ts');
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(6);
-    expect(customElementsStub.callCount).to.equal(7);
+    expect(window.customCards).to.have.lengthOf(9);
+    expect(customElementsStub.callCount).to.equal(10); // 9 cards + 1 editor
   });
 
   it('should log the version with proper formatting', () => {
     require('@/index.ts');
-
-    // Assert that console.info was called once
     expect(consoleInfoStub.calledOnce).to.be.true;
-
-    // Assert that it was called with the expected arguments
     expect(
       consoleInfoStub.calledWithExactly(
         `%c🐱 Poat's Tools: zooz-card-set - ${version}`,

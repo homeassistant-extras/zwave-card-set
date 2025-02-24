@@ -100,7 +100,15 @@ export abstract class BaseZoozCard extends LitElement {
             }
             break;
           default:
-            sensor.entities.push(state);
+            if (
+              this.instanceCardConfig.entityDomains.some((d) =>
+                entity.entity_id.startsWith(d),
+              )
+            ) {
+              // only add entities part of the "control" domain
+              // can deal with undefined "senors" later, like for plugs
+              sensor.entities.push(state);
+            }
             break;
         }
       },

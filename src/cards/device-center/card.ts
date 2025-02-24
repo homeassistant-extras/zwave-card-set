@@ -10,17 +10,29 @@ const equal = require('fast-deep-equal');
 
 const DEVICES_CARD_MAP = {
   // todo add ZEN30 test
+  'ZEN04 800LR': {
+    type: literal`zooz-smart-plug`,
+    title: 'ZEN04 800LR Smart Plug',
+  },
   ZEN30: {
     type: literal`zooz-double-switch`,
     title: 'ZEN30 Double Switch',
+  },
+  ZEN51: {
+    type: literal`zooz-dry-contact-relay`,
+    title: 'ZEN51 Dry Contact Relay',
+  },
+  ZEN52: {
+    type: literal`zooz-double-relay`,
+    title: 'ZEN52 Double Relay',
   },
   'ZEN55 LR': {
     type: literal`zooz-dc-signal-sensor`,
     title: 'ZEN55 LR Sensors',
   },
-  ZEN52: {
-    type: literal`zooz-double-relay`,
-    title: 'ZEN52 Double Relay',
+  ZEN71: {
+    type: literal`zooz-on-off-switch`,
+    title: 'ZEN71 On/Off Switch',
   },
 };
 

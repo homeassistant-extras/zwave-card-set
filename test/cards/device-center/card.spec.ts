@@ -55,27 +55,55 @@ describe('ZoozDeviceCenter', () => {
 
   describe('hass property setter', () => {
     beforeEach(() => {
-      // Set up some test devices
+      // Set up test devices for all supported models
       mockHass.devices = {
+        zen04_1: {
+          id: 'zen04_1',
+          name: 'ZEN04 Smart Plug 1',
+          manufacturer: 'Zooz',
+          model: 'ZEN04 800LR',
+          area_id: 'area1',
+        },
+        zen04_2: {
+          id: 'zen04_2',
+          name: 'ZEN04 Smart Plug 2',
+          manufacturer: 'Zooz',
+          model: 'ZEN04 800LR',
+          area_id: 'area2',
+        },
+        zen30_1: {
+          id: 'zen30_1',
+          name: 'ZEN30 Double Switch 1',
+          manufacturer: 'Zooz',
+          model: 'ZEN30',
+          area_id: 'area1',
+        },
+        zen51_1: {
+          id: 'zen51_1',
+          name: 'ZEN51 Dry Contact 1',
+          manufacturer: 'Zooz',
+          model: 'ZEN51',
+          area_id: 'area1',
+        },
+        zen52_1: {
+          id: 'zen52_1',
+          name: 'ZEN52 Double Relay 1',
+          manufacturer: 'Zooz',
+          model: 'ZEN52',
+          area_id: 'area1',
+        },
         zen55_1: {
           id: 'zen55_1',
-          name: 'ZEN55 Device 1',
+          name: 'ZEN55 Sensor 1',
           manufacturer: 'Zooz',
           model: 'ZEN55 LR',
           area_id: 'area1',
         },
-        zen55_2: {
-          id: 'zen55_2',
-          name: 'ZEN55 Device 2',
+        zen71_1: {
+          id: 'zen71_1',
+          name: 'ZEN71 Switch 1',
           manufacturer: 'Zooz',
-          model: 'ZEN55 LR',
-          area_id: 'area2',
-        },
-        zen52_1: {
-          id: 'zen52_1',
-          name: 'ZEN52 Device 1',
-          manufacturer: 'Zooz',
-          model: 'ZEN52',
+          model: 'ZEN71',
           area_id: 'area1',
         },
         other_device: {
@@ -88,22 +116,27 @@ describe('ZoozDeviceCenter', () => {
       };
     });
 
-    it('should group devices by model when area is not specified', () => {
+    it('should group all device types when area is not specified', () => {
       card.hass = mockHass;
 
-      expect((card as any)._center.devices['ZEN55 LR']).to.have.lengthOf(2);
+      expect((card as any)._center.devices['ZEN04 800LR']).to.have.lengthOf(2);
+      expect((card as any)._center.devices['ZEN30']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZEN51']).to.have.lengthOf(1);
       expect((card as any)._center.devices['ZEN52']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZEN55 LR']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZEN71']).to.have.lengthOf(1);
     });
 
     it('should filter devices by area when specified', () => {
       card.setConfig({ area: 'area1' });
       card.hass = mockHass;
 
-      expect((card as any)._center.devices['ZEN55 LR']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZEN04 800LR']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZEN30']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZEN51']).to.have.lengthOf(1);
       expect((card as any)._center.devices['ZEN52']).to.have.lengthOf(1);
-      expect((card as any)._center.devices['ZEN55 LR'][0].id).to.equal(
-        'zen55_1',
-      );
+      expect((card as any)._center.devices['ZEN55 LR']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZEN71']).to.have.lengthOf(1);
     });
 
     it('should not update _center if devices have not changed', () => {
@@ -117,33 +150,48 @@ describe('ZoozDeviceCenter', () => {
 
   describe('render method', () => {
     beforeEach(() => {
+      // Set up complete test devices set in area1
       mockHass.devices = {
-        zen55_1: {
-          id: 'zen55_1',
-          name: 'ZEN55 Device 1',
+        zen04_1: {
+          id: 'zen04_1',
+          name: 'ZEN04 Smart Plug 1',
           manufacturer: 'Zooz',
-          model: 'ZEN55 LR',
+          model: 'ZEN04 800LR',
           area_id: 'area1',
         },
-        zen55_2: {
-          id: 'zen55_2',
-          name: 'ZEN55 Device 2',
+        zen30_1: {
+          id: 'zen30_1',
+          name: 'ZEN30 Double Switch 1',
           manufacturer: 'Zooz',
-          model: 'ZEN55 LR',
+          model: 'ZEN30',
+          area_id: 'area1',
+        },
+        zen51_1: {
+          id: 'zen51_1',
+          name: 'ZEN51 Dry Contact 1',
+          manufacturer: 'Zooz',
+          model: 'ZEN51',
           area_id: 'area1',
         },
         zen52_1: {
           id: 'zen52_1',
-          name: 'ZEN52 Device 1',
+          name: 'ZEN52 Double Relay 1',
           manufacturer: 'Zooz',
           model: 'ZEN52',
           area_id: 'area1',
         },
-        zen52_2: {
-          id: 'zen52_2',
-          name: 'ZEN52 Device 2',
+        zen55_1: {
+          id: 'zen55_1',
+          name: 'ZEN55 Sensor 1',
           manufacturer: 'Zooz',
-          model: 'ZEN52',
+          model: 'ZEN55 LR',
+          area_id: 'area1',
+        },
+        zen71_1: {
+          id: 'zen71_1',
+          name: 'ZEN71 Switch 1',
+          manufacturer: 'Zooz',
+          model: 'ZEN71',
           area_id: 'area1',
         },
       };
@@ -171,16 +219,22 @@ describe('ZoozDeviceCenter', () => {
       const el = await fixture(card.render() as TemplateResult);
       const sections = el.querySelectorAll('.devices');
 
-      expect(sections).to.have.lengthOf(2);
-      expect(sections[0]!.querySelector('span')?.textContent).to.equal(
-        'ZEN55 LR Sensors',
+      expect(sections).to.have.lengthOf(6); // One for each device type
+
+      // Verify all device type headings are present
+      const headings = Array.from(sections).map(
+        (section) => section.querySelector('span')?.textContent,
       );
-      expect(sections[1]!.querySelector('span')?.textContent).to.equal(
-        'ZEN52 Double Relay',
-      );
+
+      expect(headings).to.include('ZEN04 800LR Smart Plug');
+      expect(headings).to.include('ZEN30 Double Switch');
+      expect(headings).to.include('ZEN51 Dry Contact Relay');
+      expect(headings).to.include('ZEN52 Double Relay');
+      expect(headings).to.include('ZEN55 LR Sensors');
+      expect(headings).to.include('ZEN71 On/Off Switch');
     });
 
-    it('should limit to one device per type in preview mode', async () => {
+    it('should limit to one device in preview mode', async () => {
       Object.defineProperty(card, 'isPreview', {
         get: () => true,
       });
@@ -189,46 +243,42 @@ describe('ZoozDeviceCenter', () => {
 
       const el = await fixture(card.render() as TemplateResult);
 
-      const zen55Cards = el.querySelectorAll('zooz-dc-signal-sensor');
-      const zen52Cards = el.querySelectorAll('zooz-double-relay');
-
-      expect(zen55Cards).to.have.lengthOf(1);
-      expect(zen52Cards).to.have.lengthOf(0);
-    });
-
-    it('should not render sections for device types with no devices', async () => {
-      // Only keep ZEN55 devices
-      mockHass.devices = {
-        zen55_1: mockHass.devices['zen55_1']!,
-        zen55_2: mockHass.devices['zen55_2']!,
-      };
-
-      card.hass = mockHass;
-
-      const el = await fixture(card.render() as TemplateResult);
-      const sections = el.querySelectorAll('.devices');
-
-      expect(sections).to.have.lengthOf(1);
-      expect(sections[0]!.querySelector('span')?.textContent).to.equal(
-        'ZEN55 LR Sensors',
+      // Should only render the first device type's card
+      const deviceCards = Array.from(el.querySelectorAll('*')).filter(
+        (el) =>
+          el.tagName.toLowerCase().startsWith('zooz-') &&
+          el.tagName.toLowerCase() !== 'zooz-hub-card',
       );
+      expect(deviceCards).to.have.lengthOf(1);
     });
 
-    it('should set correct config and hass properties on device cards', async () => {
-      // Keep only one device for simpler testing
-      mockHass.devices = {
-        zen55_1: mockHass.devices['zen55_1']!,
-      };
-
+    it('should render correct custom elements for each device type', async () => {
       card.hass = mockHass;
 
       const el = await fixture(card.render() as TemplateResult);
-      const deviceCard = el.querySelector('zooz-dc-signal-sensor');
 
-      expect(deviceCard).to.exist;
-      // Note: Properties won't be visible as attributes, but the elements should exist
-      expect(deviceCard?.hasAttribute('config')).to.be.false;
-      expect(deviceCard?.hasAttribute('hass')).to.be.false;
+      expect(el.querySelector('zooz-smart-plug')).to.exist;
+      expect(el.querySelector('zooz-double-switch')).to.exist;
+      expect(el.querySelector('zooz-dry-contact-relay')).to.exist;
+      expect(el.querySelector('zooz-double-relay')).to.exist;
+      expect(el.querySelector('zooz-dc-signal-sensor')).to.exist;
+      expect(el.querySelector('zooz-on-off-switch')).to.exist;
+    });
+
+    it('should set correct config and hass properties on all device cards', async () => {
+      card.hass = mockHass;
+
+      const el = await fixture(card.render() as TemplateResult);
+
+      const deviceCards = Array.from(el.querySelectorAll('*')).filter((el) =>
+        el.tagName.toLowerCase().startsWith('zooz-'),
+      );
+
+      deviceCards.forEach((card) => {
+        expect(card).to.exist;
+        expect(card.hasAttribute('config')).to.be.false;
+        expect(card.hasAttribute('hass')).to.be.false;
+      });
     });
   });
 });

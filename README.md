@@ -55,23 +55,43 @@ Shows info about the Zooz Hub.
 
 ### Info Cards
 
+# Update for Info Cards section
+
+#### [ZEN04 800LR - Smart Plug](docs/smart-plug.md)
+
+Commonly used for controlling appliances and devices.
+
+![card](assets/cards/info/smart-plug/card.png)
+
 #### [ZEN30 - Double Switch](docs/double-switch.md)
 
 Commonly used for light/fan switches.
 
 ![card](assets/cards/info/double-switch/card.png)
 
+#### [ZEN51 - Dry Contact Relay](docs/dry-contact-relay.md)
+
+Commonly used for garage doors and other contact-based controls.
+
+![card](assets/cards/info/dry-contact-relay/card.png)
+
 #### [ZEN52 - Double Relay](docs/double-relay.md)
 
-![card](assets/cards/info/double-relay/card.png)
-
 Commonly used for light/fan in wall.
+
+![card](assets/cards/info/double-relay/card.png)
 
 #### [ZEN55 LR - DC Signal Sensor](docs/dc-signal-sensor.md)
 
 Commonly used for smoke sensor detection
 
 ![card](assets/cards/info/dc-signal-sensor/card.png)
+
+#### [ZEN71 - On/Off Switch](docs/on-off-switch.md)
+
+Commonly used for basic lighting control.
+
+![card](assets/cards/info/on-off-switch/card.png)
 
 More to come...
 
@@ -108,9 +128,12 @@ See the README files of the individual cards for configuration and detailed info
 - [Zooz Nodes Status Card](src/cards/node-states/README.md)
 - [Zooz Hub Card](src/cards/hub-card/README.md)
 - Info Cards
+  - [ZEN04 800LR - Smart Plug](docs/smart-plug.md)
   - [ZEN30 - Double Switch](docs/double-switch.md)
+  - [ZEN51 - Dry Contact Relay](docs/dry-contact-relay.md)
   - [ZEN52 - Double Relay](docs/double-relay.md)
   - [ZEN55 LR - DC Signal Sensor](docs/dc-signal-sensor.md)
+  - [ZEN71 - On/Off Switch](docs/on-off-switch.md)
 
 Some cards may require the hub to be labeled with a "Hub" label:
 
@@ -127,9 +150,15 @@ These are tested, others may work.
 ### Switches
 
 - ZEN30
+- ZEN71
+
+### Plugs
+
+- ZEN04 800LR
 
 ### Relays
 
+- ZEN51
 - ZEN52
 
 ### Sensors
@@ -144,6 +173,7 @@ These are tested, others may work.
 - [ ] **`Node status card sizing`**: make sizing dynamic, can't figure it out.
 - [ ] **`Themes`**: test default theme, etc.
 - [ ] **`Device Center`**: add docs and pics towards end.
+- [ ] **`Sensors on info card`**: like plugs and stuff.
 
 ## Contributing
 
