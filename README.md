@@ -63,11 +63,23 @@ Commonly used for controlling appliances and devices.
 
 ![card](assets/cards/info/smart-plug/card.png)
 
+#### [ZEN16 - Multi Relay](docs/multi-relay.md)
+
+Commonly used for controlling multiple independent circuits.
+
+![card](assets/cards/info/multi-relay/card.png)
+
 #### [ZEN30 - Double Switch](docs/double-switch.md)
 
 Commonly used for light/fan switches.
 
 ![card](assets/cards/info/double-switch/card.png)
+
+#### [ZEN32 - Scene Controller](docs/scene-controller.md)
+
+Commonly used for scene and automation control.
+
+![card](assets/cards/info/scene-controller/card.png)
 
 #### [ZEN51 - Dry Contact Relay](docs/dry-contact-relay.md)
 
@@ -129,7 +141,9 @@ See the README files of the individual cards for configuration and detailed info
 - [Zooz Hub Card](src/cards/hub-card/README.md)
 - Info Cards
   - [ZEN04 800LR - Smart Plug](docs/smart-plug.md)
+  - [ZEN16 - Multi Relay](docs/multi-relay.md)
   - [ZEN30 - Double Switch](docs/double-switch.md)
+  - [ZEN32 - Scene Controller](docs/scene-controller.md)
   - [ZEN51 - Dry Contact Relay](docs/dry-contact-relay.md)
   - [ZEN52 - Double Relay](docs/double-relay.md)
   - [ZEN55 LR - DC Signal Sensor](docs/dc-signal-sensor.md)
@@ -150,6 +164,7 @@ These are tested, others may work.
 ### Switches
 
 - ZEN30
+- ZEN32
 - ZEN71
 
 ### Plugs
@@ -158,6 +173,7 @@ These are tested, others may work.
 
 ### Relays
 
+- ZEN16
 - ZEN51
 - ZEN52
 
