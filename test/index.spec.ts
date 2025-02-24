@@ -184,6 +184,63 @@ describe('index.ts', () => {
         entityDomains: ['switch'],
       });
     });
+
+    it('should properly configure ZSE41 open close sensor card', () => {
+      require('@/index.ts');
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-open-close-sensor');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZSE41',
+      });
+
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:door-open',
+        entityDomains: ['binary_sensor'],
+      });
+    });
+
+    it('should properly configure ZSE43 tilt shock sensor card', () => {
+      require('@/index.ts');
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-tilt-shock-sensor');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZSE43',
+      });
+
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:angle-acute',
+        entityDomains: ['binary_sensor'],
+      });
+    });
+
+    it('should properly configure ZSE44 temperature humidity sensor card', () => {
+      require('@/index.ts');
+      const cardRegistration = customElementsStub
+        .getCalls()
+        .find((call) => call.args[0] === 'zooz-temperature-humidity-sensor');
+
+      const CardClass = cardRegistration?.args[1];
+      const card = new CardClass();
+
+      expect(CardClass.staticCardConfig).to.deep.equal({
+        model: 'ZSE44',
+      });
+
+      expect(card.instanceCardConfig).to.deep.equal({
+        icon: 'mdi:thermometer',
+        entityDomains: ['sensor'],
+      });
+    });
   });
 
   // Base component registration tests
@@ -207,6 +264,13 @@ describe('index.ts', () => {
       .true;
   });
 
+  it('should register battery-indicator component', () => {
+    require('@/index.ts');
+    const calls = customElementsStub.getCalls();
+    expect(calls.some((call) => call.args[0] === 'battery-indicator')).to.be
+      .true;
+  });
+
   // Device-specific component registration tests
   const deviceComponents = [
     'zooz-smart-plug',
@@ -217,6 +281,9 @@ describe('index.ts', () => {
     'zooz-on-off-switch',
     'zooz-scene-controller',
     'zooz-multi-relay',
+    'zooz-open-close-sensor',
+    'zooz-tilt-shock-sensor',
+    'zooz-temperature-humidity-sensor',
   ];
 
   deviceComponents.forEach((component) => {
@@ -237,7 +304,7 @@ describe('index.ts', () => {
     require('@/index.ts');
 
     // Updated expected length to include all cards
-    expect(window.customCards).to.have.lengthOf(11);
+    expect(window.customCards).to.have.lengthOf(14);
 
     const expectedCards = [
       {
@@ -332,6 +399,31 @@ describe('index.ts', () => {
         documentationURL:
           'https://github.com/homeassistant-extras/zooz-card-set',
       },
+      {
+        type: 'zooz-open-close-sensor',
+        name: 'ZSE41 - Open Close Sensor',
+        description: 'A card to monitor a Zooz open close sensor device.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
+        type: 'zooz-tilt-shock-sensor',
+        name: 'ZSE43 - Tilt Shock Sensor',
+        description: 'A card to monitor a Zooz tilt shock sensor device.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
+      {
+        type: 'zooz-temperature-humidity-sensor',
+        name: 'ZSE44 - Temperature Humidity Sensor',
+        description:
+          'A card to monitor a Zooz temperature humidity sensor device.',
+        preview: true,
+        documentationURL:
+          'https://github.com/homeassistant-extras/zooz-card-set',
+      },
     ];
 
     expect(window.customCards).to.deep.equal(expectedCards);
@@ -347,7 +439,7 @@ describe('index.ts', () => {
 
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(12);
+    expect(window.customCards).to.have.lengthOf(15);
     expect(window.customCards[0]).to.deep.equal({
       type: 'existing-card',
       name: 'Existing Card',
@@ -358,8 +450,8 @@ describe('index.ts', () => {
     require('@/index.ts');
     require('@/index.ts');
 
-    expect(window.customCards).to.have.lengthOf(11);
-    expect(customElementsStub.callCount).to.equal(12); // 11 cards + 1 editor
+    expect(window.customCards).to.have.lengthOf(14);
+    expect(customElementsStub.callCount).to.equal(16); // 14 cards + 2 utility components
   });
 
   it('should log the version with proper formatting', () => {

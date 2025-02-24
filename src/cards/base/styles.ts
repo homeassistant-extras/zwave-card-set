@@ -18,6 +18,7 @@ export const styles = css`
     --background-color: rgba(var(--rgb-icon-background), 0.05);
     --icon-size: 42px;
     --icon-gap: 12px;
+    position: relative;
   }
 
   /* Icon container styling */
@@ -46,6 +47,7 @@ export const styles = css`
   }
 
   ha-card {
+    position: relative;
     background: var(
       --ha-card-background,
       var(--card-background-color, #1c1c1c)

@@ -42,6 +42,18 @@ const DEVICES_CARD_MAP = {
     type: literal`zooz-on-off-switch`,
     title: 'ZEN71 On/Off Switch',
   },
+  ZSE41: {
+    type: literal`zooz-open-close-sensor`,
+    title: 'ZSE41 Open Close Sensor',
+  },
+  ZSE43: {
+    type: literal`zooz-tilt-shock-sensor`,
+    title: 'ZSE43 Tilt Shock Sensor',
+  },
+  ZSE44: {
+    type: literal`zooz-temperature-humidity-sensor`,
+    title: 'ZSE44 Temperature Humidity Sensor',
+  },
 };
 
 /**

@@ -57,6 +57,9 @@ export interface Sensor {
   /** The status of the node (e.g., online/offline) */
   nodeStatusState?: State;
 
+  /** The battery state of the device */
+  batteryState?: State;
+
   /** The status of the entities */
   entities: State[];
 }

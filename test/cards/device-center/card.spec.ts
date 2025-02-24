@@ -106,6 +106,27 @@ describe('ZoozDeviceCenter', () => {
           model: 'ZEN71',
           area_id: 'area1',
         },
+        zse41_1: {
+          id: 'zse41_1',
+          name: 'ZSE41 Open Close Sensor 1',
+          manufacturer: 'Zooz',
+          model: 'ZSE41',
+          area_id: 'area1',
+        },
+        zse43_1: {
+          id: 'zse43_1',
+          name: 'ZSE43 Tilt Shock Sensor 1',
+          manufacturer: 'Zooz',
+          model: 'ZSE43',
+          area_id: 'area1',
+        },
+        zse44_1: {
+          id: 'zse44_1',
+          name: 'ZSE44 Temperature Humidity Sensor 1',
+          manufacturer: 'Zooz',
+          model: 'ZSE44',
+          area_id: 'area1',
+        },
         other_device: {
           id: 'other_device',
           name: 'Other Device',
@@ -125,6 +146,9 @@ describe('ZoozDeviceCenter', () => {
       expect((card as any)._center.devices['ZEN52']).to.have.lengthOf(1);
       expect((card as any)._center.devices['ZEN55 LR']).to.have.lengthOf(1);
       expect((card as any)._center.devices['ZEN71']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZSE41']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZSE43']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZSE44']).to.have.lengthOf(1);
     });
 
     it('should filter devices by area when specified', () => {
@@ -137,6 +161,9 @@ describe('ZoozDeviceCenter', () => {
       expect((card as any)._center.devices['ZEN52']).to.have.lengthOf(1);
       expect((card as any)._center.devices['ZEN55 LR']).to.have.lengthOf(1);
       expect((card as any)._center.devices['ZEN71']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZSE41']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZSE43']).to.have.lengthOf(1);
+      expect((card as any)._center.devices['ZSE44']).to.have.lengthOf(1);
     });
 
     it('should not update _center if devices have not changed', () => {
@@ -194,6 +221,27 @@ describe('ZoozDeviceCenter', () => {
           model: 'ZEN71',
           area_id: 'area1',
         },
+        zse41_1: {
+          id: 'zse41_1',
+          name: 'ZSE41 Open Close Sensor 1',
+          manufacturer: 'Zooz',
+          model: 'ZSE41',
+          area_id: 'area1',
+        },
+        zse43_1: {
+          id: 'zse43_1',
+          name: 'ZSE43 Tilt Shock Sensor 1',
+          manufacturer: 'Zooz',
+          model: 'ZSE43',
+          area_id: 'area1',
+        },
+        zse44_1: {
+          id: 'zse44_1',
+          name: 'ZSE44 Temperature Humidity Sensor 1',
+          manufacturer: 'Zooz',
+          model: 'ZSE44',
+          area_id: 'area1',
+        },
       };
     });
 
@@ -219,7 +267,7 @@ describe('ZoozDeviceCenter', () => {
       const el = await fixture(card.render() as TemplateResult);
       const sections = el.querySelectorAll('.devices');
 
-      expect(sections).to.have.lengthOf(6); // One for each device type
+      expect(sections).to.have.lengthOf(9); // One for each device type
 
       // Verify all device type headings are present
       const headings = Array.from(sections).map(
@@ -232,6 +280,9 @@ describe('ZoozDeviceCenter', () => {
       expect(headings).to.include('ZEN52 Double Relay');
       expect(headings).to.include('ZEN55 LR Sensors');
       expect(headings).to.include('ZEN71 On/Off Switch');
+      expect(headings).to.include('ZSE41 Open Close Sensor');
+      expect(headings).to.include('ZSE43 Tilt Shock Sensor');
+      expect(headings).to.include('ZSE44 Temperature Humidity Sensor');
     });
 
     it('should limit to one device in preview mode', async () => {
@@ -263,6 +314,9 @@ describe('ZoozDeviceCenter', () => {
       expect(el.querySelector('zooz-double-relay')).to.exist;
       expect(el.querySelector('zooz-dc-signal-sensor')).to.exist;
       expect(el.querySelector('zooz-on-off-switch')).to.exist;
+      expect(el.querySelector('zooz-open-close-sensor')).to.exist;
+      expect(el.querySelector('zooz-tilt-shock-sensor')).to.exist;
+      expect(el.querySelector('zooz-temperature-humidity-sensor')).to.exist;
     });
 
     it('should set correct config and hass properties on all device cards', async () => {

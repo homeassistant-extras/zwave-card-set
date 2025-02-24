@@ -97,6 +97,11 @@ export abstract class BaseZoozCard extends LitElement {
               sensor.lastSeenState = state;
             } else if (entity.entity_id.endsWith('_node_status')) {
               sensor.nodeStatusState = state;
+            } else if (
+              entity.entity_id.startsWith('sensor.') &&
+              entity.entity_id.endsWith('_battery_level')
+            ) {
+              sensor.batteryState = state;
             }
             break;
           default:
@@ -194,12 +199,17 @@ export abstract class BaseZoozCard extends LitElement {
     divClasses: string[],
     spanClass: string,
     title: string,
+    batteryState: State | undefined = undefined,
   ): TemplateResult | typeof nothing => {
     if (!state) {
       return nothing;
     }
 
     const entity = moreInfoAction(state.entity_id);
+    const stateDisplay = html`<state-display
+      .hass=${this._hass}
+      .stateObj=${state}
+    ></state-display>`;
 
     return html`<div
       class="${divClasses.filter((c) => c !== undefined).join(' ')}"
@@ -207,7 +217,23 @@ export abstract class BaseZoozCard extends LitElement {
       .actionHandler=${actionHandler(entity)}
     >
       <span class="${spanClass}">${title}</span>
-      <state-display .hass=${this._hass} .stateObj=${state}></state-display>
+      ${batteryState
+        ? html`
+            <div>
+              <battery-indicator
+                .level=${Number(batteryState.state)}
+                @action=${handleClickAction(
+                  this,
+                  moreInfoAction(batteryState!.entity_id),
+                )}
+                .actionHandler=${actionHandler(
+                  moreInfoAction(batteryState!.entity_id),
+                )}
+              ></battery-indicator>
+              ${stateDisplay}
+            </div>
+          `
+        : stateDisplay}
     </div>`;
   };
 
@@ -272,6 +298,7 @@ export abstract class BaseZoozCard extends LitElement {
             ['firmware-info'],
             'title',
             this._sensor.name!,
+            this._sensor.batteryState,
           )}
         </div>
 

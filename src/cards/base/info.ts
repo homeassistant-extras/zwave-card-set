@@ -76,6 +76,33 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['switch'],
     },
   },
+  'zooz-open-close-sensor': {
+    static: {
+      model: 'ZSE41',
+    },
+    instance: {
+      icon: 'mdi:door-open',
+      entityDomains: ['binary_sensor'],
+    },
+  },
+  'zooz-tilt-shock-sensor': {
+    static: {
+      model: 'ZSE43',
+    },
+    instance: {
+      icon: 'mdi:angle-acute',
+      entityDomains: ['binary_sensor'],
+    },
+  },
+  'zooz-temperature-humidity-sensor': {
+    static: {
+      model: 'ZSE44',
+    },
+    instance: {
+      icon: 'mdi:thermometer',
+      entityDomains: ['sensor'],
+    },
+  },
 };
 
 // Device-specific cards using BaseZoozCard
@@ -120,6 +147,21 @@ export const infoCards: CardConfig[] = [
     type: 'zooz-on-off-switch',
     name: 'ZEN71 - On/Off Switch',
     description: 'A card to control and monitor a Zooz on/off switch device.',
+  },
+  {
+    type: 'zooz-open-close-sensor',
+    name: 'ZSE41 - Open Close Sensor',
+    description: 'A card to monitor a Zooz open close sensor device.',
+  },
+  {
+    type: 'zooz-tilt-shock-sensor',
+    name: 'ZSE43 - Tilt Shock Sensor',
+    description: 'A card to monitor a Zooz tilt shock sensor device.',
+  },
+  {
+    type: 'zooz-temperature-humidity-sensor',
+    name: 'ZSE44 - Temperature Humidity Sensor',
+    description: 'A card to monitor a Zooz temperature humidity sensor device.',
   },
 ].map((card) => ({
   ...card,

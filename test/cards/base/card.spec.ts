@@ -89,6 +89,11 @@ describe('BaseZoozCard', () => {
           device_id: 'test_device_id',
           entity_category: 'diagnostic',
         },
+        'sensor.test_device_battery_level': {
+          entity_id: 'sensor.test_device_battery_level',
+          device_id: 'test_device_id',
+          entity_category: 'diagnostic',
+        },
         'sensor.test_device_test_1': {
           entity_id: 'sensor.test_device_test_1',
           device_id: 'test_device_id',
@@ -154,12 +159,19 @@ describe('BaseZoozCard', () => {
           'sensor.test_device_node_status',
           'online',
         );
+        mockHass.states['sensor.test_device_battery_level'] = createState(
+          'sensor.test_device_battery_level',
+          '75',
+          { device_class: 'battery' },
+        );
 
         card.hass = mockHass;
 
         expect((card as any)._sensor.firmwareState).to.exist;
         expect((card as any)._sensor.lastSeenState).to.exist;
         expect((card as any)._sensor.nodeStatusState).to.exist;
+        expect((card as any)._sensor.batteryState).to.exist;
+        expect((card as any)._sensor.batteryState.state).to.equal('75');
       });
 
       it('should process entities matching suffixes', () => {
@@ -407,6 +419,39 @@ describe('BaseZoozCard', () => {
         expect(el.classList.contains('custom-class')).to.be.true;
         expect(el.classList.contains('icon')).to.be.true;
       });
+    });
+
+    it('should render battery indicator when battery state is available', async () => {
+      mockHass.states['update.test_device_firmware'] = createState(
+        'update.test_device_firmware',
+        'available',
+      );
+      mockHass.states['sensor.test_device_battery_level'] = createState(
+        'sensor.test_device_battery_level',
+        '75',
+        { device_class: 'battery' },
+      );
+
+      card.hass = mockHass;
+
+      const el = await fixture(card.render() as TemplateResult);
+      const batt = el.querySelector('battery-indicator');
+      expect(batt).to.exist;
+      expect((batt as any).level).to.equal(75);
+    });
+
+    it('should not render battery indicator when battery state is not available', async () => {
+      mockHass.states['update.test_device_firmware'] = createState(
+        'update.test_device_firmware',
+        'available',
+      );
+      // No battery state
+
+      card.hass = mockHass;
+
+      const el = await fixture(card.render() as TemplateResult);
+
+      expect(el.querySelector('battery-indicator')).to.not.exist;
     });
   });
 });

@@ -1,3 +1,4 @@
+import { BatteryIndicator } from '@base/battery-indicator';
 import { infoCards } from '@base/info';
 import { ZoozDeviceCenter } from '@center/card';
 import { ZoozBasicEditor } from '@common/basic-editor';
@@ -28,8 +29,9 @@ const BASE_CARDS: CardConfig[] = [
   },
 ];
 
-// Register the basic editor
+// Register other custom elements
 customElements.define('zooz-basic-editor', ZoozBasicEditor);
+customElements.define('battery-indicator', BatteryIndicator);
 window.customCards = window.customCards || [];
 
 // Register all cards
