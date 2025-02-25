@@ -1,23 +1,23 @@
 <p align="center">
-    <img src="assets/zooz.png" align="center" width="50%">
+    <img src="assets/z-wave.png" align="center" width="50%">
 </p>
-<p align="center"><h1 align="center">Zooz Z-Wave Card Set</h1></p>
+<p align="center"><h1 align="center">Z-Wave Card Set</h1></p>
 <p align="center">
-	<em>Boosting your Zooz integration.</em>
+	<em>Boosting your Z-Wave integration.</em>
 </p>
 
 ![Home Assistant](https://img.shields.io/badge/home%20assistant-%2341BDF5.svg?style=for-the-badge&logo=home-assistant&logoColor=white)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
-![GitHub Release](https://img.shields.io/github/v/release/homeassistant-extras/zooz-card-set?style=for-the-badge&logo=github)
-![GitHub Pre-Release](https://img.shields.io/github/v/release/homeassistant-extras/zooz-card-set?include_prereleases&style=for-the-badge&logo=github&label=PRERELEASE)
-![GitHub Tag](https://img.shields.io/github/v/tag/homeassistant-extras/zooz-card-set?style=for-the-badge&color=yellow)
-![GitHub branch status](https://img.shields.io/github/checks-status/homeassistant-extras/zooz-card-set/main?style=for-the-badge)
+![GitHub Release](https://img.shields.io/github/v/release/homeassistant-extras/zwave-card-set?style=for-the-badge&logo=github)
+![GitHub Pre-Release](https://img.shields.io/github/v/release/homeassistant-extras/zwave-card-set?include_prereleases&style=for-the-badge&logo=github&label=PRERELEASE)
+![GitHub Tag](https://img.shields.io/github/v/tag/homeassistant-extras/zwave-card-set?style=for-the-badge&color=yellow)
+![GitHub branch status](https://img.shields.io/github/checks-status/homeassistant-extras/zwave-card-set/main?style=for-the-badge)
 
-![stars](https://img.shields.io/github/stars/homeassistant-extras/zooz-card-set.svg?style=for-the-badge)
-![home](https://img.shields.io/github/last-commit/homeassistant-extras/zooz-card-set.svg?style=for-the-badge)
-![commits](https://img.shields.io/github/commit-activity/y/homeassistant-extras/zooz-card-set?style=for-the-badge)
-![license](https://img.shields.io/github/license/homeassistant-extras/zooz-card-set?style=for-the-badge&logo=opensourceinitiative&logoColor=white&color=0080ff)
+![stars](https://img.shields.io/github/stars/homeassistant-extras/zwave-card-set.svg?style=for-the-badge)
+![home](https://img.shields.io/github/last-commit/homeassistant-extras/zwave-card-set.svg?style=for-the-badge)
+![commits](https://img.shields.io/github/commit-activity/y/homeassistant-extras/zwave-card-set?style=for-the-badge)
+![license](https://img.shields.io/github/license/homeassistant-extras/zwave-card-set?style=for-the-badge&logo=opensourceinitiative&logoColor=white&color=0080ff)
 
 <p align="center">Built with the tools and technologies:</p>
 <p align="center">
@@ -31,7 +31,7 @@
 
 ## Overview
 
-This project brings a set of cards to display info about your Zooz devices. Many of these are great if you have a dedicated status view for your network or connected devices.
+This project brings a set of cards to display info about your Z-Wave devices. Many of these are great if you have a dedicated status view for your network or connected devices.
 
 ## Cards
 
@@ -41,7 +41,7 @@ See all your devices and their states and some controls if applicable in one pla
 
 ![card](assets/cards/device-center/card.png)
 
-### [Zooz Nodes Status Card](src/cards/node-states/README.md)
+### [Z-Wave Nodes Status Card](src/cards/node-states/README.md)
 
 Shows status and last seen time of all your nodes.
 
@@ -49,7 +49,7 @@ Shows status and last seen time of all your nodes.
 
 ### [Hub Card](src/cards/hub-card/README.md)
 
-Shows info about the Zooz Hub.
+Shows info about the Z-Wave Hub.
 
 ![card](assets/cards/hub-card/card.png)
 
@@ -114,19 +114,19 @@ More to come...
 1. Open HACS in your Home Assistant instance
 2. Click the menu icon in the top right and select "Custom repositories"
 3. Add this repository URL and select "Dashboard" as the category
-   - `https://github.com/homeassistant-extras/zooz-card-set`
+   - `https://github.com/homeassistant-extras/zwave-card-set`
 4. Click "Install"
 
 ### Manual Installation
 
-1. Download the `zooz-card-set.js` file from the latest release in the Releases tab.
-2. Copy it to your `www/community/zooz-card-set/` folder
+1. Download the `zwave-card-set.js` file from the latest release in the Releases tab.
+2. Copy it to your `www/community/zwave-card-set/` folder
 3. Add the following to your `configuration.yaml` (or add as a resource in dashboards menu)
 
 ```yaml
 lovelace:
   resources:
-    - url: /local/community/zooz-card-set/zooz-card-set.js
+    - url: /local/community/zwave-card-set/zwave-card-set.js
       type: module
 ```
 
@@ -137,8 +137,8 @@ Add the cards to your dashboard using the UI editor or YAML.
 See the README files of the individual cards for configuration and detailed information.
 
 - [Device Center](src/cards/device-center/README.md)
-- [Zooz Nodes Status Card](src/cards/node-states/README.md)
-- [Zooz Hub Card](src/cards/hub-card/README.md)
+- [Z-Wave Nodes Status Card](src/cards/node-states/README.md)
+- [Z-Wave Hub Card](src/cards/hub-card/README.md)
 - Info Cards
   - [ZEN04 800LR - Smart Plug](docs/smart-plug.md)
   - [ZEN16 - Multi Relay](docs/multi-relay.md)
@@ -193,9 +193,9 @@ These are tested, others may work.
 
 ## Contributing
 
-- **💬 [Join the Discussions](https://github.com/homeassistant-extras/zooz-card-set/discussions)**: Share your insights, provide feedback, or ask questions.
-- **🐛 [Report Issues](https://github.com/homeassistant-extras/zooz-card-set/issues)**: Submit bugs found or log feature requests for the `zooz-card-set` project.
-- **💡 [Submit Pull Requests](https://github.com/homeassistant-extras/zooz-card-set/blob/main/CONTRIBUTING.md)**: Review open PRs, and submit your own PRs.
+- **💬 [Join the Discussions](https://github.com/homeassistant-extras/zwave-card-set/discussions)**: Share your insights, provide feedback, or ask questions.
+- **🐛 [Report Issues](https://github.com/homeassistant-extras/zwave-card-set/issues)**: Submit bugs found or log feature requests for the `zwave-card-set` project.
+- **💡 [Submit Pull Requests](https://github.com/homeassistant-extras/zwave-card-set/blob/main/CONTRIBUTING.md)**: Review open PRs, and submit your own PRs.
 - **📣 [Check out discord](https://discord.gg/F28wupKC)**: Need further help, have ideas, want to chat?
 
 <details closed>
@@ -204,7 +204,7 @@ These are tested, others may work.
 1. **Fork the Repository**: Start by forking the project repository to your github account.
 2. **Clone Locally**: Clone the forked repository to your local machine using a git client.
    ```sh
-   git clone https://github.com/homeassistant-extras/zooz-card-set
+   git clone https://github.com/homeassistant-extras/zwave-card-set
    ```
 3. **Create a New Branch**: Always work on a new branch, giving it a descriptive name.
    ```sh
@@ -234,7 +234,7 @@ This project is protected under the MIT License. For more details, refer to the 
 - Button-Card was a huge inspo
 - Thanks to all contributors!
 
-[![contributors](https://contrib.rocks/image?repo=homeassistant-extras/zooz-card-set)](https://github.com{/homeassistant-extras/zooz-card-set/}graphs/contributors)
+[![contributors](https://contrib.rocks/image?repo=homeassistant-extras/zwave-card-set)](https://github.com{/homeassistant-extras/zwave-card-set/}graphs/contributors)
 
 [![ko-fi](https://img.shields.io/badge/buy%20me%20a%20coffee-72A5F2?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/N4N71AQZQG)
 
@@ -242,10 +242,10 @@ This project is protected under the MIT License. For more details, refer to the 
 
 ### Main
 
-[![Bump & Tag](https://github.com/homeassistant-extras/zooz-card-set/actions/workflows/push.yml/badge.svg?branch=main)](https://github.com/homeassistant-extras/zooz-card-set/actions/workflows/push.yml)
-[![Fast Forward Check](https://github.com/homeassistant-extras/zooz-card-set/actions/workflows/pull_request.yaml/badge.svg?branch=main)](https://github.com/homeassistant-extras/zooz-card-set/actions/workflows/pull_request.yaml)
+[![Bump & Tag](https://github.com/homeassistant-extras/zwave-card-set/actions/workflows/push.yml/badge.svg?branch=main)](https://github.com/homeassistant-extras/zwave-card-set/actions/workflows/push.yml)
+[![Fast Forward Check](https://github.com/homeassistant-extras/zwave-card-set/actions/workflows/pull_request.yaml/badge.svg?branch=main)](https://github.com/homeassistant-extras/zwave-card-set/actions/workflows/pull_request.yaml)
 
 ### Release
 
-[![Bump & Tag](https://github.com/homeassistant-extras/zooz-card-set/actions/workflows/push.yml/badge.svg?branch=release)](https://github.com/homeassistant-extras/zooz-card-set/actions/workflows/push.yml)
-[![Merge](https://github.com/homeassistant-extras/zooz-card-set/actions/workflows/merge.yaml/badge.svg)](https://github.com/homeassistant-extras/zooz-card-set/actions/workflows/merge.yaml)
+[![Bump & Tag](https://github.com/homeassistant-extras/zwave-card-set/actions/workflows/push.yml/badge.svg?branch=release)](https://github.com/homeassistant-extras/zwave-card-set/actions/workflows/push.yml)
+[![Merge](https://github.com/homeassistant-extras/zwave-card-set/actions/workflows/merge.yaml/badge.svg)](https://github.com/homeassistant-extras/zwave-card-set/actions/workflows/merge.yaml)

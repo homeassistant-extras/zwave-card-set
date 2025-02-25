@@ -32,13 +32,13 @@ A custom card for Home Assistant that displays and controls your ZEN32 Scene Con
 Example configuration in YAML:
 
 ```yaml
-type: custom:zooz-scene-controller
+type: custom:zwave-scene-controller
 device_id: your_device_id_here
 title: Living Room Scene Controller
 ```
 
 ```yaml
-type: custom:zooz-scene-controller
+type: custom:zwave-scene-controller
 device_id: your_device_id_here
 ```
 
@@ -69,4 +69,4 @@ All elements on the card support:
 
 ## Support
 
-For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zooz-card-set).
+For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zwave-card-set).

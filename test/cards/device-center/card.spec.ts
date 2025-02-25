@@ -1,17 +1,17 @@
-import { ZoozDeviceCenter } from '@center/card';
+import { ZWaveDeviceCenter } from '@center/card';
 import type { Config } from '@center/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import type { HomeAssistant } from '@type/homeassistant';
 import { expect } from 'chai';
 import { type TemplateResult } from 'lit';
 
-describe('ZoozDeviceCenter', () => {
-  let card: ZoozDeviceCenter;
+describe('ZWaveDeviceCenter', () => {
+  let card: ZWaveDeviceCenter;
   let mockHass: HomeAssistant;
   let mockConfig: Config;
 
   beforeEach(() => {
-    card = new ZoozDeviceCenter();
+    card = new ZWaveDeviceCenter();
 
     mockConfig = {};
 
@@ -38,8 +38,8 @@ describe('ZoozDeviceCenter', () => {
 
   describe('getConfigElement', () => {
     it('should return correct editor element with schema', () => {
-      const editor = ZoozDeviceCenter.getConfigElement();
-      expect(editor.tagName.toLowerCase()).to.equal('zooz-basic-editor');
+      const editor = ZWaveDeviceCenter.getConfigElement();
+      expect(editor.tagName.toLowerCase()).to.equal('zwave-basic-editor');
       expect((editor as any).schema).to.deep.equal([
         {
           name: 'area',
@@ -60,70 +60,70 @@ describe('ZoozDeviceCenter', () => {
         zen04_1: {
           id: 'zen04_1',
           name: 'ZEN04 Smart Plug 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN04 800LR',
           area_id: 'area1',
         },
         zen04_2: {
           id: 'zen04_2',
           name: 'ZEN04 Smart Plug 2',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN04 800LR',
           area_id: 'area2',
         },
         zen30_1: {
           id: 'zen30_1',
           name: 'ZEN30 Double Switch 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN30',
           area_id: 'area1',
         },
         zen51_1: {
           id: 'zen51_1',
           name: 'ZEN51 Dry Contact 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN51',
           area_id: 'area1',
         },
         zen52_1: {
           id: 'zen52_1',
           name: 'ZEN52 Double Relay 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN52',
           area_id: 'area1',
         },
         zen55_1: {
           id: 'zen55_1',
           name: 'ZEN55 Sensor 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN55 LR',
           area_id: 'area1',
         },
         zen71_1: {
           id: 'zen71_1',
           name: 'ZEN71 Switch 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN71',
           area_id: 'area1',
         },
         zse41_1: {
           id: 'zse41_1',
           name: 'ZSE41 Open Close Sensor 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZSE41',
           area_id: 'area1',
         },
         zse43_1: {
           id: 'zse43_1',
           name: 'ZSE43 Tilt Shock Sensor 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZSE43',
           area_id: 'area1',
         },
         zse44_1: {
           id: 'zse44_1',
           name: 'ZSE44 Temperature Humidity Sensor 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZSE44',
           area_id: 'area1',
         },
@@ -182,63 +182,63 @@ describe('ZoozDeviceCenter', () => {
         zen04_1: {
           id: 'zen04_1',
           name: 'ZEN04 Smart Plug 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN04 800LR',
           area_id: 'area1',
         },
         zen30_1: {
           id: 'zen30_1',
           name: 'ZEN30 Double Switch 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN30',
           area_id: 'area1',
         },
         zen51_1: {
           id: 'zen51_1',
           name: 'ZEN51 Dry Contact 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN51',
           area_id: 'area1',
         },
         zen52_1: {
           id: 'zen52_1',
           name: 'ZEN52 Double Relay 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN52',
           area_id: 'area1',
         },
         zen55_1: {
           id: 'zen55_1',
           name: 'ZEN55 Sensor 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN55 LR',
           area_id: 'area1',
         },
         zen71_1: {
           id: 'zen71_1',
           name: 'ZEN71 Switch 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZEN71',
           area_id: 'area1',
         },
         zse41_1: {
           id: 'zse41_1',
           name: 'ZSE41 Open Close Sensor 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZSE41',
           area_id: 'area1',
         },
         zse43_1: {
           id: 'zse43_1',
           name: 'ZSE43 Tilt Shock Sensor 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZSE43',
           area_id: 'area1',
         },
         zse44_1: {
           id: 'zse44_1',
           name: 'ZSE44 Temperature Humidity Sensor 1',
-          manufacturer: 'Zooz',
+          manufacturer: 'ZWave',
           model: 'ZSE44',
           area_id: 'area1',
         },
@@ -257,8 +257,8 @@ describe('ZoozDeviceCenter', () => {
       card.hass = mockHass;
 
       const el = await fixture(card.render() as TemplateResult);
-      expect(el.querySelector('zooz-hub-card')).to.exist;
-      expect(el.querySelector('span')?.textContent).to.equal('Zooz Hub');
+      expect(el.querySelector('zwave-hub-card')).to.exist;
+      expect(el.querySelector('span')?.textContent).to.equal('Z-Wave Hub');
     });
 
     it('should render device sections for each model type with devices', async () => {
@@ -297,8 +297,8 @@ describe('ZoozDeviceCenter', () => {
       // Should only render the first device type's card
       const deviceCards = Array.from(el.querySelectorAll('*')).filter(
         (el) =>
-          el.tagName.toLowerCase().startsWith('zooz-') &&
-          el.tagName.toLowerCase() !== 'zooz-hub-card',
+          el.tagName.toLowerCase().startsWith('zwave-') &&
+          el.tagName.toLowerCase() !== 'zwave-hub-card',
       );
       expect(deviceCards).to.have.lengthOf(1);
     });
@@ -308,15 +308,15 @@ describe('ZoozDeviceCenter', () => {
 
       const el = await fixture(card.render() as TemplateResult);
 
-      expect(el.querySelector('zooz-smart-plug')).to.exist;
-      expect(el.querySelector('zooz-double-switch')).to.exist;
-      expect(el.querySelector('zooz-dry-contact-relay')).to.exist;
-      expect(el.querySelector('zooz-double-relay')).to.exist;
-      expect(el.querySelector('zooz-dc-signal-sensor')).to.exist;
-      expect(el.querySelector('zooz-on-off-switch')).to.exist;
-      expect(el.querySelector('zooz-open-close-sensor')).to.exist;
-      expect(el.querySelector('zooz-tilt-shock-sensor')).to.exist;
-      expect(el.querySelector('zooz-temperature-humidity-sensor')).to.exist;
+      expect(el.querySelector('zwave-smart-plug')).to.exist;
+      expect(el.querySelector('zwave-double-switch')).to.exist;
+      expect(el.querySelector('zwave-dry-contact-relay')).to.exist;
+      expect(el.querySelector('zwave-double-relay')).to.exist;
+      expect(el.querySelector('zwave-dc-signal-sensor')).to.exist;
+      expect(el.querySelector('zwave-on-off-switch')).to.exist;
+      expect(el.querySelector('zwave-open-close-sensor')).to.exist;
+      expect(el.querySelector('zwave-tilt-shock-sensor')).to.exist;
+      expect(el.querySelector('zwave-temperature-humidity-sensor')).to.exist;
     });
 
     it('should set correct config and hass properties on all device cards', async () => {
@@ -325,7 +325,7 @@ describe('ZoozDeviceCenter', () => {
       const el = await fixture(card.render() as TemplateResult);
 
       const deviceCards = Array.from(el.querySelectorAll('*')).filter((el) =>
-        el.tagName.toLowerCase().startsWith('zooz-'),
+        el.tagName.toLowerCase().startsWith('zwave-'),
       );
 
       deviceCards.forEach((card) => {

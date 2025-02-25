@@ -1,6 +1,6 @@
-# Zooz Device Center Card
+# Z-Wave Device Center Card
 
-A custom card for Home Assistant that provides a centralized view of all your Zooz devices, grouped by model type. This card organizes your ZEN55 sensors and ZEN52 relays in a clean, organized layout while also displaying your Zooz hub information when no area filter is applied.
+A custom card for Home Assistant that provides a centralized view of all your Z-Wave devices, grouped by model type. This card organizes your ZEN55 sensors and ZEN52 relays in a clean, organized layout while also displaying your Z-Wave hub information when no area filter is applied.
 
 ![card](../../../assets/cards/device-center/card.png)
 
@@ -8,7 +8,7 @@ A custom card for Home Assistant that provides a centralized view of all your Zo
 
 - Groups devices by model type (ZEN55 LR Sensors, ZEN52 Double Relays)
 - Optional area filtering to show devices from specific areas
-- Displays Zooz hub information when no area is specified
+- Displays Z-Wave hub information when no area is specified
 - Automatically organizes devices into logical sections
 - Clean, organized layout for easy viewing
 - Responsive design that works on both desktop and mobile
@@ -29,13 +29,13 @@ A custom card for Home Assistant that provides a centralized view of all your Zo
 Example configuration in YAML:
 
 ```yaml
-type: custom:zooz-device-center
+type: custom:zwave-device-center
 ```
 
 With area filtering:
 
 ```yaml
-type: custom:zooz-device-center
+type: custom:zwave-device-center
 area: living_room
 ```
 
@@ -44,7 +44,7 @@ area: living_room
 The card organizes devices into the following sections:
 
 - **Hub Information** (when no area specified)
-  - Shows your Zooz hub status and information
+  - Shows your Z-Wave hub status and information
 - **ZEN55 LR Sensors**
   - Groups all your ZEN55 smoke and CO detectors
 - **ZEN52 Double Relays**
@@ -62,9 +62,9 @@ Each device in these sections maintains its individual card functionality, allow
 ## Requirements
 
 - Home Assistant
-- At least one Zooz Z-Wave device
+- At least one Z-Wave device
 - Z-Wave integration configured in Home Assistant
 
 ## Support
 
-For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zooz-card-set).
+For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zwave-card-set).

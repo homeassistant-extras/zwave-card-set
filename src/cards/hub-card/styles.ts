@@ -1,7 +1,7 @@
 import { css } from 'lit';
 
 /**
- * Static CSS styles for the Zooz Nodes Status Card
+ * Static CSS styles for the Z-Wave Nodes Status Card
  * Defines the grid layout and styling for all card elements
  */
 export const styles = css`

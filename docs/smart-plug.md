@@ -32,13 +32,13 @@ A custom card for Home Assistant that displays and controls your ZEN04 800LR Sma
 Example configuration in YAML:
 
 ```yaml
-type: custom:zooz-smart-plug
+type: custom:zwave-smart-plug
 device_id: your_device_id_here
 title: Living Room Smart Plug
 ```
 
 ```yaml
-type: custom:zooz-smart-plug
+type: custom:zwave-smart-plug
 device_id: your_device_id_here
 ```
 
@@ -67,4 +67,4 @@ All elements on the card support:
 
 ## Support
 
-For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zooz-card-set).
+For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zwave-card-set).

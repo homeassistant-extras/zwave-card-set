@@ -31,13 +31,13 @@ A custom card for Home Assistant that displays the status of your ZEN55 DC Signa
 Example configuration in YAML:
 
 ```yaml
-type: custom:zooz-dc-signal-sensor
+type: custom:zwave-dc-signal-sensor
 device_id: your_device_id_here
 title: Living Room Smoke Detector
 ```
 
 ```yaml
-type: custom:zooz-dc-signal-sensor
+type: custom:zwave-dc-signal-sensor
 device_id: your_device_id_here
 ```
 
@@ -67,4 +67,4 @@ All elements on the card support:
 
 ## Support
 
-For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zooz-card-set).
+For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zwave-card-set).

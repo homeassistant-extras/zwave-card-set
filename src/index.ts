@@ -1,36 +1,36 @@
 import { BatteryIndicator } from '@base/battery-indicator';
 import { infoCards } from '@base/info';
-import { ZoozDeviceCenter } from '@center/card';
-import { ZoozBasicEditor } from '@common/basic-editor';
-import { ZoozHubCard } from '@hub-card/card';
-import { ZoozNodesStatus } from '@node-states/card';
+import { ZWaveDeviceCenter } from '@center/card';
+import { ZWaveBasicEditor } from '@common/basic-editor';
+import { ZWaveHubCard } from '@hub-card/card';
+import { ZWaveNodesStatus } from '@node-states/card';
 import type { CardConfig } from '@type/config';
 import { version } from '../package.json';
 
 // Base cards that aren't device-specific
 const BASE_CARDS: CardConfig[] = [
   {
-    element: ZoozDeviceCenter,
-    type: 'zooz-device-center',
-    name: 'Zooz Device Center',
+    element: ZWaveDeviceCenter,
+    type: 'zwave-device-center',
+    name: 'Z-Wave Device Center',
     description: 'A card to summarize all your devices in one place.',
   },
   {
-    element: ZoozHubCard,
-    type: 'zooz-hub-card',
-    name: 'Zooz Hub Info',
+    element: ZWaveHubCard,
+    type: 'zwave-hub-card',
+    name: 'Z-Wave Hub Info',
     description: 'A card to summarize information about the hub.',
   },
   {
-    element: ZoozNodesStatus,
-    type: 'zooz-nodes-status',
-    name: 'Zooz Nodes Status',
-    description: 'A card to summarize the status of all the Zooz nodes.',
+    element: ZWaveNodesStatus,
+    type: 'zwave-nodes-status',
+    name: 'Z-Wave Nodes Status',
+    description: 'A card to summarize the status of all the Z-Wave nodes.',
   },
 ];
 
 // Register other custom elements
-customElements.define('zooz-basic-editor', ZoozBasicEditor);
+customElements.define('zwave-basic-editor', ZWaveBasicEditor);
 customElements.define('battery-indicator', BatteryIndicator);
 window.customCards = window.customCards || [];
 
@@ -45,11 +45,11 @@ window.customCards = window.customCards || [];
     name: card.name,
     description: card.description,
     preview: true,
-    documentationURL: 'https://github.com/homeassistant-extras/zooz-card-set',
+    documentationURL: 'https://github.com/homeassistant-extras/zwave-card-set',
   });
 });
 
 console.info(
-  `%c🐱 Poat's Tools: zooz-card-set - ${version}`,
+  `%c🐱 Poat's Tools: zwave-card-set - ${version}`,
   'color: #CFC493;',
 );

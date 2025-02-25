@@ -47,27 +47,27 @@ If you have a suggestion for improving the project, we'd love to hear it. Please
 
 ### Prerequisites
 
-Before getting started with zooz-card-set, ensure your runtime environment meets the following requirements:
+Before getting started with zwave-card-set, ensure your runtime environment meets the following requirements:
 
 - **Programming Language:** TypeScript
 - **Package Manager:** Npm
 
 ### Installation
 
-Install zooz-card-set using one of the following methods:
+Install zwave-card-set using one of the following methods:
 
 **Build from source:**
 
-1. Clone the zooz-card-set repository:
+1. Clone the zwave-card-set repository:
 
 ```sh
-❯ git clone https://github.com/homeassistant-extras/zooz-card-set
+❯ git clone https://github.com/homeassistant-extras/zwave-card-set
 ```
 
 2. Navigate to the project directory:
 
 ```sh
-❯ cd zooz-card-set
+❯ cd zwave-card-set
 ```
 
 3. Install the project dependencies:

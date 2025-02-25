@@ -5,7 +5,7 @@ import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import type { Config } from '../cards/hub-card/types';
 
-export class ZoozBasicEditor extends LitElement {
+export class ZWaveBasicEditor extends LitElement {
   /**
    * Card configuration object
    */

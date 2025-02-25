@@ -5,7 +5,7 @@ import {
   toggleAction,
 } from '@common/action-handler';
 import type { HomeAssistant, State } from '@type/homeassistant';
-import { getZoozModels, processDeviceEntities } from '@util/hass';
+import { getZWaveModels, processDeviceEntities } from '@util/hass';
 import { getEntityIconStyles } from '@util/styles';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
@@ -19,10 +19,10 @@ import type {
 const equal = require('fast-deep-equal');
 
 /**
- * Base component for Zooz device cards
+ * Base component for Z-Wave device cards
  * Handles common functionality for displaying device status and controls
  */
-export abstract class BaseZoozCard extends LitElement {
+export abstract class BaseZWaveCard extends LitElement {
   /**
    * Card configuration object
    */
@@ -139,7 +139,7 @@ export abstract class BaseZoozCard extends LitElement {
         selector: {
           device: {
             filter: {
-              manufacturer: 'Zooz',
+              manufacturer: 'ZWave',
               model: this.staticCardConfig.model,
             },
           },
@@ -165,7 +165,7 @@ export abstract class BaseZoozCard extends LitElement {
       },
     ];
 
-    const editor = document.createElement('zooz-basic-editor');
+    const editor = document.createElement('zwave-basic-editor');
     (editor as any).schema = SCHEMA;
     return editor;
   }
@@ -175,7 +175,7 @@ export abstract class BaseZoozCard extends LitElement {
    * @param {HomeAssistant} hass - The Home Assistant instance
    */
   public static async getStubConfig(hass: HomeAssistant): Promise<Config> {
-    const devices = getZoozModels(hass, this.staticCardConfig.model);
+    const devices = getZWaveModels(hass, this.staticCardConfig.model);
     if (!devices.length) {
       return {
         device_id: '',

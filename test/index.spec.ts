@@ -37,7 +37,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-smart-plug');
+        .find((call) => call.args[0] === 'zwave-smart-plug');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -56,7 +56,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-multi-relay');
+        .find((call) => call.args[0] === 'zwave-multi-relay');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -75,7 +75,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-double-switch');
+        .find((call) => call.args[0] === 'zwave-double-switch');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -94,7 +94,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-scene-controller');
+        .find((call) => call.args[0] === 'zwave-scene-controller');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -113,7 +113,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-dry-contact-relay');
+        .find((call) => call.args[0] === 'zwave-dry-contact-relay');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -132,7 +132,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-double-relay');
+        .find((call) => call.args[0] === 'zwave-double-relay');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -151,7 +151,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-dc-signal-sensor');
+        .find((call) => call.args[0] === 'zwave-dc-signal-sensor');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -170,7 +170,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-on-off-switch');
+        .find((call) => call.args[0] === 'zwave-on-off-switch');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -189,7 +189,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-open-close-sensor');
+        .find((call) => call.args[0] === 'zwave-open-close-sensor');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -208,7 +208,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-tilt-shock-sensor');
+        .find((call) => call.args[0] === 'zwave-tilt-shock-sensor');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -227,7 +227,7 @@ describe('index.ts', () => {
       require('@/index.ts');
       const cardRegistration = customElementsStub
         .getCalls()
-        .find((call) => call.args[0] === 'zooz-temperature-humidity-sensor');
+        .find((call) => call.args[0] === 'zwave-temperature-humidity-sensor');
 
       const CardClass = cardRegistration?.args[1];
       const card = new CardClass();
@@ -247,20 +247,20 @@ describe('index.ts', () => {
   it('should register device-center', () => {
     require('@/index.ts');
     const calls = customElementsStub.getCalls();
-    expect(calls.some((call) => call.args[0] === 'zooz-device-center')).to.be
+    expect(calls.some((call) => call.args[0] === 'zwave-device-center')).to.be
       .true;
   });
 
-  it('should register zooz-hub-card components', () => {
+  it('should register zwave-hub-card components', () => {
     require('@/index.ts');
     const calls = customElementsStub.getCalls();
-    expect(calls.some((call) => call.args[0] === 'zooz-hub-card')).to.be.true;
+    expect(calls.some((call) => call.args[0] === 'zwave-hub-card')).to.be.true;
   });
 
-  it('should register zooz-nodes-status components', () => {
+  it('should register zwave-nodes-status components', () => {
     require('@/index.ts');
     const calls = customElementsStub.getCalls();
-    expect(calls.some((call) => call.args[0] === 'zooz-nodes-status')).to.be
+    expect(calls.some((call) => call.args[0] === 'zwave-nodes-status')).to.be
       .true;
   });
 
@@ -273,17 +273,17 @@ describe('index.ts', () => {
 
   // Device-specific component registration tests
   const deviceComponents = [
-    'zooz-smart-plug',
-    'zooz-double-switch',
-    'zooz-dry-contact-relay',
-    'zooz-double-relay',
-    'zooz-dc-signal-sensor',
-    'zooz-on-off-switch',
-    'zooz-scene-controller',
-    'zooz-multi-relay',
-    'zooz-open-close-sensor',
-    'zooz-tilt-shock-sensor',
-    'zooz-temperature-humidity-sensor',
+    'zwave-smart-plug',
+    'zwave-double-switch',
+    'zwave-dry-contact-relay',
+    'zwave-double-relay',
+    'zwave-dc-signal-sensor',
+    'zwave-on-off-switch',
+    'zwave-scene-controller',
+    'zwave-multi-relay',
+    'zwave-open-close-sensor',
+    'zwave-tilt-shock-sensor',
+    'zwave-temperature-humidity-sensor',
   ];
 
   deviceComponents.forEach((component) => {
@@ -308,121 +308,123 @@ describe('index.ts', () => {
 
     const expectedCards = [
       {
-        type: 'zooz-device-center',
-        name: 'Zooz Device Center',
+        type: 'zwave-device-center',
+        name: 'Z-Wave Device Center',
         description: 'A card to summarize all your devices in one place.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-hub-card',
-        name: 'Zooz Hub Info',
+        type: 'zwave-hub-card',
+        name: 'Z-Wave Hub Info',
         description: 'A card to summarize information about the hub.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-nodes-status',
-        name: 'Zooz Nodes Status',
-        description: 'A card to summarize the status of all the Zooz nodes.',
+        type: 'zwave-nodes-status',
+        name: 'Z-Wave Nodes Status',
+        description: 'A card to summarize the status of all the Z-Wave nodes.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-smart-plug',
+        type: 'zwave-smart-plug',
         name: 'ZEN04 800LR - Smart Plug',
-        description: 'A card to control and monitor a Zooz smart plug device.',
+        description:
+          'A card to control and monitor a Z-Wave smart plug device.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-multi-relay',
+        type: 'zwave-multi-relay',
         name: 'ZEN16 - Multi Relay',
-        description: 'A card to control and monitor a Zooz multi relay device.',
+        description:
+          'A card to control and monitor a Z-Wave multi relay device.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-double-switch',
+        type: 'zwave-double-switch',
         name: 'ZEN30 - Double Switch',
         description:
-          'A card to control and monitor a Zooz double switch device.',
+          'A card to control and monitor a Z-Wave double switch device.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-scene-controller',
+        type: 'zwave-scene-controller',
         name: 'ZEN32 - Scene Controller',
-        description: 'A card to control and monitor a Zooz scene controller.',
+        description: 'A card to control and monitor a Z-Wave scene controller.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-dry-contact-relay',
+        type: 'zwave-dry-contact-relay',
         name: 'ZEN51 - Dry Contact Relay',
         description:
-          'A card to control and monitor a Zooz dry contact relay device.',
+          'A card to control and monitor a Z-Wave dry contact relay device.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-double-relay',
+        type: 'zwave-double-relay',
         name: 'ZEN52 - Double Relay',
         description:
-          'A card to control and monitor a Zooz double relay device.',
+          'A card to control and monitor a Z-Wave double relay device.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-dc-signal-sensor',
+        type: 'zwave-dc-signal-sensor',
         name: 'ZEN55 LR - DC Signal Sensor',
-        description: 'A card to monitor a Zooz DC signal sensor device.',
+        description: 'A card to monitor a Z-Wave DC signal sensor device.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-on-off-switch',
+        type: 'zwave-on-off-switch',
         name: 'ZEN71 - On/Off Switch',
         description:
-          'A card to control and monitor a Zooz on/off switch device.',
+          'A card to control and monitor a Z-Wave on/off switch device.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-open-close-sensor',
+        type: 'zwave-open-close-sensor',
         name: 'ZSE41 - Open Close Sensor',
-        description: 'A card to monitor a Zooz open close sensor device.',
+        description: 'A card to monitor a Z-Wave open close sensor device.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-tilt-shock-sensor',
+        type: 'zwave-tilt-shock-sensor',
         name: 'ZSE43 - Tilt Shock Sensor',
-        description: 'A card to monitor a Zooz tilt shock sensor device.',
+        description: 'A card to monitor a Z-Wave tilt shock sensor device.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zooz-temperature-humidity-sensor',
+        type: 'zwave-temperature-humidity-sensor',
         name: 'ZSE44 - Temperature Humidity Sensor',
         description:
-          'A card to monitor a Zooz temperature humidity sensor device.',
+          'A card to monitor a Z-Wave temperature humidity sensor device.',
         preview: true,
         documentationURL:
-          'https://github.com/homeassistant-extras/zooz-card-set',
+          'https://github.com/homeassistant-extras/zwave-card-set',
       },
     ];
 
@@ -459,7 +461,7 @@ describe('index.ts', () => {
     expect(consoleInfoStub.calledOnce).to.be.true;
     expect(
       consoleInfoStub.calledWithExactly(
-        `%c🐱 Poat's Tools: zooz-card-set - ${version}`,
+        `%c🐱 Poat's Tools: zwave-card-set - ${version}`,
         'color: #CFC493;',
       ),
     ).to.be.true;

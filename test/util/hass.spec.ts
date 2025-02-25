@@ -1,5 +1,9 @@
 import type { Entity, HomeAssistant, State } from '@type/homeassistant';
-import { getZoozHubs, getZoozNonHubs, processDeviceEntities } from '@util/hass';
+import {
+  getZWaveHubs,
+  getZWaveNonHubs,
+  processDeviceEntities,
+} from '@util/hass';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -302,7 +306,7 @@ describe('util', () => {
     });
   });
 
-  describe('getZoozHubs', () => {
+  describe('getZWaveHubs', () => {
     let mockHass: HomeAssistant;
 
     beforeEach(() => {
@@ -311,25 +315,25 @@ describe('util', () => {
         states: {},
         entities: {},
         devices: {
-          'zooz-hub-1': {
-            id: 'zooz-hub-1',
-            manufacturer: 'Zooz',
+          'zwave-hub-1': {
+            id: 'zwave-hub-1',
+            manufacturer: 'ZWave',
             model: 'ZST10',
-            name: 'Zooz Hub',
+            name: 'Z-Wave Hub',
             labels: ['hub', 'controller'],
           },
-          'zooz-hub-2': {
-            id: 'zooz-hub-2',
-            manufacturer: 'Zooz',
+          'zwave-hub-2': {
+            id: 'zwave-hub-2',
+            manufacturer: 'ZWave',
             model: 'ZST11',
-            name: 'Zooz Hub Pro',
+            name: 'Z-Wave Hub Pro',
             labels: ['hub', 'premium'],
           },
-          'zooz-switch-1': {
-            id: 'zooz-switch-1',
-            manufacturer: 'Zooz',
+          'zwave-switch-1': {
+            id: 'zwave-switch-1',
+            manufacturer: 'ZWave',
             model: 'ZEN26',
-            name: 'Zooz Switch',
+            name: 'Z-Wave Switch',
             labels: ['switch', 'lighting'],
           },
           'philips-hub-1': {
@@ -343,28 +347,28 @@ describe('util', () => {
       };
     });
 
-    it('should return only Zooz hub devices', () => {
-      const result = getZoozHubs(mockHass);
+    it('should return only Z-Wave hub devices', () => {
+      const result = getZWaveHubs(mockHass);
 
       expect(result.length).to.equal(2);
       expect(result.map((d) => d.id)).to.have.members([
-        'zooz-hub-1',
-        'zooz-hub-2',
+        'zwave-hub-1',
+        'zwave-hub-2',
       ]);
-      expect(result.every((d) => d.manufacturer === 'Zooz')).to.be.true;
+      expect(result.every((d) => d.manufacturer === 'ZWave')).to.be.true;
       expect(result.every((d) => d.labels?.includes('hub'))).to.be.true;
     });
 
-    it('should return empty array when no Zooz hub devices exist', () => {
-      const noZoozHubsHass: HomeAssistant = {
+    it('should return empty array when no Z-Wave hub devices exist', () => {
+      const noZWaveHubsHass: HomeAssistant = {
         states: {},
         entities: {},
         devices: {
-          'zooz-switch-1': {
-            id: 'zooz-switch-1',
-            manufacturer: 'Zooz',
+          'zwave-switch-1': {
+            id: 'zwave-switch-1',
+            manufacturer: 'ZWave',
             model: 'ZEN26',
-            name: 'Zooz Switch',
+            name: 'Z-Wave Switch',
             labels: ['switch'],
           },
           'philips-hub-1': {
@@ -377,12 +381,12 @@ describe('util', () => {
         },
       };
 
-      const result = getZoozHubs(noZoozHubsHass);
+      const result = getZWaveHubs(noZWaveHubsHass);
       expect(result).to.deep.equal([]);
     });
   });
 
-  describe('getZoozNonHubs', () => {
+  describe('getZWaveNonHubs', () => {
     let mockHass: HomeAssistant;
 
     beforeEach(() => {
@@ -391,32 +395,32 @@ describe('util', () => {
         states: {},
         entities: {},
         devices: {
-          'zooz-hub-1': {
-            id: 'zooz-hub-1',
-            manufacturer: 'Zooz',
+          'zwave-hub-1': {
+            id: 'zwave-hub-1',
+            manufacturer: 'ZWave',
             model: 'ZST10',
-            name: 'Zooz Hub',
+            name: 'Z-Wave Hub',
             labels: ['hub', 'controller'],
           },
-          'zooz-switch-1': {
-            id: 'zooz-switch-1',
-            manufacturer: 'Zooz',
+          'zwave-switch-1': {
+            id: 'zwave-switch-1',
+            manufacturer: 'ZWave',
             model: 'ZEN26',
-            name: 'Zooz Switch',
+            name: 'Z-Wave Switch',
             labels: ['switch', 'lighting'],
           },
-          'zooz-dimmer-1': {
-            id: 'zooz-dimmer-1',
-            manufacturer: 'Zooz',
+          'zwave-dimmer-1': {
+            id: 'zwave-dimmer-1',
+            manufacturer: 'ZWave',
             model: 'ZEN72',
-            name: 'Zooz Dimmer',
+            name: 'Z-Wave Dimmer',
             labels: ['dimmer', 'lighting'],
           },
-          'zooz-sensor-1': {
-            id: 'zooz-sensor-1',
-            manufacturer: 'Zooz',
+          'zwave-sensor-1': {
+            id: 'zwave-sensor-1',
+            manufacturer: 'ZWave',
             model: 'ZSE11',
-            name: 'Zooz Sensor',
+            name: 'Z-Wave Sensor',
           },
           'ge-switch-1': {
             id: 'ge-switch-1',
@@ -428,29 +432,29 @@ describe('util', () => {
       };
     });
 
-    it('should return only Zooz non-hub devices', () => {
-      const result = getZoozNonHubs(mockHass);
+    it('should return only Z-Wave non-hub devices', () => {
+      const result = getZWaveNonHubs(mockHass);
 
       expect(result.length).to.equal(3);
       expect(result.map((d) => d.id)).to.have.members([
-        'zooz-switch-1',
-        'zooz-dimmer-1',
-        'zooz-sensor-1',
+        'zwave-switch-1',
+        'zwave-dimmer-1',
+        'zwave-sensor-1',
       ]);
-      expect(result.every((d) => d.manufacturer === 'Zooz')).to.be.true;
+      expect(result.every((d) => d.manufacturer === 'ZWave')).to.be.true;
       expect(result.every((d) => !d.labels?.includes('hub'))).to.be.true;
     });
 
-    it('should return empty array when no Zooz non-hub devices exist', () => {
-      const onlyZoozHubsHass: HomeAssistant = {
+    it('should return empty array when no Z-Wave non-hub devices exist', () => {
+      const onlyZWaveHubsHass: HomeAssistant = {
         states: {},
         entities: {},
         devices: {
-          'zooz-hub-1': {
-            id: 'zooz-hub-1',
-            manufacturer: 'Zooz',
+          'zwave-hub-1': {
+            id: 'zwave-hub-1',
+            manufacturer: 'ZWave',
             model: 'ZST10',
-            name: 'Zooz Hub',
+            name: 'Z-Wave Hub',
             labels: ['hub'],
           },
           'philips-device-1': {
@@ -462,22 +466,22 @@ describe('util', () => {
         },
       };
 
-      const result = getZoozNonHubs(onlyZoozHubsHass);
+      const result = getZWaveNonHubs(onlyZWaveHubsHass);
       expect(result).to.deep.equal([]);
     });
 
     it('should handle devices with undefined labels', () => {
-      mockHass.devices['zooz-unlabeled-1'] = {
-        id: 'zooz-unlabeled-1',
-        manufacturer: 'Zooz',
+      mockHass.devices['zwave-unlabeled-1'] = {
+        id: 'zwave-unlabeled-1',
+        manufacturer: 'ZWave',
         model: 'Unknown',
-        name: 'Unlabeled Zooz Device',
+        name: 'Unlabeled Z-Wave Device',
         labels: undefined,
       };
 
-      const result = getZoozNonHubs(mockHass);
+      const result = getZWaveNonHubs(mockHass);
       expect(result.length).to.equal(4);
-      expect(result.some((d) => d.id === 'zooz-unlabeled-1')).to.be.true;
+      expect(result.some((d) => d.id === 'zwave-unlabeled-1')).to.be.true;
     });
   });
 });

@@ -1,6 +1,6 @@
 import type { Config as BaseConfig } from '@base/types';
 import type { HomeAssistant } from '@type/homeassistant';
-import { getZoozByArea } from '@util/hass';
+import { getZWaveByArea } from '@util/hass';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { literal, html as staticHTML } from 'lit/static-html.js';
@@ -11,55 +11,55 @@ const equal = require('fast-deep-equal');
 const DEVICES_CARD_MAP = {
   // todo add ZEN30 test
   'ZEN04 800LR': {
-    type: literal`zooz-smart-plug`,
+    type: literal`zwave-smart-plug`,
     title: 'ZEN04 800LR Smart Plug',
   },
   ZEN16: {
-    type: literal`zooz-multi-relay`,
+    type: literal`zwave-multi-relay`,
     title: 'ZEN16 Multi Relay',
   },
   ZEN30: {
-    type: literal`zooz-double-switch`,
+    type: literal`zwave-double-switch`,
     title: 'ZEN30 Double Switch',
   },
   ZEN32: {
-    type: literal`zooz-scene-controller`,
+    type: literal`zwave-scene-controller`,
     title: 'ZEN32 Scene Controller',
   },
   ZEN51: {
-    type: literal`zooz-dry-contact-relay`,
+    type: literal`zwave-dry-contact-relay`,
     title: 'ZEN51 Dry Contact Relay',
   },
   ZEN52: {
-    type: literal`zooz-double-relay`,
+    type: literal`zwave-double-relay`,
     title: 'ZEN52 Double Relay',
   },
   'ZEN55 LR': {
-    type: literal`zooz-dc-signal-sensor`,
+    type: literal`zwave-dc-signal-sensor`,
     title: 'ZEN55 LR Sensors',
   },
   ZEN71: {
-    type: literal`zooz-on-off-switch`,
+    type: literal`zwave-on-off-switch`,
     title: 'ZEN71 On/Off Switch',
   },
   ZSE41: {
-    type: literal`zooz-open-close-sensor`,
+    type: literal`zwave-open-close-sensor`,
     title: 'ZSE41 Open Close Sensor',
   },
   ZSE43: {
-    type: literal`zooz-tilt-shock-sensor`,
+    type: literal`zwave-tilt-shock-sensor`,
     title: 'ZSE43 Tilt Shock Sensor',
   },
   ZSE44: {
-    type: literal`zooz-temperature-humidity-sensor`,
+    type: literal`zwave-temperature-humidity-sensor`,
     title: 'ZSE44 Temperature Humidity Sensor',
   },
 };
 
 /**
- * Zooz Device Center Card
+ * Z-Wave Device Center Card
  */
-export class ZoozDeviceCenter extends LitElement {
+export class ZWaveDeviceCenter extends LitElement {
   /**
    * Card configuration object
    */
@@ -112,7 +112,7 @@ export class ZoozDeviceCenter extends LitElement {
       devices: {},
     };
 
-    const devices = getZoozByArea(hass, this._config.area);
+    const devices = getZWaveByArea(hass, this._config.area);
 
     Object.keys(DEVICES_CARD_MAP).forEach((key) => {
       const models = devices.filter((device) => device.model === key);
@@ -141,7 +141,7 @@ export class ZoozDeviceCenter extends LitElement {
       },
     ];
 
-    const editor = document.createElement('zooz-basic-editor');
+    const editor = document.createElement('zwave-basic-editor');
     (editor as any).schema = SCHEMA;
     return editor;
   }
@@ -159,8 +159,8 @@ export class ZoozDeviceCenter extends LitElement {
     return html`<div>
       ${this._config.area
         ? nothing
-        : html`<span>Zooz Hub</span>
-            <zooz-hub-card .hass=${this._hass}></zooz-hub-card>`}
+        : html`<span>Z-Wave Hub</span>
+            <zwave-hub-card .hass=${this._hass}></zwave-hub-card>`}
       ${Object.entries(DEVICES_CARD_MAP).map(([model, { type, title }]) => {
         const devices = this._center.devices?.[model];
 

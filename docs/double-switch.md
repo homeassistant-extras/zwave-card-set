@@ -29,18 +29,18 @@ A custom card for Home Assistant that displays and controls your ZEN30 Double Sw
 2. Add the card to your dashboard through the UI
 3. Configure the card with your device ID
    - if using YAML, this is the device id, not an entity id.
-   - device must be a Zooz ZEN30 model
+   - device must be a Z-Wave ZEN30 model
 
 Example configuration in YAML:
 
 ```yaml
-type: custom:zooz-double-switch
+type: custom:zwave-double-switch
 device_id: your_device_id_here
 title: Living Room Switches
 ```
 
 ```yaml
-type: custom:zooz-double-switch
+type: custom:zwave-double-switch
 device_id: your_device_id_here
 ```
 
@@ -71,4 +71,4 @@ All elements on the card support:
 
 ## Support
 
-For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zooz-card-set).
+For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zwave-card-set).

@@ -1,4 +1,4 @@
-import { BaseZoozCard } from '@base/card';
+import { BaseZWaveCard } from '@base/card';
 import type { Config, InstanceCardConfig, StaticCardConfig } from '@base/types';
 import * as actionHandlerModule from '@common/action-handler';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
@@ -22,8 +22,8 @@ const createState = (
   };
 };
 
-// Test implementation of BaseZoozCard
-class TestZoozCard extends BaseZoozCard {
+// Test implementation of BaseZWaveCard
+class TestZWaveCard extends BaseZWaveCard {
   constructor() {
     super();
     this.instanceCardConfig = {
@@ -32,7 +32,7 @@ class TestZoozCard extends BaseZoozCard {
     };
 
     this.myInstanceConfig = this.instanceCardConfig;
-    this.myStaticCardConfig = TestZoozCard.staticCardConfig;
+    this.myStaticCardConfig = TestZWaveCard.staticCardConfig;
   }
 
   myInstanceConfig: InstanceCardConfig;
@@ -43,15 +43,15 @@ class TestZoozCard extends BaseZoozCard {
   };
 }
 
-describe('BaseZoozCard', () => {
-  let card: TestZoozCard;
+describe('BaseZWaveCard', () => {
+  let card: TestZWaveCard;
   let mockHass: HomeAssistant;
   let mockConfig: Config;
   let actionHandlerStub: sinon.SinonStub;
   let handleClickActionStub: sinon.SinonStub;
 
   beforeEach(() => {
-    card = new TestZoozCard();
+    card = new TestZWaveCard();
 
     mockConfig = {
       device_id: 'test_device_id',
@@ -274,7 +274,7 @@ describe('BaseZoozCard', () => {
 
     describe('configuration', () => {
       it('should have correct static configuration', () => {
-        expect(TestZoozCard.staticCardConfig).to.deep.equal({
+        expect(TestZWaveCard.staticCardConfig).to.deep.equal({
           model: 'TEST-MODEL',
         });
       });
@@ -287,8 +287,8 @@ describe('BaseZoozCard', () => {
       });
 
       it('should get config element with correct schema', () => {
-        const editor = TestZoozCard.getConfigElement();
-        expect(editor.tagName.toLowerCase()).to.equal('zooz-basic-editor');
+        const editor = TestZWaveCard.getConfigElement();
+        expect(editor.tagName.toLowerCase()).to.equal('zwave-basic-editor');
         expect((editor as any).schema).to.deep.include.members([
           {
             name: 'title',
@@ -311,17 +311,17 @@ describe('BaseZoozCard', () => {
 
       it('should get stub config', async () => {
         const mockDevices = [{ id: 'device_123' }];
-        const getZoozModelsStub = stub(hassUtils, 'getZoozModels').returns(
+        const getZWaveModelsStub = stub(hassUtils, 'getZWaveModels').returns(
           mockDevices,
         );
 
-        const config = await TestZoozCard.getStubConfig(mockHass);
+        const config = await TestZWaveCard.getStubConfig(mockHass);
 
-        expect(getZoozModelsStub.calledOnceWith(mockHass, 'TEST-MODEL')).to.be
+        expect(getZWaveModelsStub.calledOnceWith(mockHass, 'TEST-MODEL')).to.be
           .true;
         expect(config).to.deep.equal({ device_id: 'device_123' });
 
-        getZoozModelsStub.restore();
+        getZWaveModelsStub.restore();
       });
     });
 

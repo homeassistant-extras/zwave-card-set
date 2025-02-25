@@ -26,7 +26,7 @@ export interface BaseCardConfig {
 }
 
 /**
- * Configuration object for a basic Zooz card.
+ * Configuration object for a basic Z-Wave card.
  */
 export interface StaticCardConfig {
   /** Model identifier for the device */

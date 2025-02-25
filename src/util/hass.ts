@@ -30,32 +30,32 @@ export const processDeviceEntities = (
 };
 
 /**
- * Gets Zooz devices from the Home Assistant object with optional filtering.
+ * Gets Z-Wave devices from the Home Assistant object with optional filtering.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing devices, entities, and states.
- * @param {Boolean} hubOnly - When true, returns only Zooz hub devices (devices with 'hub' label).
- * @param {Boolean} noHubs - When true, returns only Zooz non-hub devices (devices without 'hub' label).
+ * @param {Boolean} hubOnly - When true, returns only Z-Wave hub devices (devices with 'hub' label).
+ * @param {Boolean} noHubs - When true, returns only Z-Wave non-hub devices (devices without 'hub' label).
  * @param {string} [model] - Optional model name to filter devices by specific model.
  *                           Note: If both hubOnly and noHubs are true, hubOnly takes precedence.
  * @returns {Device[]} An array of Device objects that match the specified criteria.
  *
  * @example
- * // Get all Zooz devices
- * const allZoozDevices = getZoozDevices(hass);
+ * // Get all Z-Wave devices
+ * const allZWaveDevices = getZWaveDevices(hass);
  *
  * @example
- * // Get only Zooz hub devices
- * const zoozHubs = getZoozDevices(hass, true);
+ * // Get only Z-Wave hub devices
+ * const zWaveHubs = getZWaveDevices(hass, true);
  *
  * @example
- * // Get only Zooz non-hub devices
- * const zoozNonHubs = getZoozDevices(hass, false, true);
+ * // Get only Z-Wave non-hub devices
+ * const zWaveNonHubs = getZWaveDevices(hass, false, true);
  *
  * @example
- * // Get Zooz devices by model
- * const zen55Devices = getZoozDevices(hass, false, false, 'ZEN55 LR');
+ * // Get Z-Wave devices by model
+ * const zen55Devices = getZWaveDevices(hass, false, false, 'ZEN55 LR');
  */
-const getZoozDevices = (
+const getZWaveDevices = (
   hass: HomeAssistant,
   hubOnly: Boolean = false,
   noHubs: Boolean = false,
@@ -63,7 +63,7 @@ const getZoozDevices = (
   area?: string,
 ): Device[] => {
   let devices = Object.values(hass.devices).filter((device) => {
-    return device.manufacturer === 'Zooz';
+    return device.manufacturer === 'ZWave';
   });
 
   if (hubOnly) {
@@ -90,46 +90,46 @@ const getZoozDevices = (
 };
 
 /**
- * Gets all Zooz hub devices from the Home Assistant object.
- * A hub device is defined as any Zooz device that has the 'hub' label.
+ * Gets all Z-Wave hub devices from the Home Assistant object.
+ * A hub device is defined as any Z-Wave device that has the 'hub' label.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing devices, entities, and states.
- * @returns {Device[]} An array of Zooz hub devices.
+ * @returns {Device[]} An array of Z-Wave hub devices.
  *
  * @example
- * const zoozHubs = getZoozHubs(hass);
- * console.log(`Found ${zoozHubs.length} Zooz hubs`);
+ * const zWaveHubs = getZWaveHubs(hass);
+ * console.log(`Found ${zWaveHubs.length} Z-Wave hubs`);
  */
-export const getZoozHubs = (hass: HomeAssistant): Device[] =>
-  getZoozDevices(hass, true);
+export const getZWaveHubs = (hass: HomeAssistant): Device[] =>
+  getZWaveDevices(hass, true);
 
 /**
- * Gets all Zooz non-hub devices from the Home Assistant object.
- * A non-hub device is defined as any Zooz device that does not have the 'hub' label.
+ * Gets all Z-Wave non-hub devices from the Home Assistant object.
+ * A non-hub device is defined as any Z-Wave device that does not have the 'hub' label.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing devices, entities, and states.
- * @returns {Device[]} An array of Zooz non-hub devices (switches, dimmers, sensors, etc.).
+ * @returns {Device[]} An array of Z-Wave non-hub devices (switches, dimmers, sensors, etc.).
  *
  * @example
- * const zoozDevices = getZoozNonHubs(hass);
- * console.log(`Found ${zoozDevices.length} Zooz peripheral devices`);
+ * const zWaveDevices = getZWaveNonHubs(hass);
+ * console.log(`Found ${zWaveDevices.length} Z-Wave peripheral devices`);
  */
-export const getZoozNonHubs = (hass: HomeAssistant): Device[] =>
-  getZoozDevices(hass, false, true);
+export const getZWaveNonHubs = (hass: HomeAssistant): Device[] =>
+  getZWaveDevices(hass, false, true);
 
 /**
- * Gets Zooz devices filtered by a specific model.
+ * Gets Z-Wave devices filtered by a specific model.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing devices.
  * @param {string} model - The model name to filter devices.
- * @returns {Device[]} An array of Zooz devices matching the specified model.
+ * @returns {Device[]} An array of Z-Wave devices matching the specified model.
  *
  * @example
- * const zen55Devices = getZoozModels(hass, 'ZEN55 LR');
+ * const zen55Devices = getZWaveModels(hass, 'ZEN55 LR');
  * console.log(`Found ${zen55Devices.length} ZEN55 LR devices`);
  */
-export const getZoozModels = (hass: HomeAssistant, model: string): Device[] =>
-  getZoozDevices(hass, false, false, model);
+export const getZWaveModels = (hass: HomeAssistant, model: string): Device[] =>
+  getZWaveDevices(hass, false, false, model);
 
-export const getZoozByArea = (hass: HomeAssistant, area?: string): Device[] =>
-  getZoozDevices(hass, false, false, undefined, area);
+export const getZWaveByArea = (hass: HomeAssistant, area?: string): Device[] =>
+  getZWaveDevices(hass, false, false, undefined, area);

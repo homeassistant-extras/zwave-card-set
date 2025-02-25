@@ -5,7 +5,7 @@ import {
 } from '@common/action-handler';
 import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant } from '@type/homeassistant';
-import { getZoozNonHubs } from '@util/hass';
+import { getZWaveNonHubs } from '@util/hass';
 import { CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { state } from 'lit/decorators.js';
@@ -14,9 +14,9 @@ import type { Config, NodeInfo } from './types';
 const equal = require('fast-deep-equal');
 
 /**
- * Zooz Nodes Status Card
+ * Z-Wave Nodes Status Card
  */
-export class ZoozNodesStatus extends LitElement {
+export class ZWaveNodesStatus extends LitElement {
   /**
    * Card configuration object
    */
@@ -24,19 +24,19 @@ export class ZoozNodesStatus extends LitElement {
   private _config!: Config;
 
   /**
-   * Dead Zooz nodes information
+   * Dead Z-Wave nodes information
    */
   @state()
   private _deadNodes: NodeInfo[] = [];
 
   /**
-   * Alie Zooz nodes information
+   * Alie Z-Wave nodes information
    */
   @state()
   private _liveNodes: NodeInfo[] = [];
 
   /**
-   * Alie Zooz nodes information
+   * Alie Z-Wave nodes information
    */
   @state()
   private _sleepingNodes: NodeInfo[] = [];
@@ -77,24 +77,24 @@ export class ZoozNodesStatus extends LitElement {
   set hass(hass: HomeAssistant) {
     this._hass = hass;
 
-    // Object to store the zooz devices
-    const zoozNodes: Record<string, NodeInfo> = {};
+    // Object to store the Z-Wave devices
+    const zWaveNodes: Record<string, NodeInfo> = {};
 
     // Iterate through all devices
-    getZoozNonHubs(hass).forEach((device) => {
-      zoozNodes[device.id] = {
+    getZWaveNonHubs(hass).forEach((device) => {
+      zWaveNodes[device.id] = {
         name: device.name_by_user || device.name,
         device_id: device.id,
       } as NodeInfo;
     });
 
-    // If no Zooz devices are found, return early
-    if (!Object.keys(zoozNodes).length) {
+    // If no Z-Wave devices are found, return early
+    if (!Object.keys(zWaveNodes).length) {
       return;
     }
 
     Object.values(hass.entities).forEach((entity) => {
-      const node = zoozNodes[entity.device_id];
+      const node = zWaveNodes[entity.device_id];
       if (!node) return;
 
       if (entity.entity_id.endsWith('_node_status')) {
@@ -108,7 +108,7 @@ export class ZoozNodesStatus extends LitElement {
     });
 
     // Separate dead nodes and live nodes
-    const nodes = Object.values(zoozNodes);
+    const nodes = Object.values(zWaveNodes);
     const deadNodes = nodes.filter(
       (node) => !['alive', 'asleep'].includes(node.statusState.state),
     );
@@ -185,7 +185,7 @@ export class ZoozNodesStatus extends LitElement {
       },
     ];
 
-    const editor = document.createElement('zooz-basic-editor');
+    const editor = document.createElement('zwave-basic-editor');
     (editor as any).schema = SCHEMA;
     return editor;
   }
@@ -202,7 +202,7 @@ export class ZoozNodesStatus extends LitElement {
     }
 
     return html`
-      <ha-card header="${this._config.title || 'Zooz Nodes Status'}">
+      <ha-card header="${this._config.title || 'Z-Wave Nodes Status'}">
         <div
           class="card-content"
           style="${styleMap({
@@ -212,7 +212,7 @@ export class ZoozNodesStatus extends LitElement {
           ${this._deadNodes.length === 0 &&
           this._liveNodes.length === 0 &&
           this._sleepingNodes.length === 0
-            ? html`<div class="not-found">No Zooz devices found</div>`
+            ? html`<div class="not-found">No Z-Wave devices found</div>`
             : html`
                 ${this._deadNodes.length > 0
                   ? html`

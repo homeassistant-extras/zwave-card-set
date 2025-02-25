@@ -1,10 +1,10 @@
-import { BaseZoozCard } from '@base/card';
+import { BaseZWaveCard } from '@base/card';
 import type { BaseCardConfig, StaticCardConfig } from '@base/types';
 import type { CardConfig } from '@type/config';
 
 // Device-specific card configurations
 const CARD_CONFIGS: Record<string, BaseCardConfig> = {
-  'zooz-smart-plug': {
+  'zwave-smart-plug': {
     static: {
       model: 'ZEN04 800LR',
     },
@@ -13,7 +13,7 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['switch'],
     },
   },
-  'zooz-multi-relay': {
+  'zwave-multi-relay': {
     static: {
       model: 'ZEN16',
     },
@@ -22,7 +22,7 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['switch'],
     },
   },
-  'zooz-double-switch': {
+  'zwave-double-switch': {
     static: {
       model: 'ZEN30',
     },
@@ -31,7 +31,7 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['light', 'switch'],
     },
   },
-  'zooz-scene-controller': {
+  'zwave-scene-controller': {
     static: {
       model: 'ZEN32',
     },
@@ -40,7 +40,7 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['switch', 'light'],
     },
   },
-  'zooz-dry-contact-relay': {
+  'zwave-dry-contact-relay': {
     static: {
       model: 'ZEN51',
     },
@@ -49,7 +49,7 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['switch'],
     },
   },
-  'zooz-double-relay': {
+  'zwave-double-relay': {
     static: {
       model: 'ZEN52',
     },
@@ -58,7 +58,7 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['switch'],
     },
   },
-  'zooz-dc-signal-sensor': {
+  'zwave-dc-signal-sensor': {
     static: {
       model: 'ZEN55 LR',
     },
@@ -67,7 +67,7 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['binary_sensor'],
     },
   },
-  'zooz-on-off-switch': {
+  'zwave-on-off-switch': {
     static: {
       model: 'ZEN71',
     },
@@ -76,7 +76,7 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['switch'],
     },
   },
-  'zooz-open-close-sensor': {
+  'zwave-open-close-sensor': {
     static: {
       model: 'ZSE41',
     },
@@ -85,7 +85,7 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['binary_sensor'],
     },
   },
-  'zooz-tilt-shock-sensor': {
+  'zwave-tilt-shock-sensor': {
     static: {
       model: 'ZSE43',
     },
@@ -94,7 +94,7 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
       entityDomains: ['binary_sensor'],
     },
   },
-  'zooz-temperature-humidity-sensor': {
+  'zwave-temperature-humidity-sensor': {
     static: {
       model: 'ZSE44',
     },
@@ -105,67 +105,68 @@ const CARD_CONFIGS: Record<string, BaseCardConfig> = {
   },
 };
 
-// Device-specific cards using BaseZoozCard
+// Device-specific cards using BaseZWaveCard
 export const infoCards: CardConfig[] = [
   {
-    type: 'zooz-smart-plug',
+    type: 'zwave-smart-plug',
     name: 'ZEN04 800LR - Smart Plug',
-    description: 'A card to control and monitor a Zooz smart plug device.',
+    description: 'A card to control and monitor a Z-Wave smart plug device.',
   },
   {
-    type: 'zooz-multi-relay',
+    type: 'zwave-multi-relay',
     name: 'ZEN16 - Multi Relay',
-    description: 'A card to control and monitor a Zooz multi relay device.',
+    description: 'A card to control and monitor a Z-Wave multi relay device.',
   },
   {
-    type: 'zooz-double-switch',
+    type: 'zwave-double-switch',
     name: 'ZEN30 - Double Switch',
-    description: 'A card to control and monitor a Zooz double switch device.',
+    description: 'A card to control and monitor a Z-Wave double switch device.',
   },
   {
-    type: 'zooz-scene-controller',
+    type: 'zwave-scene-controller',
     name: 'ZEN32 - Scene Controller',
-    description: 'A card to control and monitor a Zooz scene controller.',
+    description: 'A card to control and monitor a Z-Wave scene controller.',
   },
   {
-    type: 'zooz-dry-contact-relay',
+    type: 'zwave-dry-contact-relay',
     name: 'ZEN51 - Dry Contact Relay',
     description:
-      'A card to control and monitor a Zooz dry contact relay device.',
+      'A card to control and monitor a Z-Wave dry contact relay device.',
   },
   {
-    type: 'zooz-double-relay',
+    type: 'zwave-double-relay',
     name: 'ZEN52 - Double Relay',
-    description: 'A card to control and monitor a Zooz double relay device.',
+    description: 'A card to control and monitor a Z-Wave double relay device.',
   },
   {
-    type: 'zooz-dc-signal-sensor',
+    type: 'zwave-dc-signal-sensor',
     name: 'ZEN55 LR - DC Signal Sensor',
-    description: 'A card to monitor a Zooz DC signal sensor device.',
+    description: 'A card to monitor a Z-Wave DC signal sensor device.',
   },
   {
-    type: 'zooz-on-off-switch',
+    type: 'zwave-on-off-switch',
     name: 'ZEN71 - On/Off Switch',
-    description: 'A card to control and monitor a Zooz on/off switch device.',
+    description: 'A card to control and monitor a Z-Wave on/off switch device.',
   },
   {
-    type: 'zooz-open-close-sensor',
+    type: 'zwave-open-close-sensor',
     name: 'ZSE41 - Open Close Sensor',
-    description: 'A card to monitor a Zooz open close sensor device.',
+    description: 'A card to monitor a Z-Wave open close sensor device.',
   },
   {
-    type: 'zooz-tilt-shock-sensor',
+    type: 'zwave-tilt-shock-sensor',
     name: 'ZSE43 - Tilt Shock Sensor',
-    description: 'A card to monitor a Zooz tilt shock sensor device.',
+    description: 'A card to monitor a Z-Wave tilt shock sensor device.',
   },
   {
-    type: 'zooz-temperature-humidity-sensor',
+    type: 'zwave-temperature-humidity-sensor',
     name: 'ZSE44 - Temperature Humidity Sensor',
-    description: 'A card to monitor a Zooz temperature humidity sensor device.',
+    description:
+      'A card to monitor a Z-Wave temperature humidity sensor device.',
   },
 ].map((card) => ({
   ...card,
-  element: class extends BaseZoozCard {
+  element: class extends BaseZWaveCard {
     constructor() {
       super();
       const config: BaseCardConfig = CARD_CONFIGS[card.type]!;

@@ -32,13 +32,13 @@ A custom card for Home Assistant that displays and controls your ZEN16 Multi Rel
 Example configuration in YAML:
 
 ```yaml
-type: custom:zooz-multi-relay
+type: custom:zwave-multi-relay
 device_id: your_device_id_here
 title: Basement Multi Relay
 ```
 
 ```yaml
-type: custom:zooz-multi-relay
+type: custom:zwave-multi-relay
 device_id: your_device_id_here
 ```
 
@@ -68,4 +68,4 @@ All elements on the card support:
 
 ## Support
 
-For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zooz-card-set).
+For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zwave-card-set).

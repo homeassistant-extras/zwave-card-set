@@ -1,5 +1,9 @@
 import type { Device, HomeAssistant, State } from '@type/homeassistant';
-import { getZoozHubs, getZoozNonHubs, processDeviceEntities } from '@util/hass';
+import {
+  getZWaveHubs,
+  getZWaveNonHubs,
+  processDeviceEntities,
+} from '@util/hass';
 import { CSSResult, LitElement, html, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
@@ -7,9 +11,9 @@ import type { Config, Hub } from './types';
 const equal = require('fast-deep-equal');
 
 /**
- * Zooz Hub Card
+ * Z-Wave Hub Card
  */
-export class ZoozHubCard extends LitElement {
+export class ZWaveHubCard extends LitElement {
   /**
    * Card configuration object
    */
@@ -64,18 +68,18 @@ export class ZoozHubCard extends LitElement {
       error: '',
     } as Hub;
 
-    const devices = getZoozHubs(hass);
+    const devices = getZWaveHubs(hass);
 
     if (devices.length > 1) {
-      this._hub.error = 'Multiple Zooz hubs found. Please specify one.';
+      this._hub.error = 'Multiple Z-Wave hubs found. Please specify one.';
       return;
     } else if (devices.length === 0) {
-      this._hub.error = 'No Zooz hub found.';
+      this._hub.error = 'No Z-Wave hub found.';
       return;
     }
 
     const hubDevice = devices[0]!;
-    hub.name = hubDevice.name_by_user || hubDevice.name || 'Zooz Hub';
+    hub.name = hubDevice.name_by_user || hubDevice.name || 'Z-Wave Hub';
 
     processDeviceEntities(hass, hubDevice.id, ['sensor'], (entity, state) => {
       if (entity.entity_id.includes('status')) {
@@ -93,7 +97,7 @@ export class ZoozHubCard extends LitElement {
       }
     });
 
-    hub.connectedDevices = getZoozNonHubs(hass);
+    hub.connectedDevices = getZWaveNonHubs(hass);
 
     if (!equal(hub, this._hub)) {
       this._hub = hub;
@@ -102,7 +106,7 @@ export class ZoozHubCard extends LitElement {
 
   // card configuration
   static getConfigElement() {
-    return document.createElement('zooz-basic-editor');
+    return document.createElement('zwave-basic-editor');
   }
 
   /**

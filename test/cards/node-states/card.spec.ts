@@ -1,5 +1,5 @@
 import * as actionHandlerModule from '@common/action-handler';
-import { ZoozNodesStatus } from '@node-states/card';
+import { ZWaveNodesStatus } from '@node-states/card';
 import type { Config, NodeInfo } from '@node-states/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import type { ActionHandlerEvent } from '@type/action';
@@ -8,9 +8,9 @@ import { expect } from 'chai';
 import { nothing } from 'lit';
 import { stub } from 'sinon';
 
-describe('ZoozNodesStatus', () => {
+describe('ZWaveNodesStatus', () => {
   describe('card.ts', () => {
-    let card: ZoozNodesStatus;
+    let card: ZWaveNodesStatus;
     let mockHass: HomeAssistant;
     let mockConfig: Config;
     let actionHandlerStub: sinon.SinonStub;
@@ -18,11 +18,11 @@ describe('ZoozNodesStatus', () => {
 
     beforeEach(() => {
       // Create a new card instance for each test
-      card = new ZoozNodesStatus();
+      card = new ZWaveNodesStatus();
 
       // Basic config setup
       mockConfig = {
-        title: 'Test Zooz Nodes',
+        title: 'Test Z-Wave Nodes',
       };
 
       // Basic mock Hass setup with empty collections
@@ -65,8 +65,8 @@ describe('ZoozNodesStatus', () => {
 
     describe('getConfigElement', () => {
       it('should return correct editor element', () => {
-        const editor = ZoozNodesStatus.getConfigElement();
-        expect(editor.tagName.toLowerCase()).to.equal('zooz-basic-editor');
+        const editor = ZWaveNodesStatus.getConfigElement();
+        expect(editor.tagName.toLowerCase()).to.equal('zwave-basic-editor');
         expect((editor as any).schema).to.deep.equal([
           {
             name: 'title',
@@ -102,8 +102,8 @@ describe('ZoozNodesStatus', () => {
     });
 
     describe('hass property setter', () => {
-      it('should not process anything when no Zooz devices exist', () => {
-        // Setup mock with no Zooz devices
+      it('should not process anything when no Z-Wave devices exist', () => {
+        // Setup mock with no Z-Wave devices
         card.hass = mockHass;
 
         // Check internal state
@@ -112,31 +112,31 @@ describe('ZoozNodesStatus', () => {
         expect((card as any)._sleepingNodes).to.be.an('array').that.is.empty;
       });
 
-      it('should identify and categorize Zooz devices correctly', () => {
-        // Create mock data with Zooz devices in different states
+      it('should identify and categorize Z-Wave devices correctly', () => {
+        // Create mock data with Z-Wave devices in different states
         mockHass.devices = {
           device1: {
             id: 'device1',
-            name_by_user: 'Zooz Switch 1',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Switch 1',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device2: {
             id: 'device2',
-            name_by_user: 'Zooz Switch 2',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Switch 2',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device3: {
             id: 'device3',
-            name_by_user: 'Zooz Switch 3',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Switch 3',
+            manufacturer: 'ZWave',
             labels: [],
           },
           hubDevice: {
             id: 'hubDevice',
-            name_by_user: 'Zooz Hub',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Hub',
+            manufacturer: 'ZWave',
             labels: ['hub'],
           },
           otherDevice: {
@@ -210,33 +210,35 @@ describe('ZoozNodesStatus', () => {
 
         // Verify device categorization
         expect((card as any)._liveNodes).to.have.lengthOf(1);
-        expect((card as any)._liveNodes[0].name).to.equal('Zooz Switch 1');
+        expect((card as any)._liveNodes[0].name).to.equal('Z-Wave Switch 1');
 
         expect((card as any)._deadNodes).to.have.lengthOf(1);
-        expect((card as any)._deadNodes[0].name).to.equal('Zooz Switch 2');
+        expect((card as any)._deadNodes[0].name).to.equal('Z-Wave Switch 2');
 
         expect((card as any)._sleepingNodes).to.have.lengthOf(1);
-        expect((card as any)._sleepingNodes[0].name).to.equal('Zooz Switch 3');
+        expect((card as any)._sleepingNodes[0].name).to.equal(
+          'Z-Wave Switch 3',
+        );
       });
 
       it('should sort live nodes by last seen timestamp', () => {
         mockHass.devices = {
           device1: {
             id: 'device1',
-            name_by_user: 'Zooz Device 1',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Device 1',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device2: {
             id: 'device2',
-            name_by_user: 'Zooz Device 2',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Device 2',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device3: {
             id: 'device3',
-            name_by_user: 'Zooz Device 3',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Device 3',
+            manufacturer: 'ZWave',
             labels: [],
           },
         };
@@ -303,29 +305,29 @@ describe('ZoozNodesStatus', () => {
 
         const liveNodes = (card as any)._liveNodes;
         expect(liveNodes).to.have.lengthOf(3);
-        expect(liveNodes[0].name).to.equal('Zooz Device 2'); // most recent
-        expect(liveNodes[1].name).to.equal('Zooz Device 3'); // second most recent
-        expect(liveNodes[2].name).to.equal('Zooz Device 1'); // least recent
+        expect(liveNodes[0].name).to.equal('Z-Wave Device 2'); // most recent
+        expect(liveNodes[1].name).to.equal('Z-Wave Device 3'); // second most recent
+        expect(liveNodes[2].name).to.equal('Z-Wave Device 1'); // least recent
       });
 
       it('should sort sleeping nodes by last seen timestamp', () => {
         mockHass.devices = {
           device1: {
             id: 'device1',
-            name_by_user: 'Zooz Device 1',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Device 1',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device2: {
             id: 'device2',
-            name_by_user: 'Zooz Device 2',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Device 2',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device3: {
             id: 'device3',
-            name_by_user: 'Zooz Device 3',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Device 3',
+            manufacturer: 'ZWave',
             labels: [],
           },
         };
@@ -392,23 +394,23 @@ describe('ZoozNodesStatus', () => {
 
         const sleepingNodes = (card as any)._sleepingNodes;
         expect(sleepingNodes).to.have.lengthOf(3);
-        expect(sleepingNodes[0].name).to.equal('Zooz Device 2'); // most recent
-        expect(sleepingNodes[1].name).to.equal('Zooz Device 3'); // second most recent
-        expect(sleepingNodes[2].name).to.equal('Zooz Device 1'); // least recent
+        expect(sleepingNodes[0].name).to.equal('Z-Wave Device 2'); // most recent
+        expect(sleepingNodes[1].name).to.equal('Z-Wave Device 3'); // second most recent
+        expect(sleepingNodes[2].name).to.equal('Z-Wave Device 1'); // least recent
       });
 
       it('should handle nodes without last seen information', () => {
         mockHass.devices = {
           device1: {
             id: 'device1',
-            name_by_user: 'Zooz Device With LastSeen',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Device With LastSeen',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device2: {
             id: 'device2',
-            name_by_user: 'Zooz Device No LastSeen',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Device No LastSeen',
+            manufacturer: 'ZWave',
             labels: [],
           },
         };
@@ -453,10 +455,10 @@ describe('ZoozNodesStatus', () => {
 
         // Device without last_seen should still be included
         const nodeNames = liveNodes.map((node: NodeInfo) => node.name);
-        expect(nodeNames).to.include('Zooz Device No LastSeen');
+        expect(nodeNames).to.include('Z-Wave Device No LastSeen');
 
         // Device without last_seen should be sorted after devices with last_seen
-        expect(liveNodes[1].name).to.equal('Zooz Device No LastSeen');
+        expect(liveNodes[1].name).to.equal('Z-Wave Device No LastSeen');
       });
     });
 
@@ -511,21 +513,21 @@ describe('ZoozNodesStatus', () => {
     });
 
     describe('render method', () => {
-      it('should show "No Zooz devices found" when no devices exist', async () => {
+      it('should show "No Z-Wave devices found" when no devices exist', async () => {
         card.hass = mockHass;
         const el = await fixture(card.render());
 
         const notFoundDiv = el.querySelector('.not-found')!;
         expect(notFoundDiv).to.exist;
-        expect(notFoundDiv.textContent).to.equal('No Zooz devices found');
+        expect(notFoundDiv.textContent).to.equal('No Z-Wave devices found');
       });
 
       it('should render dead nodes section when dead nodes exist', async () => {
         mockHass.devices = {
           device1: {
             id: 'device1',
-            name_by_user: 'Dead Zooz Device',
-            manufacturer: 'Zooz',
+            name_by_user: 'Dead Z-Wave Device',
+            manufacturer: 'ZWave',
             labels: [],
           },
         };
@@ -562,15 +564,15 @@ describe('ZoozNodesStatus', () => {
 
         const nodeName = el.querySelector('.node-name')!;
         expect(nodeName).to.exist;
-        expect(nodeName.textContent).to.equal('Dead Zooz Device');
+        expect(nodeName.textContent).to.equal('Dead Z-Wave Device');
       });
 
       it('should render active nodes section when live nodes exist', async () => {
         mockHass.devices = {
           device1: {
             id: 'device1',
-            name_by_user: 'Live Zooz Device',
-            manufacturer: 'Zooz',
+            name_by_user: 'Live Z-Wave Device',
+            manufacturer: 'ZWave',
             labels: [],
           },
         };
@@ -607,15 +609,15 @@ describe('ZoozNodesStatus', () => {
 
         const nodeName = el.querySelector('.node-name')!;
         expect(nodeName).to.exist;
-        expect(nodeName.textContent).to.equal('Live Zooz Device');
+        expect(nodeName.textContent).to.equal('Live Z-Wave Device');
       });
 
       it('should render sleeping nodes section when sleeping nodes exist', async () => {
         mockHass.devices = {
           device1: {
             id: 'device1',
-            name_by_user: 'Sleeping Zooz Device',
-            manufacturer: 'Zooz',
+            name_by_user: 'Sleeping Z-Wave Device',
+            manufacturer: 'ZWave',
             labels: [],
           },
         };
@@ -652,7 +654,7 @@ describe('ZoozNodesStatus', () => {
 
         const nodeName = el.querySelector('.node-name')!;
         expect(nodeName).to.exist;
-        expect(nodeName.textContent).to.equal('Sleeping Zooz Device');
+        expect(nodeName.textContent).to.equal('Sleeping Z-Wave Device');
       });
 
       it('should display multiple sections when different node types exist', async () => {
@@ -660,19 +662,19 @@ describe('ZoozNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Dead Device',
-            manufacturer: 'Zooz',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device2: {
             id: 'device2',
             name_by_user: 'Live Device',
-            manufacturer: 'Zooz',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device3: {
             id: 'device3',
             name_by_user: 'Sleeping Device',
-            manufacturer: 'Zooz',
+            manufacturer: 'ZWave',
             labels: [],
           },
         };
@@ -769,7 +771,7 @@ describe('ZoozNodesStatus', () => {
         const el = await fixture(card.render());
         const cardHeader = el.getAttribute('header');
 
-        expect(cardHeader).to.equal('Zooz Nodes Status');
+        expect(cardHeader).to.equal('Z-Wave Nodes Status');
       });
 
       it('should splice arrays to length 1 when in preview mode', async () => {
@@ -778,37 +780,37 @@ describe('ZoozNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Dead Device 1',
-            manufacturer: 'Zooz',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device2: {
             id: 'device2',
             name_by_user: 'Dead Device 2',
-            manufacturer: 'Zooz',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device3: {
             id: 'device3',
             name_by_user: 'Live Device 1',
-            manufacturer: 'Zooz',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device4: {
             id: 'device4',
             name_by_user: 'Live Device 2',
-            manufacturer: 'Zooz',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device5: {
             id: 'device5',
             name_by_user: 'Sleeping Device 1',
-            manufacturer: 'Zooz',
+            manufacturer: 'ZWave',
             labels: [],
           },
           device6: {
             id: 'device6',
             name_by_user: 'Sleeping Device 2',
-            manufacturer: 'Zooz',
+            manufacturer: 'ZWave',
             labels: [],
           },
         };

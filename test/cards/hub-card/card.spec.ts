@@ -1,18 +1,18 @@
-import { ZoozHubCard } from '@hub-card/card';
+import { ZWaveHubCard } from '@hub-card/card';
 import type { Config } from '@hub-card/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import type { Device, HomeAssistant } from '@type/homeassistant';
 import { expect } from 'chai';
 
-describe('ZoozHubCard', () => {
+describe('ZWaveHubCard', () => {
   describe('card.ts', () => {
-    let card: ZoozHubCard;
+    let card: ZWaveHubCard;
     let mockHass: HomeAssistant;
     let mockConfig: Config;
 
     beforeEach(() => {
       // Create a new card instance for each test
-      card = new ZoozHubCard();
+      card = new ZWaveHubCard();
 
       // Basic config setup
       mockConfig = {};
@@ -42,33 +42,33 @@ describe('ZoozHubCard', () => {
 
     describe('getConfigElement', () => {
       it('should return correct editor element', () => {
-        const editor = ZoozHubCard.getConfigElement();
-        expect(editor.tagName.toLowerCase()).to.equal('zooz-basic-editor');
+        const editor = ZWaveHubCard.getConfigElement();
+        expect(editor.tagName.toLowerCase()).to.equal('zwave-basic-editor');
       });
     });
 
     describe('hass property setter', () => {
-      it('should set error when no Zooz hub is found', () => {
-        // Setup mock with no Zooz hub devices
+      it('should set error when no Z-Wave hub is found', () => {
+        // Setup mock with no Z-Wave hub devices
         card.hass = mockHass;
 
         // Check error message
-        expect((card as any)._hub.error).to.equal('No Zooz hub found.');
+        expect((card as any)._hub.error).to.equal('No Z-Wave hub found.');
       });
 
-      it('should set error when multiple Zooz hubs are found', () => {
-        // Create mock data with multiple Zooz hub devices
+      it('should set error when multiple Z-Wave hubs are found', () => {
+        // Create mock data with multiple Z-Wave hub devices
         mockHass.devices = {
           hub1: {
             id: 'hub1',
-            name_by_user: 'Zooz Hub 1',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Hub 1',
+            manufacturer: 'ZWave',
             labels: ['hub'],
           },
           hub2: {
             id: 'hub2',
-            name_by_user: 'Zooz Hub 2',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Hub 2',
+            manufacturer: 'ZWave',
             labels: ['hub'],
           },
         };
@@ -77,23 +77,23 @@ describe('ZoozHubCard', () => {
 
         // Check error message
         expect((card as any)._hub.error).to.equal(
-          'Multiple Zooz hubs found. Please specify one.',
+          'Multiple Z-Wave hubs found. Please specify one.',
         );
       });
 
-      it('should identify and configure a single Zooz hub correctly', () => {
-        // Create mock data with a single Zooz hub
+      it('should identify and configure a single Z-Wave hub correctly', () => {
+        // Create mock data with a single Z-Wave hub
         mockHass.devices = {
           hub1: {
             id: 'hub1',
-            name_by_user: 'Zooz Hub',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Hub',
+            manufacturer: 'ZWave',
             labels: ['hub'],
           },
           device1: {
             id: 'device1',
-            name_by_user: 'Zooz Device 1',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Device 1',
+            manufacturer: 'ZWave',
             labels: [],
           },
           otherDevice: {
@@ -132,7 +132,7 @@ describe('ZoozHubCard', () => {
 
         // Verify hub identification
         expect((card as any)._hub.error).to.be.empty;
-        expect((card as any)._hub.name).to.equal('Zooz Hub');
+        expect((card as any)._hub.name).to.equal('Z-Wave Hub');
 
         // Verify status entity
         expect((card as any)._hub.statusEntity.entity_id).to.equal(
@@ -149,7 +149,7 @@ describe('ZoozHubCard', () => {
         // Verify connected devices
         expect((card as any)._hub.connectedDevices).to.have.lengthOf(1);
         expect((card as any)._hub.connectedDevices[0].name_by_user).to.equal(
-          'Zooz Device 1',
+          'Z-Wave Device 1',
         );
       });
 
@@ -157,37 +157,37 @@ describe('ZoozHubCard', () => {
         mockHass.devices = {
           hub1: {
             id: 'hub1',
-            name: 'Zooz Hub Device',
-            manufacturer: 'Zooz',
+            name: 'Z-Wave Hub Device',
+            manufacturer: 'ZWave',
             labels: ['hub'],
           },
         };
 
         card.hass = mockHass;
 
-        expect((card as any)._hub.name).to.equal('Zooz Hub Device');
+        expect((card as any)._hub.name).to.equal('Z-Wave Hub Device');
       });
 
-      it('should fallback to "Zooz Hub" when no name is available', () => {
+      it('should fallback to "Z-Wave Hub" when no name is available', () => {
         mockHass.devices = {
           hub1: {
             id: 'hub1',
-            manufacturer: 'Zooz',
+            manufacturer: 'ZWave',
             labels: ['hub'],
           },
         };
 
         card.hass = mockHass;
 
-        expect((card as any)._hub.name).to.equal('Zooz Hub');
+        expect((card as any)._hub.name).to.equal('Z-Wave Hub');
       });
 
       it('should collect all rssi entities related to the hub', () => {
         mockHass.devices = {
           hub1: {
             id: 'hub1',
-            name_by_user: 'Zooz Hub',
-            manufacturer: 'Zooz',
+            name_by_user: 'Z-Wave Hub',
+            manufacturer: 'ZWave',
             labels: ['hub'],
           },
         };
@@ -282,7 +282,7 @@ describe('ZoozHubCard', () => {
 
       it('should render hub name in header', async () => {
         (card as any)._hub = {
-          name: 'My Zooz Hub',
+          name: 'My Z-Wave Hub',
           statusEntity: {
             state: 'online',
             entity_id: 'sensor.hub_status',
@@ -296,7 +296,9 @@ describe('ZoozHubCard', () => {
         (card as any)._hass = mockHass;
 
         const el = await fixture(card.render());
-        expect(el.querySelector('.name')?.textContent).to.equal('My Zooz Hub');
+        expect(el.querySelector('.name')?.textContent).to.equal(
+          'My Z-Wave Hub',
+        );
       });
 
       it('should render status element with proper state', async () => {
@@ -307,7 +309,7 @@ describe('ZoozHubCard', () => {
         };
 
         (card as any)._hub = {
-          name: 'My Zooz Hub',
+          name: 'My Z-Wave Hub',
           statusEntity: statusEntity,
           rssiEntities: [],
           connectedDevices: [],
@@ -339,7 +341,7 @@ describe('ZoozHubCard', () => {
         };
 
         (card as any)._hub = {
-          name: 'My Zooz Hub',
+          name: 'My Z-Wave Hub',
           statusEntity: {
             state: 'online',
             entity_id: 'sensor.hub_status',
@@ -367,7 +369,7 @@ describe('ZoozHubCard', () => {
         ] as Device[];
 
         (card as any)._hub = {
-          name: 'My Zooz Hub',
+          name: 'My Z-Wave Hub',
           statusEntity: {
             state: 'online',
             entity_id: 'sensor.hub_status',
@@ -396,7 +398,7 @@ describe('ZoozHubCard', () => {
         ] as Device[];
 
         (card as any)._hub = {
-          name: 'My Zooz Hub',
+          name: 'My Z-Wave Hub',
           statusEntity: {
             state: 'online',
             entity_id: 'sensor.hub_status',
@@ -423,7 +425,7 @@ describe('ZoozHubCard', () => {
         ] as Device[];
 
         (card as any)._hub = {
-          name: 'My Zooz Hub',
+          name: 'My Z-Wave Hub',
           statusEntity: {
             state: 'online',
             entity_id: 'sensor.hub_status',
@@ -456,7 +458,7 @@ describe('ZoozHubCard', () => {
         const devices = [{ id: 'device1', name: 'Device 1 Name' }] as Device[];
 
         (card as any)._hub = {
-          name: 'My Zooz Hub',
+          name: 'My Z-Wave Hub',
           statusEntity: {
             state: 'online',
             entity_id: 'sensor.hub_status',

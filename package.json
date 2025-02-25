@@ -1,11 +1,11 @@
 {
-  "name": "zooz-card-set",
+  "name": "zwave-card-set",
   "version": "0.5.1",
   "author": "Patrick Masters",
   "license": "ISC",
-  "description": "Custom cards for Home Assistant which relate to Zooz Z-Wave Devices.",
+  "description": "Custom cards for Home Assistant which relate to Z-Wave Devices.",
   "source": "src/index.ts",
-  "module": "dist/zooz-card-set.js",
+  "module": "dist/zwave-card-set.js",
   "targets": {
     "module": {
       "includeNodeModules": true

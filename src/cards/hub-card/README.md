@@ -1,14 +1,14 @@
-# Zooz Hub Card
+# Z-Wave Hub Card
 
-A custom card for Home Assistant that displays the status of your Zooz Z-Wave hub and connected devices. This card provides a clean interface to monitor your hub's status, signal strength, and allows you to quickly view all connected Zooz devices.
+A custom card for Home Assistant that displays the status of your Z-Wave hub and connected devices. This card provides a clean interface to monitor your hub's status, signal strength, and allows you to quickly view all connected Z-Wave devices.
 
 ![card](../../../assets/cards/hub-card/card.png)
 
 ## Features
 
-- Displays the Zooz hub status with visual indicators
+- Displays the Z-Wave hub status with visual indicators
 - Shows RSSI signal strength with color-coded values
-- Lists all connected Zooz devices with expandable/collapsible view
+- Lists all connected Z-Wave devices with expandable/collapsible view
 - Direct links to device configuration pages
 - Responsive design that works on both desktop and mobile
 - Easy configuration through the Home Assistant UI
@@ -26,12 +26,12 @@ No configuration for this debice
 Example configuration in YAML:
 
 ```yaml
-type: custom:zooz-hub-card
+type: custom:zwave-hub-card
 ```
 
 ## Status Indicators
 
-- Hub Status: Shows the current operational status of your Zooz hub
+- Hub Status: Shows the current operational status of your Z-Wave hub
 - RSSI Indicators:
   - 🟢 Green: Good signal strength (better than -60 dBm)
   - 🟡 Amber: Fair signal strength (between -60 and -80 dBm)
@@ -41,16 +41,16 @@ type: custom:zooz-hub-card
 
 The card allows you to:
 
-- See the total count of connected Zooz devices
+- See the total count of connected Z-Wave devices
 - Expand/collapse the device list
 - Click on any device to go directly to its configuration page
 
 ## Requirements
 
 - Home Assistant
-- At least one Zooz Z-Wave hub
+- At least one Z-Wave hub
 - Z-Wave integration configured in Home Assistant
 
 ## Support
 
-For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zooz-card-set).
+For issues and feature requests, please visit the [GitHub repository](https://github.com/homeassistant-extras/zwave-card-set).
