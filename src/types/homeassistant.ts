@@ -64,6 +64,9 @@ export type Entity = {
 
   /** If the entity is hidden or not */
   hidden?: boolean;
+
+  /** Additional info about entities sometimes set by integrations */
+  translation_key?: string;
 };
 
 /**

@@ -1,19 +1,61 @@
 import type { Device, Entity, HomeAssistant, State } from '@type/homeassistant';
 
 /**
+ * Processes entities from the hass object, filtering by device ID and applying a callback.
+ *
+ * @param {HomeAssistant} hass - The Home Assistant object containing entities and states.
+ * @param {string} device_id - The device ID to filter entities.
+ * @param {string[]} domains - The list of domains to filter entities.
+ * @param {Function} callback - The function to execute on each matching entity.
+ * @returns {boolean} True if the device is a controller, false otherwise.
+ */
+const _processDeviceEntities = (
+  hass: HomeAssistant,
+  device_id: string,
+  domains: string[],
+  callback: (entity: Entity, state: State) => void,
+): boolean => {
+  const entities = Object.values(hass.entities);
+  let isController = false;
+
+  entities.forEach((entity) => {
+    if (
+      entity.device_id == device_id &&
+      entity.translation_key === 'controller_status'
+    ) {
+      isController = true;
+    }
+
+    // now filter things
+    if (entity.hidden) return;
+    if (!domains.includes(entity.entity_id.split('.')[0]!)) return;
+    if (entity.device_id !== device_id) return;
+
+    // if here we have matching entities
+    const state = hass.states[entity.entity_id]!;
+    if (!state) return;
+    callback(entity, {
+      state: state.state,
+      entity_id: state.entity_id,
+      attributes: state.attributes,
+    });
+  });
+
+  return isController;
+};
+
+/**
  * Checks if a device is a Z-Wave device
  * @param device - The device to check
  * @returns {boolean} True if the device is a Z-Wave device
  */
-const _isZWaveDevice = (device: Device): boolean => {
+export const isZWaveDevice = (device: Device): boolean => {
   if (!device.identifiers) {
     return false;
   }
   for (const parts of device.identifiers) {
     for (const part of parts) {
       if (part === 'zwave_js') {
-        console.log('is true');
-
         return true;
       }
     }
@@ -35,20 +77,34 @@ export const processDeviceEntities = (
   domains: string[],
   callback: (entity: Entity, state: State) => void,
 ): void => {
-  Object.values(hass.entities)
-    .filter((entity) => !entity.hidden)
-    .forEach((entity) => {
-      if (!domains.includes(entity.entity_id.split('.')[0]!)) return;
-      if (entity.device_id !== device_id) return;
-      const state = hass.states[entity.entity_id]!;
-      if (!state) return;
-      callback(entity, {
-        state: state.state,
-        entity_id: state.entity_id,
-        attributes: state.attributes,
-      });
-    });
+  _processDeviceEntities(
+    hass,
+    device_id,
+    [...domains, 'sensor', 'update'],
+    callback,
+  );
 };
+
+/**
+ * Processes entities from the hass object, filtering by device ID and applying a callback.
+ *
+ * @param {HomeAssistant} hass - The Home Assistant object containing entities and states.
+ * @param {string} device_id - The device ID to filter entities.
+ * @param {string[]} domains - The list of domains to filter entities.
+ * @param {Function} callback - The function to execute on each matching entity.
+ * @returns {boolean} True if the device is a controller, false otherwise.
+ */
+export const processDeviceEntitiesAndCheckIfController = (
+  hass: HomeAssistant,
+  device_id: string,
+  callback: (entity: Entity, state: State) => void,
+): boolean =>
+  _processDeviceEntities(
+    hass,
+    device_id,
+    ['switch', 'light', 'sensor', 'update'],
+    callback,
+  );
 
 /**
  * Gets Z-Wave devices from the Home Assistant object with optional filtering.
@@ -84,7 +140,7 @@ const getZWaveDevices = (
   area?: string,
 ): Device[] => {
   let devices = Object.values(hass.devices).filter((device) => {
-    return _isZWaveDevice(device);
+    return isZWaveDevice(device);
   });
 
   if (hubOnly) {

@@ -5,24 +5,23 @@ import {
   toggleAction,
 } from '@common/action-handler';
 import type { HomeAssistant, State } from '@type/homeassistant';
-import { getZWaveModels, processDeviceEntities } from '@util/hass';
+import {
+  getZWaveNonHubs,
+  isZWaveDevice,
+  processDeviceEntitiesAndCheckIfController,
+} from '@util/hass';
 import { getEntityIconStyles } from '@util/styles';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
-import type {
-  Config,
-  InstanceCardConfig,
-  Sensor,
-  StaticCardConfig,
-} from './types';
+import type { Config, Sensor } from './types';
 const equal = require('fast-deep-equal');
 
 /**
  * Base component for Z-Wave device cards
  * Handles common functionality for displaying device status and controls
  */
-export abstract class BaseZWaveCard extends LitElement {
+export class ZWaveNodeCard extends LitElement {
   /**
    * Card configuration object
    */
@@ -40,12 +39,6 @@ export abstract class BaseZWaveCard extends LitElement {
    * Not marked as @state as it's handled differently
    */
   protected _hass!: HomeAssistant;
-
-  /**
-   * Configurtation for dynamic cards.
-   */
-  protected static staticCardConfig: StaticCardConfig;
-  protected instanceCardConfig!: InstanceCardConfig;
 
   /**
    * Returns the component's styles
@@ -77,14 +70,21 @@ export abstract class BaseZWaveCard extends LitElement {
       return;
     }
 
+    const device = hass.devices[this._config.device_id];
+    if (!device || !isZWaveDevice(device)) {
+      return;
+    }
+
     const sensor: Sensor = {
       entities: [],
+      name: device.name_by_user || device.name,
+      manufacturer: device.manufacturer,
+      model: device.model,
     };
 
-    processDeviceEntities(
+    sensor.isController = processDeviceEntitiesAndCheckIfController(
       hass,
       this._config.device_id,
-      [...this.instanceCardConfig.entityDomains, 'sensor', 'update'],
       (entity, state) => {
         switch (entity.entity_category) {
           case 'config':
@@ -104,25 +104,15 @@ export abstract class BaseZWaveCard extends LitElement {
               sensor.batteryState = state;
             }
             break;
+          case 'sensors':
+            // will deal with these one day
+            break;
           default:
-            if (
-              this.instanceCardConfig.entityDomains.some((d) =>
-                entity.entity_id.startsWith(d),
-              )
-            ) {
-              // only add entities part of the "control" domain
-              // can deal with undefined "senors" later, like for plugs
-              sensor.entities.push(state);
-            }
+            sensor.entities.push(state);
             break;
         }
       },
     );
-
-    const device = hass.devices[this._config.device_id];
-    if (device) {
-      sensor.name = device.name_by_user || device.name;
-    }
 
     if (!equal(sensor, this._sensor)) {
       this._sensor = sensor;
@@ -139,13 +129,12 @@ export abstract class BaseZWaveCard extends LitElement {
         selector: {
           device: {
             filter: {
-              manufacturer: 'ZWave',
-              model: this.staticCardConfig.model,
+              integration: 'zwave_js',
             },
           },
         },
         required: true,
-        label: `${this.staticCardConfig.model} Device`,
+        label: `Z Wave Devices`,
       },
       {
         name: 'title',
@@ -175,7 +164,7 @@ export abstract class BaseZWaveCard extends LitElement {
    * @param {HomeAssistant} hass - The Home Assistant instance
    */
   public static async getStubConfig(hass: HomeAssistant): Promise<Config> {
-    const devices = getZWaveModels(hass, this.staticCardConfig.model);
+    const devices = getZWaveNonHubs(hass);
     if (!devices.length) {
       return {
         device_id: '',
@@ -199,17 +188,12 @@ export abstract class BaseZWaveCard extends LitElement {
     divClasses: string[],
     spanClass: string,
     title: string,
-    batteryState: State | undefined = undefined,
   ): TemplateResult | typeof nothing => {
     if (!state) {
       return nothing;
     }
 
     const entity = moreInfoAction(state.entity_id);
-    const stateDisplay = html`<state-display
-      .hass=${this._hass}
-      .stateObj=${state}
-    ></state-display>`;
 
     return html`<div
       class="${divClasses.filter((c) => c !== undefined).join(' ')}"
@@ -217,23 +201,7 @@ export abstract class BaseZWaveCard extends LitElement {
       .actionHandler=${actionHandler(entity)}
     >
       <span class="${spanClass}">${title}</span>
-      ${batteryState
-        ? html`
-            <div>
-              <battery-indicator
-                .level=${Number(batteryState.state)}
-                @action=${handleClickAction(
-                  this,
-                  moreInfoAction(batteryState!.entity_id),
-                )}
-                .actionHandler=${actionHandler(
-                  moreInfoAction(batteryState!.entity_id),
-                )}
-              ></battery-indicator>
-              ${stateDisplay}
-            </div>
-          `
-        : stateDisplay}
+      <state-display .hass=${this._hass} .stateObj=${state}></state-display>
     </div>`;
   };
 
@@ -285,21 +253,39 @@ export abstract class BaseZWaveCard extends LitElement {
       return nothing;
     }
 
+    if (this._sensor.isController) {
+      // for convenience, show the hub card
+      return html`<zwave-hub-card .hass=${this._hass}></zwave-hub-card>`;
+    }
+    // todo - color icon based on firmware state
     return html`
       <ha-card class="grid">
         <div class="firmware">
           ${this._renderIcon(
             this._sensor.firmwareState,
             undefined,
-            this._config.icon || this.instanceCardConfig.icon,
+            this._config.icon || 'mdi:z-wave',
           )}
-          ${this._renderStateDisplay(
-            this._sensor.firmwareState,
-            ['firmware-info'],
-            'title',
-            this._sensor.name!,
-            this._sensor.batteryState,
-          )}
+          <div class="firmware-info">
+            <span class="title">${this._sensor.name}</span>
+            <div>
+              ${this._sensor.batteryState
+                ? html`<battery-indicator
+                    .level=${Number(this._sensor.batteryState.state)}
+                    @action=${handleClickAction(
+                      this,
+                      moreInfoAction(this._sensor.batteryState!.entity_id),
+                    )}
+                    .actionHandler=${actionHandler(
+                      moreInfoAction(this._sensor.batteryState!.entity_id),
+                    )}
+                  ></battery-indicator>`
+                : nothing}
+              <span class="status-label"
+                >${this._sensor.model} by ${this._sensor.manufacturer}</span
+              >
+            </div>
+          </div>
         </div>
 
         ${this._renderStateDisplay(

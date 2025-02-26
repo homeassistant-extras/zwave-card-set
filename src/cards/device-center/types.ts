@@ -13,7 +13,10 @@ export interface Config {
  */
 export interface Center {
   /**
-   * List of devices
+   * Devices grouped by manufacturer and then by model
+   * First level keys: manufacturer names
+   * Second level keys: model names
+   * Values: arrays of devices
    */
-  devices?: Record<string, Device[]>;
+  devices: Record<string, Record<string, Device[]>>;
 }

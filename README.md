@@ -35,6 +35,12 @@ This project brings a set of cards to display info about your Z-Wave devices. Ma
 
 ## Cards
 
+### [Z-Wave Node Info](src/cards/node-info/README.md)
+
+Universal card for all Z-Wave devices showing detailed device information and controls.
+
+![card](assets/cards/node-info/card.png)
+
 ### [Device Center](src/cards/device-center/README.md)
 
 See all your devices and their states and some controls if applicable in one place.
@@ -52,60 +58,6 @@ Shows status and last seen time of all your nodes.
 Shows info about the Z-Wave Hub.
 
 ![card](assets/cards/hub-card/card.png)
-
-### Info Cards
-
-# Update for Info Cards section
-
-#### [ZEN04 800LR - Smart Plug](docs/smart-plug.md)
-
-Commonly used for controlling appliances and devices.
-
-![card](assets/cards/info/smart-plug/card.png)
-
-#### [ZEN16 - Multi Relay](docs/multi-relay.md)
-
-Commonly used for controlling multiple independent circuits.
-
-![card](assets/cards/info/multi-relay/card.png)
-
-#### [ZEN30 - Double Switch](docs/double-switch.md)
-
-Commonly used for light/fan switches.
-
-![card](assets/cards/info/double-switch/card.png)
-
-#### [ZEN32 - Scene Controller](docs/scene-controller.md)
-
-Commonly used for scene and automation control.
-
-![card](assets/cards/info/scene-controller/card.png)
-
-#### [ZEN51 - Dry Contact Relay](docs/dry-contact-relay.md)
-
-Commonly used for garage doors and other contact-based controls.
-
-![card](assets/cards/info/dry-contact-relay/card.png)
-
-#### [ZEN52 - Double Relay](docs/double-relay.md)
-
-Commonly used for light/fan in wall.
-
-![card](assets/cards/info/double-relay/card.png)
-
-#### [ZEN55 LR - DC Signal Sensor](docs/dc-signal-sensor.md)
-
-Commonly used for smoke sensor detection
-
-![card](assets/cards/info/dc-signal-sensor/card.png)
-
-#### [ZEN71 - On/Off Switch](docs/on-off-switch.md)
-
-Commonly used for basic lighting control.
-
-![card](assets/cards/info/on-off-switch/card.png)
-
-More to come...
 
 ## Installation
 
@@ -136,18 +88,10 @@ Add the cards to your dashboard using the UI editor or YAML.
 
 See the README files of the individual cards for configuration and detailed information.
 
+- [Z-Wave Node Info](src/cards/node-info/README.md)
 - [Device Center](src/cards/device-center/README.md)
 - [Z-Wave Nodes Status Card](src/cards/node-states/README.md)
 - [Z-Wave Hub Card](src/cards/hub-card/README.md)
-- Info Cards
-  - [ZEN04 800LR - Smart Plug](docs/smart-plug.md)
-  - [ZEN16 - Multi Relay](docs/multi-relay.md)
-  - [ZEN30 - Double Switch](docs/double-switch.md)
-  - [ZEN32 - Scene Controller](docs/scene-controller.md)
-  - [ZEN51 - Dry Contact Relay](docs/dry-contact-relay.md)
-  - [ZEN52 - Double Relay](docs/double-relay.md)
-  - [ZEN55 LR - DC Signal Sensor](docs/dc-signal-sensor.md)
-  - [ZEN71 - On/Off Switch](docs/on-off-switch.md)
 
 Some cards may require the hub to be labeled with a "Hub" label:
 
@@ -155,41 +99,16 @@ Some cards may require the hub to be labeled with a "Hub" label:
 
 ## Supported Devices
 
-These are tested, others may work.
-
-### Hubs
-
-- ZST39 LR
-
-### Switches
-
-- ZEN30
-- ZEN32
-- ZEN71
-
-### Plugs
-
-- ZEN04 800LR
-
-### Relays
-
-- ZEN16
-- ZEN51
-- ZEN52
-
-### Sensors
-
-- ZEN55 LR
+All Z-Wave devices are supported through the universal Node Info card. I have tested mainly Zooz devices as this is my Z-Wave devices of choice. Let me know if you have any issues and we'll get them fixed!
 
 ## Project Roadmap
 
 - [x] **`Initial design`**: <strike>create initial room card based on button-card template in UI minimialist theme.</strike>
 - [x] **`Editors`**: <strike>make sure stub configs and previews are solid.</strike>
-- [ ] **`Node cards`**: show info about different nodes.
+- [x] **`Node cards`**: <strike>show info about different nodes.</strike>
 - [ ] **`Node status card sizing`**: make sizing dynamic, can't figure it out.
 - [ ] **`Themes`**: test default theme, etc.
 - [ ] **`Device Center`**: add docs and pics towards end.
-- [ ] **`Sensors on info card`**: like plugs and stuff.
 
 ## Contributing
 

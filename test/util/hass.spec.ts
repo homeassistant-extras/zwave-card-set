@@ -1,14 +1,193 @@
-import type { Entity, HomeAssistant, State } from '@type/homeassistant';
+import type { Device, Entity, HomeAssistant, State } from '@type/homeassistant';
 import {
   getZWaveHubs,
   getZWaveNonHubs,
+  isZWaveDevice,
   processDeviceEntities,
+  processDeviceEntitiesAndCheckIfController,
 } from '@util/hass';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
 describe('util', () => {
   describe('hass.ts', () => {
+    describe('isZWaveDevice', () => {
+      it('should return true for devices with zwave_js identifier', () => {
+        const device: Device = {
+          id: 'test-device',
+          name: 'Test Device',
+          identifiers: [['zwave_js', '1234']],
+        };
+
+        expect(isZWaveDevice(device)).to.be.true;
+      });
+
+      it('should return false for devices without zwave_js identifier', () => {
+        const device: Device = {
+          id: 'test-device',
+          name: 'Test Device',
+          identifiers: [['zigbee', '1234']],
+        };
+
+        expect(isZWaveDevice(device)).to.be.false;
+      });
+
+      it('should return false for devices without identifiers', () => {
+        const device: Device = {
+          id: 'test-device',
+          name: 'Test Device',
+        };
+
+        expect(isZWaveDevice(device)).to.be.false;
+      });
+
+      it('should handle multiple identifiers correctly', () => {
+        const device: Device = {
+          id: 'test-device',
+          name: 'Test Device',
+          identifiers: [
+            ['zigbee', '1234'],
+            ['zwave_js', '5678'],
+          ],
+        };
+
+        expect(isZWaveDevice(device)).to.be.true;
+      });
+    });
+
+    describe('processDeviceEntitiesAndCheckIfController', () => {
+      // Mock data setup
+      const mockState: State = {
+        entity_id: 'sensor.living_room',
+        state: 'on',
+        attributes: {},
+      };
+
+      const mockEntity: Entity = {
+        entity_id: 'sensor.living_room',
+        device_id: 'device_123',
+      };
+
+      it('should return false for non-controller devices', () => {
+        const mockHass: HomeAssistant = {
+          entities: {
+            'sensor.living_room': mockEntity,
+          },
+          states: {
+            'sensor.living_room': mockState,
+          },
+          devices: {},
+        };
+
+        let callCount = 0;
+        const isController = processDeviceEntitiesAndCheckIfController(
+          mockHass,
+          'device_123',
+          () => {
+            callCount++;
+          },
+        );
+
+        expect(isController).to.be.false;
+        expect(callCount).to.equal(1);
+      });
+
+      it('should return true for controller devices', () => {
+        const mockHass: HomeAssistant = {
+          entities: {
+            'sensor.living_room': mockEntity,
+            'sensor.controller': {
+              entity_id: 'sensor.controller',
+              device_id: 'device_123',
+              translation_key: 'controller_status',
+            },
+          },
+          states: {
+            'sensor.living_room': mockState,
+            'sensor.controller': {
+              entity_id: 'sensor.controller',
+              state: 'ready',
+              attributes: {},
+            },
+          },
+          devices: {},
+        };
+
+        let callCount = 0;
+        const isController = processDeviceEntitiesAndCheckIfController(
+          mockHass,
+          'device_123',
+          () => {
+            callCount++;
+          },
+        );
+
+        expect(isController).to.be.true;
+        expect(callCount).to.equal(2);
+      });
+
+      it('should process entities from all required domains', () => {
+        const mockHass: HomeAssistant = {
+          entities: {
+            'sensor.device': {
+              entity_id: 'sensor.device',
+              device_id: 'device_123',
+            },
+            'light.device': {
+              entity_id: 'light.device',
+              device_id: 'device_123',
+            },
+            'switch.device': {
+              entity_id: 'switch.device',
+              device_id: 'device_123',
+            },
+            'update.device': {
+              entity_id: 'update.device',
+              device_id: 'device_123',
+            },
+          },
+          states: {
+            'sensor.device': {
+              entity_id: 'sensor.device',
+              state: 'on',
+              attributes: {},
+            },
+            'light.device': {
+              entity_id: 'light.device',
+              state: 'on',
+              attributes: {},
+            },
+            'switch.device': {
+              entity_id: 'switch.device',
+              state: 'on',
+              attributes: {},
+            },
+            'update.device': {
+              entity_id: 'update.device',
+              state: 'available',
+              attributes: {},
+            },
+          },
+          devices: {},
+        };
+
+        const processedEntities: string[] = [];
+        processDeviceEntitiesAndCheckIfController(
+          mockHass,
+          'device_123',
+          (entity) => {
+            processedEntities.push(entity.entity_id);
+          },
+        );
+
+        expect(processedEntities).to.have.lengthOf(4);
+        expect(processedEntities).to.include('sensor.device');
+        expect(processedEntities).to.include('light.device');
+        expect(processedEntities).to.include('switch.device');
+        expect(processedEntities).to.include('update.device');
+      });
+    });
+
     describe('processDeviceEntities', () => {
       // Mock data setup
       const mockState: State = {
@@ -145,7 +324,7 @@ describe('util', () => {
           },
         );
 
-        expect(callCount).to.equal(0);
+        expect(callCount).to.equal(1); // Due to sensor and update domains being added automatically
       });
 
       it('should filter entities by multiple domains', () => {
@@ -251,7 +430,7 @@ describe('util', () => {
           callCount++;
         });
 
-        expect(callCount).to.equal(0);
+        expect(callCount).to.equal(1); // 'sensor' and 'update' domains are added automatically
       });
 
       it('should maintain type safety in callback parameters', () => {

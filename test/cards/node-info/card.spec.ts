@@ -1,6 +1,6 @@
-import { BaseZWaveCard } from '@base/card';
-import type { Config, InstanceCardConfig, StaticCardConfig } from '@base/types';
 import * as actionHandlerModule from '@common/action-handler';
+import { ZWaveNodeCard } from '@node/card';
+import type { Config } from '@node/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import type { ActionHandlerEvent } from '@type/action';
 import type { HomeAssistant, State } from '@type/homeassistant';
@@ -22,36 +22,16 @@ const createState = (
   };
 };
 
-// Test implementation of BaseZWaveCard
-class TestZWaveCard extends BaseZWaveCard {
-  constructor() {
-    super();
-    this.instanceCardConfig = {
-      icon: 'mdi:test',
-      entityDomains: ['sensor', 'switch'],
-    };
-
-    this.myInstanceConfig = this.instanceCardConfig;
-    this.myStaticCardConfig = TestZWaveCard.staticCardConfig;
-  }
-
-  myInstanceConfig: InstanceCardConfig;
-  myStaticCardConfig: StaticCardConfig;
-
-  static override staticCardConfig: StaticCardConfig = {
-    model: 'TEST-MODEL',
-  };
-}
-
-describe('BaseZWaveCard', () => {
-  let card: TestZWaveCard;
+describe('ZWaveNodeCard', () => {
+  let card: ZWaveNodeCard;
   let mockHass: HomeAssistant;
   let mockConfig: Config;
   let actionHandlerStub: sinon.SinonStub;
   let handleClickActionStub: sinon.SinonStub;
+  let getZWaveNonHubsStub: sinon.SinonStub;
 
   beforeEach(() => {
-    card = new TestZWaveCard();
+    card = new ZWaveNodeCard();
 
     mockConfig = {
       device_id: 'test_device_id',
@@ -70,6 +50,8 @@ describe('BaseZWaveCard', () => {
     ).returns({
       handleEvent: (ev: ActionHandlerEvent): void => {},
     });
+
+    getZWaveNonHubsStub = stub(hassUtils, 'getZWaveNonHubs');
 
     mockHass = {
       states: {},
@@ -106,12 +88,36 @@ describe('BaseZWaveCard', () => {
           entity_id: 'switch.test_device_test_1',
           device_id: 'test_device_id',
         },
+        // Add controller status entity for testing controller detection
+        'sensor.test_controller_status': {
+          entity_id: 'sensor.test_controller_status',
+          device_id: 'test_controller_id',
+          translation_key: 'controller_status',
+        },
       },
       devices: {
         test_device_id: {
           id: 'test_device_id',
           name_by_user: 'Test Device',
+          manufacturer: 'Test Manufacturer',
+          model: 'Test Model',
           labels: [],
+          identifiers: [['zwave_js', '1234']],
+        },
+        test_controller_id: {
+          id: 'test_controller_id',
+          name_by_user: 'Test Controller',
+          manufacturer: 'Test Manufacturer',
+          model: 'Controller Model',
+          labels: ['hub'],
+          identifiers: [['zwave_js', '5678']],
+        },
+        non_zwave_device_id: {
+          id: 'non_zwave_device_id',
+          name_by_user: 'Non Z-Wave Device',
+          manufacturer: 'Other Manufacturer',
+          model: 'Other Model',
+          identifiers: [['other_protocol', '9012']],
         },
       },
     };
@@ -122,18 +128,11 @@ describe('BaseZWaveCard', () => {
   afterEach(async () => {
     actionHandlerStub.restore();
     handleClickActionStub.restore();
+    getZWaveNonHubsStub.restore();
     await fixtureCleanup();
   });
 
   describe('card.ts', () => {
-    describe('cardConfig', () => {
-      it('should have correct cardConfig', () => {
-        expect(card.myStaticCardConfig).to.deep.equal({
-          model: 'TEST-MODEL',
-        });
-      });
-    });
-
     describe('hass property setter', () => {
       it('should not set sensor if no config', () => {
         card.setConfig(undefined as any as Config);
@@ -141,9 +140,35 @@ describe('BaseZWaveCard', () => {
         expect((card as any)._sensor).to.be.undefined;
       });
 
+      it('should not set sensor if device is not a Z-Wave device', () => {
+        card.setConfig({ device_id: 'non_zwave_device_id' });
+        card.hass = mockHass;
+        expect((card as any)._sensor).to.be.undefined;
+      });
+
       it('should initialize entities array', () => {
         card.hass = mockHass;
         expect((card as any)._sensor.entities).to.be.an('array');
+      });
+
+      it('should set manufacturer and model from device', () => {
+        card.hass = mockHass;
+        expect((card as any)._sensor.manufacturer).to.equal(
+          'Test Manufacturer',
+        );
+        expect((card as any)._sensor.model).to.equal('Test Model');
+      });
+
+      it('should detect controller status correctly', () => {
+        // Use a normal device - should not be a controller
+        card.setConfig({ device_id: 'test_device_id' });
+        card.hass = mockHass;
+        expect((card as any)._sensor.isController).to.not.be.true;
+
+        // Use a controller device - should be identified as a controller
+        card.setConfig({ device_id: 'test_controller_id' });
+        card.hass = mockHass;
+        expect((card as any)._sensor.isController).to.be.true;
       });
 
       it('should identify and set common states', () => {
@@ -174,7 +199,7 @@ describe('BaseZWaveCard', () => {
         expect((card as any)._sensor.batteryState.state).to.equal('75');
       });
 
-      it('should process entities matching suffixes', () => {
+      it('should process entities that are not special categories', () => {
         mockHass.states['sensor.test_device_test_1'] = createState(
           'sensor.test_device_test_1',
           'test1',
@@ -183,10 +208,15 @@ describe('BaseZWaveCard', () => {
           'sensor.test_device_test_2',
           'test2',
         );
+        mockHass.states['switch.test_device_test_1'] = createState(
+          'switch.test_device_test_1',
+          'on',
+        );
 
         card.hass = mockHass;
 
-        expect((card as any)._sensor.entities).to.have.lengthOf(2);
+        // Should find entities that aren't in diagnostic or config categories
+        expect((card as any)._sensor.entities).to.have.lengthOf(3);
       });
 
       it('should set sensor name from device name_by_user if available', () => {
@@ -213,6 +243,18 @@ describe('BaseZWaveCard', () => {
         (card as any)._sensor = undefined;
         const result = card.render();
         expect(result).to.equal(nothing);
+      });
+
+      it('should render hub card when device is a controller', async () => {
+        (card as any)._sensor = {
+          name: 'Test Controller',
+          isController: true,
+          entities: [],
+        };
+
+        const el = await fixture(card.render() as TemplateResult);
+
+        expect(el.tagName.toLowerCase()).to.equal('zwave-hub-card');
       });
 
       it('should render all card sections when data is available', async () => {
@@ -270,26 +312,61 @@ describe('BaseZWaveCard', () => {
           'Custom Device Name',
         );
       });
+
+      it('should render manufacturer and model information', async () => {
+        mockHass.states['update.test_device_firmware'] = createState(
+          'update.test_device_firmware',
+          'available',
+        );
+
+        card.hass = mockHass;
+
+        const el = await fixture(card.render() as TemplateResult);
+
+        const firmwareInfo = el.querySelector('.firmware-info');
+        expect(firmwareInfo?.textContent).to.include(
+          'Test Model by Test Manufacturer',
+        );
+      });
+
+      it('should use mdi:z-wave as default icon when none provided', async () => {
+        // Override the config to remove the icon
+        card.setConfig({
+          device_id: 'test_device_id',
+        });
+
+        mockHass.states['update.test_device_firmware'] = createState(
+          'update.test_device_firmware',
+          'available',
+        );
+
+        card.hass = mockHass;
+
+        const el = await fixture(card.render() as TemplateResult);
+        const iconElement = el.querySelector('ha-state-icon');
+
+        // Check that the z-wave icon is used by default
+        expect((iconElement as any)?.icon).to.equal('mdi:z-wave');
+      });
     });
 
     describe('configuration', () => {
-      it('should have correct static configuration', () => {
-        expect(TestZWaveCard.staticCardConfig).to.deep.equal({
-          model: 'TEST-MODEL',
-        });
-      });
-
-      it('should have correct instance configuration', () => {
-        expect(card.myInstanceConfig).to.deep.equal({
-          icon: 'mdi:test',
-          entityDomains: ['sensor', 'switch'],
-        });
-      });
-
       it('should get config element with correct schema', () => {
-        const editor = TestZWaveCard.getConfigElement();
+        const editor = ZWaveNodeCard.getConfigElement();
         expect(editor.tagName.toLowerCase()).to.equal('basic-editor');
         expect((editor as any).schema).to.deep.include.members([
+          {
+            name: 'device_id',
+            selector: {
+              device: {
+                filter: {
+                  integration: 'zwave_js',
+                },
+              },
+            },
+            required: true,
+            label: `Z Wave Devices`,
+          },
           {
             name: 'title',
             required: false,
@@ -309,19 +386,22 @@ describe('BaseZWaveCard', () => {
         ]);
       });
 
-      it('should get stub config', async () => {
+      it('should get stub config with first non-hub device', async () => {
         const mockDevices = [{ id: 'device_123' }];
-        const getZWaveModelsStub = stub(hassUtils, 'getZWaveModels').returns(
-          mockDevices,
-        );
+        getZWaveNonHubsStub.returns(mockDevices);
 
-        const config = await TestZWaveCard.getStubConfig(mockHass);
+        const config = await ZWaveNodeCard.getStubConfig(mockHass);
 
-        expect(getZWaveModelsStub.calledOnceWith(mockHass, 'TEST-MODEL')).to.be
-          .true;
+        expect(getZWaveNonHubsStub.calledOnceWith(mockHass)).to.be.true;
         expect(config).to.deep.equal({ device_id: 'device_123' });
+      });
 
-        getZWaveModelsStub.restore();
+      it('should return empty device_id when no non-hub devices exist', async () => {
+        getZWaveNonHubsStub.returns([]);
+
+        const config = await ZWaveNodeCard.getStubConfig(mockHass);
+
+        expect(config).to.deep.equal({ device_id: '' });
       });
     });
 

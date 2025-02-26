@@ -1,4 +1,4 @@
-import { BatteryIndicator } from '@base/battery-indicator';
+import { BatteryIndicator } from '@common/battery-indicator';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import { expect } from 'chai';
 import { type TemplateResult } from 'lit';

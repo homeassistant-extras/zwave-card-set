@@ -1,7 +1,7 @@
-import { BatteryIndicator } from '@base/battery-indicator';
-import { infoCards } from '@base/info';
+import { ZWaveNodeCard } from '@/cards/node-info/card';
 import { ZWaveDeviceCenter } from '@center/card';
-import { ZWaveBasicEditor } from '@common/basic-editor';
+import { BasicEditor } from '@common/basic-editor';
+import { BatteryIndicator } from '@common/battery-indicator';
 import { ZWaveHubCard } from '@hub-card/card';
 import { ZWaveNodesStatus } from '@node-states/card';
 import type { CardConfig } from '@type/config';
@@ -10,16 +10,22 @@ import { version } from '../package.json';
 // Base cards that aren't device-specific
 const BASE_CARDS: CardConfig[] = [
   {
-    element: ZWaveDeviceCenter,
-    type: 'zwave-device-center',
-    name: 'Z-Wave Device Center',
-    description: 'A card to summarize all your devices in one place.',
+    element: ZWaveNodeCard,
+    type: 'zwave-node-info',
+    name: 'Z-Wave Node Info',
+    description: 'A card to summarize a Z-Wave node.',
   },
   {
     element: ZWaveHubCard,
     type: 'zwave-hub-card',
     name: 'Z-Wave Hub Info',
     description: 'A card to summarize information about the hub.',
+  },
+  {
+    element: ZWaveDeviceCenter,
+    type: 'zwave-device-center',
+    name: 'Z-Wave Device Center',
+    description: 'A card to summarize all your devices in one place.',
   },
   {
     element: ZWaveNodesStatus,
@@ -30,12 +36,12 @@ const BASE_CARDS: CardConfig[] = [
 ];
 
 // Register other custom elements
-customElements.define('zwave-basic-editor', ZWaveBasicEditor);
+customElements.define('basic-editor', BasicEditor);
 customElements.define('battery-indicator', BatteryIndicator);
 window.customCards = window.customCards || [];
 
 // Register all cards
-[...BASE_CARDS, ...infoCards].forEach((card) => {
+[...BASE_CARDS].forEach((card) => {
   // Register the custom element
   customElements.define(card.type, card.element);
 
