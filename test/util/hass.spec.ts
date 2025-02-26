@@ -317,21 +317,21 @@ describe('util', () => {
         devices: {
           'zwave-hub-1': {
             id: 'zwave-hub-1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             model: 'ZST10',
             name: 'Z-Wave Hub',
             labels: ['hub', 'controller'],
           },
           'zwave-hub-2': {
             id: 'zwave-hub-2',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             model: 'ZST11',
             name: 'Z-Wave Hub Pro',
             labels: ['hub', 'premium'],
           },
           'zwave-switch-1': {
             id: 'zwave-switch-1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             model: 'ZEN26',
             name: 'Z-Wave Switch',
             labels: ['switch', 'lighting'],
@@ -355,7 +355,9 @@ describe('util', () => {
         'zwave-hub-1',
         'zwave-hub-2',
       ]);
-      expect(result.every((d) => d.manufacturer === 'ZWave')).to.be.true;
+      expect(
+        result.every((d) => d.identifiers?.some((i) => i[0] === 'zwave_js')),
+      ).to.be.true;
       expect(result.every((d) => d.labels?.includes('hub'))).to.be.true;
     });
 
@@ -366,7 +368,7 @@ describe('util', () => {
         devices: {
           'zwave-switch-1': {
             id: 'zwave-switch-1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             model: 'ZEN26',
             name: 'Z-Wave Switch',
             labels: ['switch'],
@@ -397,28 +399,28 @@ describe('util', () => {
         devices: {
           'zwave-hub-1': {
             id: 'zwave-hub-1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             model: 'ZST10',
             name: 'Z-Wave Hub',
             labels: ['hub', 'controller'],
           },
           'zwave-switch-1': {
             id: 'zwave-switch-1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             model: 'ZEN26',
             name: 'Z-Wave Switch',
             labels: ['switch', 'lighting'],
           },
           'zwave-dimmer-1': {
             id: 'zwave-dimmer-1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             model: 'ZEN72',
             name: 'Z-Wave Dimmer',
             labels: ['dimmer', 'lighting'],
           },
           'zwave-sensor-1': {
             id: 'zwave-sensor-1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             model: 'ZSE11',
             name: 'Z-Wave Sensor',
           },
@@ -441,7 +443,9 @@ describe('util', () => {
         'zwave-dimmer-1',
         'zwave-sensor-1',
       ]);
-      expect(result.every((d) => d.manufacturer === 'ZWave')).to.be.true;
+      expect(
+        result.every((d) => d.identifiers?.some((i) => i[0] === 'zwave_js')),
+      ).to.be.true;
       expect(result.every((d) => !d.labels?.includes('hub'))).to.be.true;
     });
 
@@ -452,7 +456,7 @@ describe('util', () => {
         devices: {
           'zwave-hub-1': {
             id: 'zwave-hub-1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             model: 'ZST10',
             name: 'Z-Wave Hub',
             labels: ['hub'],
@@ -473,7 +477,7 @@ describe('util', () => {
     it('should handle devices with undefined labels', () => {
       mockHass.devices['zwave-unlabeled-1'] = {
         id: 'zwave-unlabeled-1',
-        manufacturer: 'ZWave',
+        identifiers: [['zwave_js', '']],
         model: 'Unknown',
         name: 'Unlabeled Z-Wave Device',
         labels: undefined,

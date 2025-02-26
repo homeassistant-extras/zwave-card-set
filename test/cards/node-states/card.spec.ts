@@ -118,25 +118,25 @@ describe('ZWaveNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Z-Wave Switch 1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device2: {
             id: 'device2',
             name_by_user: 'Z-Wave Switch 2',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device3: {
             id: 'device3',
             name_by_user: 'Z-Wave Switch 3',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           hubDevice: {
             id: 'hubDevice',
             name_by_user: 'Z-Wave Hub',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: ['hub'],
           },
           otherDevice: {
@@ -226,19 +226,19 @@ describe('ZWaveNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Z-Wave Device 1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device2: {
             id: 'device2',
             name_by_user: 'Z-Wave Device 2',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device3: {
             id: 'device3',
             name_by_user: 'Z-Wave Device 3',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
         };
@@ -315,19 +315,19 @@ describe('ZWaveNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Z-Wave Device 1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device2: {
             id: 'device2',
             name_by_user: 'Z-Wave Device 2',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device3: {
             id: 'device3',
             name_by_user: 'Z-Wave Device 3',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
         };
@@ -404,13 +404,13 @@ describe('ZWaveNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Z-Wave Device With LastSeen',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device2: {
             id: 'device2',
             name_by_user: 'Z-Wave Device No LastSeen',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
         };
@@ -527,7 +527,7 @@ describe('ZWaveNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Dead Z-Wave Device',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
         };
@@ -572,7 +572,7 @@ describe('ZWaveNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Live Z-Wave Device',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
         };
@@ -617,7 +617,7 @@ describe('ZWaveNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Sleeping Z-Wave Device',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
         };
@@ -662,19 +662,19 @@ describe('ZWaveNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Dead Device',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device2: {
             id: 'device2',
             name_by_user: 'Live Device',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device3: {
             id: 'device3',
             name_by_user: 'Sleeping Device',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
         };
@@ -780,37 +780,37 @@ describe('ZWaveNodesStatus', () => {
           device1: {
             id: 'device1',
             name_by_user: 'Dead Device 1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device2: {
             id: 'device2',
             name_by_user: 'Dead Device 2',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device3: {
             id: 'device3',
             name_by_user: 'Live Device 1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device4: {
             id: 'device4',
             name_by_user: 'Live Device 2',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device5: {
             id: 'device5',
             name_by_user: 'Sleeping Device 1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           device6: {
             id: 'device6',
             name_by_user: 'Sleeping Device 2',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
         };

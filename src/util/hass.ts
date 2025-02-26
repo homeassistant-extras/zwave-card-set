@@ -1,6 +1,27 @@
 import type { Device, Entity, HomeAssistant, State } from '@type/homeassistant';
 
 /**
+ * Checks if a device is a Z-Wave device
+ * @param device - The device to check
+ * @returns {boolean} True if the device is a Z-Wave device
+ */
+const _isZWaveDevice = (device: Device): boolean => {
+  if (!device.identifiers) {
+    return false;
+  }
+  for (const parts of device.identifiers) {
+    for (const part of parts) {
+      if (part === 'zwave_js') {
+        console.log('is true');
+
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+/**
  * Processes entities from the hass object, filtering by device ID and applying a callback.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing entities and states.
@@ -63,7 +84,7 @@ const getZWaveDevices = (
   area?: string,
 ): Device[] => {
   let devices = Object.values(hass.devices).filter((device) => {
-    return device.manufacturer === 'ZWave';
+    return _isZWaveDevice(device);
   });
 
   if (hubOnly) {
@@ -85,6 +106,7 @@ const getZWaveDevices = (
       model: device.model,
       area_id: device.area_id,
       labels: device.labels,
+      identifiers: device.identifiers,
     };
   });
 };

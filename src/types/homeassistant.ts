@@ -42,6 +42,9 @@ export type Device = {
 
   /** Array of tags or categories associated with the device */
   labels?: string[];
+
+  /** Array of identifiers for the device, typically including a manufacturer ID and product ID */
+  identifiers?: [string, string][];
 };
 
 /**

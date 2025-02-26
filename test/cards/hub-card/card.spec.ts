@@ -62,13 +62,13 @@ describe('ZWaveHubCard', () => {
           hub1: {
             id: 'hub1',
             name_by_user: 'Z-Wave Hub 1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: ['hub'],
           },
           hub2: {
             id: 'hub2',
             name_by_user: 'Z-Wave Hub 2',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: ['hub'],
           },
         };
@@ -87,13 +87,13 @@ describe('ZWaveHubCard', () => {
           hub1: {
             id: 'hub1',
             name_by_user: 'Z-Wave Hub',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: ['hub'],
           },
           device1: {
             id: 'device1',
             name_by_user: 'Z-Wave Device 1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: [],
           },
           otherDevice: {
@@ -158,7 +158,7 @@ describe('ZWaveHubCard', () => {
           hub1: {
             id: 'hub1',
             name: 'Z-Wave Hub Device',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: ['hub'],
           },
         };
@@ -172,7 +172,7 @@ describe('ZWaveHubCard', () => {
         mockHass.devices = {
           hub1: {
             id: 'hub1',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: ['hub'],
           },
         };
@@ -187,7 +187,7 @@ describe('ZWaveHubCard', () => {
           hub1: {
             id: 'hub1',
             name_by_user: 'Z-Wave Hub',
-            manufacturer: 'ZWave',
+            identifiers: [['zwave_js', '']],
             labels: ['hub'],
           },
         };
