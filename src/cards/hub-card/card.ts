@@ -106,7 +106,7 @@ export class ZWaveHubCard extends LitElement {
 
   // card configuration
   static getConfigElement() {
-    return document.createElement('zwave-basic-editor');
+    return document.createElement('basic-editor');
   }
 
   /**

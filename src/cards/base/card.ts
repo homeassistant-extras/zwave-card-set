@@ -165,7 +165,7 @@ export abstract class BaseZWaveCard extends LitElement {
       },
     ];
 
-    const editor = document.createElement('zwave-basic-editor');
+    const editor = document.createElement('basic-editor');
     (editor as any).schema = SCHEMA;
     return editor;
   }

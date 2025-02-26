@@ -43,7 +43,7 @@ describe('ZWaveHubCard', () => {
     describe('getConfigElement', () => {
       it('should return correct editor element', () => {
         const editor = ZWaveHubCard.getConfigElement();
-        expect(editor.tagName.toLowerCase()).to.equal('zwave-basic-editor');
+        expect(editor.tagName.toLowerCase()).to.equal('basic-editor');
       });
     });
 

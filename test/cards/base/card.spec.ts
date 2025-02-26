@@ -288,7 +288,7 @@ describe('BaseZWaveCard', () => {
 
       it('should get config element with correct schema', () => {
         const editor = TestZWaveCard.getConfigElement();
-        expect(editor.tagName.toLowerCase()).to.equal('zwave-basic-editor');
+        expect(editor.tagName.toLowerCase()).to.equal('basic-editor');
         expect((editor as any).schema).to.deep.include.members([
           {
             name: 'title',

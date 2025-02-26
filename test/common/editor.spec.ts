@@ -1,4 +1,4 @@
-import { ZWaveBasicEditor } from '@common/basic-editor';
+import { BasicEditor } from '@common/basic-editor';
 import type { Config } from '@hub-card/types';
 import { fixture } from '@open-wc/testing-helpers';
 import type { HomeAssistant } from '@type/homeassistant';
@@ -8,7 +8,7 @@ import { stub } from 'sinon';
 
 describe('ZWaveHubCard', () => {
   describe('editor.ts', () => {
-    let card: ZWaveBasicEditor;
+    let card: BasicEditor;
     let hass: HomeAssistant;
     let dispatchStub: sinon.SinonStub;
 
@@ -20,7 +20,7 @@ describe('ZWaveHubCard', () => {
         entities: {},
         devices: {},
       } as HomeAssistant;
-      card = new ZWaveBasicEditor();
+      card = new BasicEditor();
       dispatchStub = stub(card, 'dispatchEvent');
 
       card.hass = hass;
@@ -32,7 +32,7 @@ describe('ZWaveHubCard', () => {
 
     describe('initialization', () => {
       it('should be defined', () => {
-        expect(card).to.be.instanceOf(ZWaveBasicEditor);
+        expect(card).to.be.instanceOf(BasicEditor);
       });
 
       it('should have default properties', () => {
