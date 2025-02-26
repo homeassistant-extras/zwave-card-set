@@ -1,5 +1,5 @@
 import { BasicEditor } from '@common/basic-editor';
-import type { Config } from '@hub-card/types';
+import type { Config } from '@controller-info/types';
 import { fixture } from '@open-wc/testing-helpers';
 import type { HomeAssistant } from '@type/homeassistant';
 import { expect } from 'chai';

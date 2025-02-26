@@ -28,7 +28,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import type { Config as HubCardConfig } from '@/cards/hub-card/types';
+import type { Config as HubCardConfig } from '@/cards/controller-info/types';
 import type { Config as NodeStatusConfig } from '@/cards/node-states/types';
 import type { ActionParams } from '@type/action';
 

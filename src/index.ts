@@ -2,7 +2,7 @@ import { ZWaveNodeCard } from '@/cards/node-info/card';
 import { ZWaveDeviceCenter } from '@center/card';
 import { BasicEditor } from '@common/basic-editor';
 import { BatteryIndicator } from '@common/battery-indicator';
-import { ZWaveHubCard } from '@hub-card/card';
+import { ZWaveHubCard } from '@controller-info/card';
 import { ZWaveNodesStatus } from '@node-states/card';
 import type { CardConfig } from '@type/config';
 import { version } from '../package.json';
@@ -17,7 +17,7 @@ const BASE_CARDS: CardConfig[] = [
   },
   {
     element: ZWaveHubCard,
-    type: 'zwave-hub-card',
+    type: 'zwave-controller-info',
     name: 'Z-Wave Hub Info',
     description: 'A card to summarize information about the hub.',
   },

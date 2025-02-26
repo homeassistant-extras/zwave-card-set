@@ -1,5 +1,5 @@
-import { ZWaveHubCard } from '@hub-card/card';
-import type { Config } from '@hub-card/types';
+import { ZWaveHubCard } from '@controller-info/card';
+import type { Config } from '@controller-info/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import type { Device, HomeAssistant } from '@type/homeassistant';
 import { expect } from 'chai';

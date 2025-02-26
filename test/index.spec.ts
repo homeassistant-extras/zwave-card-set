@@ -46,10 +46,11 @@ describe('index.ts', () => {
       .true;
   });
 
-  it('should register zwave-hub-card components', () => {
+  it('should register zwave-controller-info components', () => {
     require('@/index.ts');
     const calls = customElementsStub.getCalls();
-    expect(calls.some((call) => call.args[0] === 'zwave-hub-card')).to.be.true;
+    expect(calls.some((call) => call.args[0] === 'zwave-controller-info')).to.be
+      .true;
   });
 
   it('should register zwave-nodes-status components', () => {
@@ -94,7 +95,7 @@ describe('index.ts', () => {
           'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zwave-hub-card',
+        type: 'zwave-controller-info',
         name: 'Z-Wave Hub Info',
         description: 'A card to summarize information about the hub.',
         preview: true,

@@ -254,7 +254,7 @@ describe('ZWaveNodeCard', () => {
 
         const el = await fixture(card.render() as TemplateResult);
 
-        expect(el.tagName.toLowerCase()).to.equal('zwave-hub-card');
+        expect(el.tagName.toLowerCase()).to.equal('zwave-controller-info');
       });
 
       it('should render all card sections when data is available', async () => {

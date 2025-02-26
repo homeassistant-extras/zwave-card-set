@@ -21,7 +21,7 @@
     "paths": {
       "@node/*": ["src/cards/node-info/*"],
       "@center/*": ["./src/cards/device-center/*"],
-      "@hub-card/*": ["./src/cards/hub-card/*"],
+      "@controller-info/*": ["./src/cards/controller-info/*"],
       "@node-states/*": ["./src/cards/node-states/*"],
       "@base/*": ["./src/cards/base/*"],
       "@common/*": ["./src/common/*"],

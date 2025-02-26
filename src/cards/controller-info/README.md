@@ -2,7 +2,7 @@
 
 A custom card for Home Assistant that displays the status of your Z-Wave hub and connected devices. This card provides a clean interface to monitor your hub's status, signal strength, and allows you to quickly view all connected Z-Wave devices.
 
-![card](../../../assets/cards/hub-card/card.png)
+![card](../../../assets/cards/controller-info/card.png)
 
 ## Features
 
@@ -26,7 +26,7 @@ No configuration for this debice
 Example configuration in YAML:
 
 ```yaml
-type: custom:zwave-hub-card
+type: custom:zwave-controller-info
 ```
 
 ## Status Indicators

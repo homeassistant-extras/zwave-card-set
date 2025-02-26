@@ -53,11 +53,11 @@ Shows status and last seen time of all your nodes.
 
 ![card](assets/cards/node-status/card.png)
 
-### [Hub Card](src/cards/hub-card/README.md)
+### [Hub Card](src/cards/controller-info/README.md)
 
 Shows info about the Z-Wave Hub.
 
-![card](assets/cards/hub-card/card.png)
+![card](assets/cards/controller-info/card.png)
 
 ## Installation
 
@@ -91,7 +91,7 @@ See the README files of the individual cards for configuration and detailed info
 - [Z-Wave Node Info](src/cards/node-info/README.md)
 - [Device Center](src/cards/device-center/README.md)
 - [Z-Wave Nodes Status Card](src/cards/node-states/README.md)
-- [Z-Wave Hub Card](src/cards/hub-card/README.md)
+- [Z-Wave Hub Card](src/cards/controller-info/README.md)
 
 Some cards may require the hub to be labeled with a "Hub" label:
 

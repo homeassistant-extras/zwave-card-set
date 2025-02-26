@@ -253,10 +253,13 @@ export class ZWaveNodeCard extends LitElement {
       return nothing;
     }
 
+    // for convenience, show the controller card
     if (this._sensor.isController) {
-      // for convenience, show the hub card
-      return html`<zwave-hub-card .hass=${this._hass}></zwave-hub-card>`;
+      return html`<zwave-controller-info
+        .hass=${this._hass}
+      ></zwave-controller-info>`;
     }
+
     // todo - color icon based on firmware state
     return html`
       <ha-card class="grid">

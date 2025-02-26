@@ -3,7 +3,7 @@ import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant } from '@type/homeassistant';
 import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
-import type { Config } from '../cards/hub-card/types';
+import type { Config } from '../cards/controller-info/types';
 
 export class BasicEditor extends LitElement {
   /**
