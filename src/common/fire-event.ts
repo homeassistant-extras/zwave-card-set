@@ -31,6 +31,7 @@
 import type { Config as HubCardConfig } from '@/cards/controller-info/types';
 import type { Config as NodeStatusConfig } from '@/cards/node-states/types';
 import type { ActionParams } from '@type/action';
+import type { HomeAssistant } from '@type/homeassistant';
 
 /**
  * Event emitted when the configuration changes
@@ -39,19 +40,20 @@ export interface ConfigChangedEvent {
   config: NodeStatusConfig | HubCardConfig;
 }
 
+export interface HassUpdateEvent {
+  hass: HomeAssistant;
+}
+
 /**
  * Global interface for Home Assistant DOM events
  */
 declare global {
   // eslint-disable-next-line
-  interface HASSDomEvents {}
-}
-
-declare global {
-  // eslint-disable-next-line
   interface HASSDomEvents {
     'hass-action': ActionParams;
     'config-changed': ConfigChangedEvent;
+    'hass-update': HassUpdateEvent;
+    'hass-update-controller': HassUpdateEvent;
   }
 }
 

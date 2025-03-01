@@ -1,5 +1,5 @@
 import type { State } from '@type/homeassistant';
-import { nothing } from 'lit';
+import { css, nothing } from 'lit';
 import {
   type StyleMapDirective,
   styleMap,
@@ -134,9 +134,9 @@ const isEntityActive = (state: State) =>
 export const getEntityIconStyles = (
   state: State,
 ): DirectiveResult<typeof StyleMapDirective> | typeof nothing => {
-  const domain = state?.entity_id.split('.')[0];
   const isActive = isEntityActive(state);
-  const onColor = state?.attributes?.on_color || activeColorFromDomain(domain);
+  const onColor =
+    state?.attributes?.on_color || activeColorFromDomain(state.domain);
   const offColor = state?.attributes?.off_color;
   const iconColor = isActive ? onColor : offColor;
 
@@ -147,3 +147,74 @@ export const getEntityIconStyles = (
       })
     : nothing;
 };
+
+/**
+ * CSS styles for the chevron toggle component
+ */
+export const chevronToggleStyles = css`
+  .toggle-chevron {
+    position: absolute;
+    bottom: -3px;
+    right: 0;
+    z-index: 2;
+    width: 24px;
+    height: 24px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+  }
+
+  .toggle-chevron.position-bottom-right {
+    bottom: 0;
+    right: 0;
+  }
+
+  .toggle-chevron ha-icon {
+    color: var(--secondary-text-color);
+    --mdc-icon-size: 24px;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+  }
+
+  .toggle-chevron:hover ha-icon {
+    opacity: 1;
+  }
+
+  .toggle-label {
+    margin-right: 8px;
+    color: var(--secondary-text-color);
+    font-size: 0.9rem;
+  }
+
+  /* Position variations */
+  .position-default {
+    margin-top: 4px;
+  }
+
+  .position-bottom-right {
+    position: absolute;
+    right: 0;
+    bottom: -6px;
+    z-index: 1;
+    width: 24px;
+    height: 24px;
+  }
+
+  .position-inline {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  /* Animation for the chevron */
+  .chevron-icon {
+    transition: transform 0.2s ease;
+  }
+
+  .chevron-icon.expanded {
+    transform: rotate(0);
+  }
+
+  .chevron-icon.collapsed {
+    transform: rotate(0);
+  }
+`;

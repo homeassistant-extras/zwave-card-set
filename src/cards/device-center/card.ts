@@ -1,8 +1,9 @@
 import type { Config as NodeConfig } from '@/cards/node-info/types';
+import { fireEvent } from '@common/fire-event';
 import type { HomeAssistant } from '@type/homeassistant';
 import { getZWaveByArea } from '@util/hass';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
-import { property, state } from 'lit/decorators.js';
+import { state } from 'lit/decorators.js';
 import { styles } from './styles';
 import type { Center, Config } from './types';
 const equal = require('fast-deep-equal');
@@ -27,7 +28,7 @@ export class ZWaveDeviceCenter extends LitElement {
    * Home Assistant instance
    * Not marked as @state as it's handled differently
    */
-  @property({ type: Object })
+  //@property({ type: Object }) // todo - this does lots of renders, anyway to fix?
   private _hass!: HomeAssistant;
 
   /**
@@ -69,7 +70,7 @@ export class ZWaveDeviceCenter extends LitElement {
     devices.forEach((device) => {
       const manufacturer = device.manufacturer || 'unknown_manufacturer';
       const model = device.model || 'unknown_model';
-      const name = device.name || 'unknown_name';
+      const name = device.device_name || 'unknown_name';
       const modelKey = `${model} ${name}`;
 
       // Initialize manufacturer object if it doesn't exist
@@ -88,6 +89,11 @@ export class ZWaveDeviceCenter extends LitElement {
 
     if (!equal(center, this._center)) {
       this._center = center;
+    } else {
+      // update children who are subscribed
+      fireEvent(this, 'hass-update', {
+        hass,
+      });
     }
   }
 
@@ -102,11 +108,42 @@ export class ZWaveDeviceCenter extends LitElement {
         required: false,
         label: 'Device Area',
       },
+      {
+        name: 'features',
+        label: 'Features',
+        required: false,
+        selector: {
+          select: {
+            multiple: true,
+            mode: 'list',
+            options: [
+              {
+                label: 'Use Icons instead of Labels for Sensors',
+                value: 'use_icons_instead_of_names',
+              },
+              {
+                label: 'Show the Manufacturer and Model Headers',
+                value: 'show_headers',
+              },
+            ],
+          },
+        },
+      },
     ];
 
     const editor = document.createElement('basic-editor');
     (editor as any).schema = SCHEMA;
     return editor;
+  }
+
+  /**
+   * Returns a stub configuration for the card
+   * @param {HomeAssistant} hass - The Home Assistant instance
+   */
+  public static async getStubConfig(hass: HomeAssistant): Promise<Config> {
+    return {
+      features: ['show_headers'],
+    };
   }
 
   /**
@@ -129,41 +166,46 @@ export class ZWaveDeviceCenter extends LitElement {
 
         return html`
           <div class="manufacturer">
-            <h1>${manufacturer}</h1>
-            ${Object.entries(models)
-              // todo remove
-              .sort(([a], [b]) => a.localeCompare(b))
-              .map(([modelName, devices]) => {
-                // Skip empty models
-                if (!devices || devices.length === 0) {
-                  return nothing;
-                }
+            ${this._config.features?.includes('show_headers')
+              ? html`<h1>${manufacturer}</h1>`
+              : nothing}
+            ${Object.entries(models).map(([modelName, devices]) => {
+              // Skip empty models
+              if (!devices || devices.length === 0) {
+                return nothing;
+              }
 
-                // For preview mode, only show one device from the first non-empty model
-                if (this.isPreview && deviceFound) {
-                  return nothing;
-                }
+              // For preview mode, only show one device from the first non-empty model
+              if (this.isPreview && deviceFound) {
+                return nothing;
+              }
 
-                const displayDevices = this.isPreview ? [devices[0]] : devices;
-                deviceFound = displayDevices.length > 0;
+              const displayDevices = this.isPreview ? [devices[0]] : devices;
+              deviceFound = displayDevices.length > 0;
 
-                return html`
-                  <div class="model">
-                    <h2>${modelName}</h2>
-                    <div class="devices">
-                      ${displayDevices.map((device) => {
-                        const config: NodeConfig = {
-                          device_id: device!.id,
-                        };
-                        return html`<zwave-node-info
-                          .config=${config}
-                          .hass=${this._hass}
-                        ></zwave-node-info>`;
-                      })}
-                    </div>
+              return html`
+                <div class="model">
+                  ${this._config.features?.includes('show_headers')
+                    ? html`<h2>${modelName}</h2>`
+                    : nothing}
+                  <div class="devices">
+                    ${displayDevices.map((device) => {
+                      const config: NodeConfig = {
+                        device_id: device!.id,
+                        features: this._config.features?.filter(
+                          (f) => f !== 'show_headers',
+                        ),
+                      };
+                      return html`<zwave-device
+                        .config=${config}
+                        .hass=${this._hass}
+                        .showController=${true}
+                      ></zwave-device>`;
+                    })}
                   </div>
-                `;
-              })}
+                </div>
+              `;
+            })}
           </div>
         `;
       })}

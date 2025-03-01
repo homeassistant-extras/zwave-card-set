@@ -1,4 +1,4 @@
-# Z-Wave Node Info Card
+# Z-Wave Device Info Card
 
 A custom card for Home Assistant that displays detailed information about individual Z-Wave devices. This card provides an at-a-glance view of your device's status, firmware information, and entity controls, all in a clean unified interface.
 
@@ -33,14 +33,14 @@ A custom card for Home Assistant that displays detailed information about indivi
 Example configuration in YAML:
 
 ```yaml
-type: custom:zwave-node-info
+type: custom:zwave-device
 device_id: your_device_id_here
 ```
 
 With custom title and icon:
 
 ```yaml
-type: custom:zwave-node-info
+type: custom:zwave-device
 device_id: your_device_id_here
 title: Living Room Motion Sensor
 icon: mdi:motion-sensor

@@ -1,7 +1,13 @@
+/**
+ * @file types.ts
+ * @description Type definitions for Z-Wave card components
+ * Contains interfaces for configuration, sensors, and controllers
+ */
+
 import type { State } from '@type/homeassistant';
 
 /**
- * Configuration object for a device.
+ * Configuration object for a Z-Wave device card
  */
 export interface Config {
   /** Unique identifier for the device */
@@ -12,16 +18,22 @@ export interface Config {
 
   /** Optional icon representing the device */
   icon?: string;
+
+  /** Options to enable disable features **/
+  features?: Features[];
 }
 
+/** Features to enable or disable functionality */
+export type Features = 'use_icons_instead_of_names';
+
 /**
- * Represents the states of various sensors in a device.
+ * Represents the states of various sensors in a Z-Wave device
  */
 export interface Sensor {
   /** The name of the device */
   name?: string;
 
-  /** If this device is a controller */
+  /** If this device is a controller/hub */
   isController?: boolean;
 
   /** The manufacturer of the device */
@@ -42,6 +54,9 @@ export interface Sensor {
   /** The battery state of the device */
   batteryState?: State;
 
-  /** The status of the entities */
+  /** The entites of the device */
   entities: State[];
+
+  /** The sensors of the device */
+  sensors: State[];
 }

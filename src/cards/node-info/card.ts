@@ -4,15 +4,19 @@ import {
   moreInfoAction,
   toggleAction,
 } from '@common/action-handler';
+import { fireEvent, type HassUpdateEvent } from '@common/fire-event';
 import type { HomeAssistant, State } from '@type/homeassistant';
 import {
+  getHassDeviceIfZWave,
   getZWaveNonHubs,
-  isZWaveDevice,
   processDeviceEntitiesAndCheckIfController,
 } from '@util/hass';
+import { renderChevronToggle, renderStateDisplay } from '@util/render';
 import { getEntityIconStyles } from '@util/styles';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
-import { state } from 'lit/decorators.js';
+import { classMap } from 'lit-html/directives/class-map.js';
+import { styleMap } from 'lit-html/directives/style-map.js';
+import { property, state } from 'lit/decorators.js';
 import { styles } from './styles';
 import type { Config, Sensor } from './types';
 const equal = require('fast-deep-equal');
@@ -21,7 +25,7 @@ const equal = require('fast-deep-equal');
  * Base component for Z-Wave device cards
  * Handles common functionality for displaying device status and controls
  */
-export class ZWaveNodeCard extends LitElement {
+export class ZWaveDeviceInfo extends LitElement {
   /**
    * Card configuration object
    */
@@ -35,10 +39,40 @@ export class ZWaveNodeCard extends LitElement {
   protected _sensor!: Sensor;
 
   /**
+   * Flag to toggle sensor statistics
+   */
+  @property({ type: Boolean })
+  private _sensorsExpanded: boolean = false;
+
+  /**
    * Home Assistant instance
    * Not marked as @state as it's handled differently
    */
   protected _hass!: HomeAssistant;
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+
+    // Listen for hass updates
+    window.addEventListener('hass-update', this._handleHassUpdate.bind(this));
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+
+    // Clean up event listener
+    window.removeEventListener(
+      'hass-update',
+      this._handleHassUpdate.bind(this),
+    );
+  }
+
+  private _handleHassUpdate(event: Event): void {
+    const {
+      detail: { hass },
+    } = event as CustomEvent<HassUpdateEvent>;
+    this.hass = hass;
+  }
 
   /**
    * Returns the component's styles
@@ -55,6 +89,7 @@ export class ZWaveNodeCard extends LitElement {
     this._config = config;
   }
 
+  // required for device center
   set config(config: Config) {
     this.setConfig(config);
   }
@@ -70,17 +105,20 @@ export class ZWaveNodeCard extends LitElement {
       return;
     }
 
-    const device = hass.devices[this._config.device_id];
-    if (!device || !isZWaveDevice(device)) {
+    const device = getHassDeviceIfZWave(hass, this._config.device_id);
+    if (!device) {
       return;
     }
 
     const sensor: Sensor = {
-      entities: [],
-      name: device.name_by_user || device.name,
+      name: device.name,
       manufacturer: device.manufacturer,
       model: device.model,
+      entities: [],
+      sensors: [],
     };
+
+    console.log('width', this._getCardWidth());
 
     sensor.isController = processDeviceEntitiesAndCheckIfController(
       hass,
@@ -88,27 +126,28 @@ export class ZWaveNodeCard extends LitElement {
       (entity, state) => {
         switch (entity.entity_category) {
           case 'config':
-            if (entity.entity_id.endsWith('_firmware')) {
+            if (state.attributes?.device_class === 'firmware') {
               sensor.firmwareState = state;
             }
             break;
           case 'diagnostic':
-            if (entity.entity_id.endsWith('_last_seen')) {
+            if (entity.translation_key === 'last_seen') {
               sensor.lastSeenState = state;
-            } else if (entity.entity_id.endsWith('_node_status')) {
+            } else if (entity.translation_key === 'node_status') {
               sensor.nodeStatusState = state;
             } else if (
-              entity.entity_id.startsWith('sensor.') &&
-              entity.entity_id.endsWith('_battery_level')
+              state.attributes?.device_class === 'battery' &&
+              state.attributes?.state_class === 'measurement'
             ) {
               sensor.batteryState = state;
             }
             break;
-          case 'sensors':
-            // will deal with these one day
-            break;
           default:
-            sensor.entities.push(state);
+            if (this._isSensorData(state)) {
+              sensor.sensors.push(state);
+            } else {
+              sensor.entities.push(state);
+            }
             break;
         }
       },
@@ -116,6 +155,13 @@ export class ZWaveNodeCard extends LitElement {
 
     if (!equal(sensor, this._sensor)) {
       this._sensor = sensor;
+    } else {
+      if (this._sensor.isController) {
+        // update children who are subscribed
+        fireEvent(this, 'hass-update-controller', {
+          hass,
+        });
+      }
     }
   }
 
@@ -152,6 +198,23 @@ export class ZWaveNodeCard extends LitElement {
           icon: {},
         },
       },
+      {
+        name: 'features',
+        label: 'Features',
+        required: false,
+        selector: {
+          select: {
+            multiple: true,
+            mode: 'list',
+            options: [
+              {
+                label: 'Use Icons instead of Labels for Sensors',
+                value: 'use_icons_instead_of_names',
+              },
+            ],
+          },
+        },
+      },
     ];
 
     const editor = document.createElement('basic-editor');
@@ -177,33 +240,213 @@ export class ZWaveNodeCard extends LitElement {
   }
 
   /**
-   * Renders a state display section
-   * @param state - The state object to display
-   * @param divClasses - CSS classes for the container
-   * @param spanClass - CSS class for the label
-   * @param title - Display title
+   * Handler for toggling the sensors section
    */
-  protected _renderStateDisplay = (
-    state: State | undefined,
-    divClasses: string[],
-    spanClass: string,
-    title: string,
-  ): TemplateResult | typeof nothing => {
-    if (!state) {
+  private _toggleSensors(e: Event) {
+    this._sensorsExpanded = !this._sensorsExpanded;
+  }
+
+  /**
+   * Renders the card
+   * @returns {TemplateResult} The rendered HTML template
+   */
+  override render(): TemplateResult | typeof nothing {
+    if (!this._sensor) {
       return nothing;
     }
 
-    const entity = moreInfoAction(state.entity_id);
+    // for convenience, render the controller card
+    if (this._sensor.isController) {
+      return html` <zwave-controller
+        .config=${{
+          device_id: this._config.device_id,
+        }}
+        .hass=${this._hass}
+      ></zwave-controller>`;
+    }
 
-    return html`<div
-      class="${divClasses.filter((c) => c !== undefined).join(' ')}"
-      @action=${handleClickAction(this, entity)}
-      .actionHandler=${actionHandler(entity)}
-    >
-      <span class="${spanClass}">${title}</span>
-      <state-display .hass=${this._hass} .stateObj=${state}></state-display>
-    </div>`;
-  };
+    const hasSensors = this._sensor.sensors.length > 0;
+
+    return html`
+      <ha-card
+        class="${classMap({
+          expanded: this._sensorsExpanded && hasSensors,
+        })}"
+      >
+        <div class="grid">
+          <div class="firmware">
+            ${this._sensor.batteryState
+              ? html`<battery-indicator
+                  .level=${Number(this._sensor.batteryState.state)}
+                  @action=${handleClickAction(
+                    this,
+                    moreInfoAction(this._sensor.batteryState!.entity_id),
+                  )}
+                  .actionHandler=${actionHandler(
+                    moreInfoAction(this._sensor.batteryState!.entity_id),
+                  )}
+                ></battery-indicator>`
+              : this._renderIcon(
+                  this._sensor.firmwareState,
+                  undefined,
+                  this._config.icon || 'mdi:z-wave',
+                )}
+            <div
+              class="firmware-info"
+              @action=${handleClickAction(
+                this,
+                moreInfoAction(this._sensor.firmwareState!.entity_id),
+              )}
+              .actionHandler=${actionHandler(
+                moreInfoAction(this._sensor.firmwareState!.entity_id),
+              )}
+            >
+              <span class="title ellipsis">${this._sensor.name}</span>
+              <span class="status-label ellipsis"
+                >${this._sensor.model} by ${this._sensor.manufacturer}</span
+              >
+            </div>
+          </div>
+
+          ${renderStateDisplay(
+            this,
+            this._hass,
+            this._sensor.lastSeenState,
+            ['status-section', 'seen', 'ellipsis'],
+            'status-label',
+            'Last Seen',
+          )}
+          ${renderStateDisplay(
+            this,
+            this._hass,
+            this._sensor.nodeStatusState,
+            ['status-section', 'status', 'ellipsis'],
+            'status-label',
+            'Status',
+          )}
+
+          <div
+            class="entities ${this._sensor.entities.length > 3 ? 'wrap' : ''}"
+          >
+            ${this._sensor.entities.map((entity, index) =>
+              ['humidity', 'temperature'].includes(
+                entity.attributes?.device_class!,
+              )
+                ? renderStateDisplay(
+                    this,
+                    this._hass,
+                    entity,
+                    ['entity', `e${index + 1}`],
+                    'status-label',
+                    entity.attributes?.friendly_name,
+                  )
+                : this._renderIcon(entity, `e${index + 1}`),
+            )}
+          </div>
+        </div>
+
+        ${hasSensors
+          ? html` <div
+              class="${classMap({
+                'sensors-container': true,
+                expanded: this._sensorsExpanded,
+              })}"
+            >
+              <div
+                class="sensors"
+                style="${this._config.features?.includes(
+                  'use_icons_instead_of_names',
+                )
+                  ? nothing
+                  : styleMap({
+                      display: 'flex',
+                      flexDirection: 'column',
+                      paddingBottom: '30px',
+                    })}"
+              >
+                ${this._sensor.sensors.map((entity, index) => {
+                  return html`
+                    <div
+                      class="sensor-item"
+                      style="${this._config.features?.includes(
+                        'use_icons_instead_of_names',
+                      )
+                        ? nothing
+                        : styleMap({
+                            justifyContent: 'space-between',
+                          })}"
+                    >
+                      ${this._config.features?.includes(
+                        'use_icons_instead_of_names',
+                      )
+                        ? this._renderIcon(entity, `s${index + 1}`)
+                        : html`<span class="status-label" ellipsis
+                            >${entity.attributes?.friendly_name}</span
+                          >`}
+                      ${renderStateDisplay(
+                        this,
+                        this._hass,
+                        entity,
+                        ['sensor', `s${index + 1}`],
+                        'sensor-label',
+                      )}
+                    </div>
+                  `;
+                })}
+              </div>
+              ${this._sensorsExpanded
+                ? renderChevronToggle(
+                    this._sensorsExpanded,
+                    (e: Event) => this._toggleSensors(e),
+                    'bottom-right',
+                  )
+                : nothing}
+            </div>`
+          : nothing}
+        ${hasSensors && !this._sensorsExpanded
+          ? renderChevronToggle(
+              this._sensorsExpanded,
+              (e: Event) => this._toggleSensors(e),
+              'bottom-right',
+            )
+          : nothing}
+      </ha-card>
+    `;
+  }
+
+  private _isSensorData(state: State) {
+    if (
+      ['measurement', 'total_increasing'].includes(
+        state.attributes!.state_class,
+      )
+    ) {
+      if (
+        ['humidity', 'temperature'].includes(state.attributes!.device_class)
+      ) {
+        // probably a climate sensor
+        return false;
+      }
+
+      // most likely one of the following
+      // - electricity
+      // - energy
+      return true;
+    }
+
+    if (['heat'].includes(state.attributes!.device_class)) {
+      // most likely one of the following
+      // - overheat sensors
+      return true;
+    }
+
+    if (['event'].includes(state.domain)) {
+      // most likely one of the following
+      // - scene controllers
+      return true;
+    }
+
+    return false;
+  }
 
   /**
    * Renders an icon with state
@@ -223,9 +466,7 @@ export class ZWaveNodeCard extends LitElement {
       return html`<div class="${classes}" />`;
     }
 
-    const domain = state.entity_id.split('.')[0]!;
-
-    const params = ['switch', 'light'].includes(domain)
+    const params = ['switch', 'light'].includes(state.domain)
       ? toggleAction(state.entity_id)
       : moreInfoAction(state.entity_id);
     const styles = getEntityIconStyles(state);
@@ -245,71 +486,9 @@ export class ZWaveNodeCard extends LitElement {
   };
 
   /**
-   * Renders the card
-   * @returns {TemplateResult} The rendered HTML template
+   * Get card width for responsive layout
    */
-  override render(): TemplateResult | typeof nothing {
-    if (!this._sensor) {
-      return nothing;
-    }
-
-    // for convenience, show the controller card
-    if (this._sensor.isController) {
-      return html`<zwave-controller-info
-        .hass=${this._hass}
-      ></zwave-controller-info>`;
-    }
-
-    // todo - color icon based on firmware state
-    return html`
-      <ha-card class="grid">
-        <div class="firmware">
-          ${this._renderIcon(
-            this._sensor.firmwareState,
-            undefined,
-            this._config.icon || 'mdi:z-wave',
-          )}
-          <div class="firmware-info">
-            <span class="title">${this._sensor.name}</span>
-            <div>
-              ${this._sensor.batteryState
-                ? html`<battery-indicator
-                    .level=${Number(this._sensor.batteryState.state)}
-                    @action=${handleClickAction(
-                      this,
-                      moreInfoAction(this._sensor.batteryState!.entity_id),
-                    )}
-                    .actionHandler=${actionHandler(
-                      moreInfoAction(this._sensor.batteryState!.entity_id),
-                    )}
-                  ></battery-indicator>`
-                : nothing}
-              <span class="status-label"
-                >${this._sensor.model} by ${this._sensor.manufacturer}</span
-              >
-            </div>
-          </div>
-        </div>
-
-        ${this._renderStateDisplay(
-          this._sensor.lastSeenState,
-          ['status-section', 'seen'],
-          'status-label',
-          'Last Seen',
-        )}
-        ${this._renderStateDisplay(
-          this._sensor.nodeStatusState,
-          ['status-section', 'status'],
-          'status-label',
-          'Status',
-        )}
-
-        <div class="entities">
-          ${this._sensor.entities.map((entity, index) =>
-            this._renderIcon(entity, `e${index + 1}`),
-          )}
-        </div>
-      </ha-card>
-    `;
+  private _getCardWidth(): number {
+    return this.shadowRoot?.host.getBoundingClientRect().width || 500;
   }
 }

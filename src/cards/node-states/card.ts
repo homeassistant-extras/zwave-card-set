@@ -5,7 +5,10 @@ import {
 } from '@common/action-handler';
 import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant } from '@type/homeassistant';
-import { getZWaveNonHubs } from '@util/hass';
+import {
+  getZWaveNonHubs,
+  processDeviceEntitiesAndCheckIfController,
+} from '@util/hass';
 import { CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { state } from 'lit/decorators.js';
@@ -83,7 +86,7 @@ export class ZWaveNodesStatus extends LitElement {
     // Iterate through all devices
     getZWaveNonHubs(hass).forEach((device) => {
       zWaveNodes[device.id] = {
-        name: device.name_by_user || device.name,
+        name: device.name,
         device_id: device.id,
       } as NodeInfo;
     });
@@ -93,18 +96,23 @@ export class ZWaveNodesStatus extends LitElement {
       return;
     }
 
-    Object.values(hass.entities).forEach((entity) => {
-      const node = zWaveNodes[entity.device_id];
-      if (!node) return;
-
-      if (entity.entity_id.endsWith('_node_status')) {
-        const state = hass.states[entity.entity_id]!;
-        node.statusState = state;
-      } else if (entity.entity_id.endsWith('_last_seen')) {
-        const state = hass.states[entity.entity_id]!;
-        node.lastSeenState = state;
-        node.lastSeen = new Date(state.state).getTime();
-      }
+    getZWaveNonHubs(hass).forEach((device) => {
+      const node = {
+        name: device.name,
+        device_id: device.id,
+      } as NodeInfo;
+      processDeviceEntitiesAndCheckIfController(
+        hass,
+        device.id,
+        (entity, state) => {
+          if (entity.translation_key === 'node_status') {
+            node.statusState = state;
+          } else if (entity.translation_key === 'last_seen') {
+            node.lastSeenState = state;
+            node.lastSeen = new Date(state.state).getTime();
+          }
+        },
+      );
     });
 
     // Separate dead nodes and live nodes
@@ -139,7 +147,6 @@ export class ZWaveNodesStatus extends LitElement {
         return 0;
       });
 
-    // todo - don't set raw objects to properties of this...
     if (!equal(deadNodes, this._deadNodes)) {
       this._deadNodes = deadNodes;
     }

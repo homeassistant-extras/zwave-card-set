@@ -1,18 +1,18 @@
-import { ZWaveHubCard } from '@controller-info/card';
+import { ZWaveController } from '@controller-info/card';
 import type { Config } from '@controller-info/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import type { Device, HomeAssistant } from '@type/homeassistant';
 import { expect } from 'chai';
 
-describe('ZWaveHubCard', () => {
+describe('ZWaveController', () => {
   describe('card.ts', () => {
-    let card: ZWaveHubCard;
+    let card: ZWaveController;
     let mockHass: HomeAssistant;
     let mockConfig: Config;
 
     beforeEach(() => {
       // Create a new card instance for each test
-      card = new ZWaveHubCard();
+      card = new ZWaveController();
 
       // Basic config setup
       mockConfig = {};
@@ -42,7 +42,7 @@ describe('ZWaveHubCard', () => {
 
     describe('getConfigElement', () => {
       it('should return correct editor element', () => {
-        const editor = ZWaveHubCard.getConfigElement();
+        const editor = ZWaveController.getConfigElement();
         expect(editor.tagName.toLowerCase()).to.equal('basic-editor');
       });
     });

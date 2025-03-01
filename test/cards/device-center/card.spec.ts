@@ -257,7 +257,7 @@ describe('ZWaveDeviceCenter', () => {
       expect(headingTexts).to.include('ZEN51 Garage Door');
     });
 
-    it('should render zwave-node-info for each device', async () => {
+    it('should render zwave-device for each device', async () => {
       const testDevices = [
         {
           id: 'device1',
@@ -282,8 +282,8 @@ describe('ZWaveDeviceCenter', () => {
 
       const el = await fixture(card.render() as TemplateResult);
 
-      // Check that zwave-node-info elements are created for each device
-      const nodeInfoElements = el.querySelectorAll('zwave-node-info');
+      // Check that zwave-device elements are created for each device
+      const nodeInfoElements = el.querySelectorAll('zwave-device');
       expect(nodeInfoElements).to.have.lengthOf(2);
 
       // Check that device IDs are passed correctly to the node info components
@@ -379,7 +379,7 @@ describe('ZWaveDeviceCenter', () => {
       const el = await fixture(card.render() as TemplateResult);
 
       // In preview mode, should only show one node-info component
-      const nodeInfoElements = el.querySelectorAll('zwave-node-info');
+      const nodeInfoElements = el.querySelectorAll('zwave-device');
       expect(nodeInfoElements).to.have.lengthOf(1);
     });
 
@@ -400,7 +400,7 @@ describe('ZWaveDeviceCenter', () => {
 
       const el = await fixture(card.render() as TemplateResult);
 
-      const nodeInfoElement = el.querySelector('zwave-node-info');
+      const nodeInfoElement = el.querySelector('zwave-device');
       expect(nodeInfoElement).to.exist;
       expect((nodeInfoElement as any).hass).to.equal(mockHass);
     });

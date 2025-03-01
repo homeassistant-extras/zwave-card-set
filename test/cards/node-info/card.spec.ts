@@ -1,5 +1,5 @@
 import * as actionHandlerModule from '@common/action-handler';
-import { ZWaveNodeCard } from '@node/card';
+import { ZWaveDeviceInfo } from '@node/card';
 import type { Config } from '@node/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import type { ActionHandlerEvent } from '@type/action';
@@ -22,8 +22,8 @@ const createState = (
   };
 };
 
-describe('ZWaveNodeCard', () => {
-  let card: ZWaveNodeCard;
+describe('ZWaveDeviceInfo', () => {
+  let card: ZWaveDeviceInfo;
   let mockHass: HomeAssistant;
   let mockConfig: Config;
   let actionHandlerStub: sinon.SinonStub;
@@ -31,7 +31,7 @@ describe('ZWaveNodeCard', () => {
   let getZWaveNonHubsStub: sinon.SinonStub;
 
   beforeEach(() => {
-    card = new ZWaveNodeCard();
+    card = new ZWaveDeviceInfo();
 
     mockConfig = {
       device_id: 'test_device_id',
@@ -254,7 +254,7 @@ describe('ZWaveNodeCard', () => {
 
         const el = await fixture(card.render() as TemplateResult);
 
-        expect(el.tagName.toLowerCase()).to.equal('zwave-controller-info');
+        expect(el.tagName.toLowerCase()).to.equal('zwave-controller');
       });
 
       it('should render all card sections when data is available', async () => {
@@ -352,7 +352,7 @@ describe('ZWaveNodeCard', () => {
 
     describe('configuration', () => {
       it('should get config element with correct schema', () => {
-        const editor = ZWaveNodeCard.getConfigElement();
+        const editor = ZWaveDeviceInfo.getConfigElement();
         expect(editor.tagName.toLowerCase()).to.equal('basic-editor');
         expect((editor as any).schema).to.deep.include.members([
           {
@@ -390,7 +390,7 @@ describe('ZWaveNodeCard', () => {
         const mockDevices = [{ id: 'device_123' }];
         getZWaveNonHubsStub.returns(mockDevices);
 
-        const config = await ZWaveNodeCard.getStubConfig(mockHass);
+        const config = await ZWaveDeviceInfo.getStubConfig(mockHass);
 
         expect(getZWaveNonHubsStub.calledOnceWith(mockHass)).to.be.true;
         expect(config).to.deep.equal({ device_id: 'device_123' });
@@ -399,7 +399,7 @@ describe('ZWaveNodeCard', () => {
       it('should return empty device_id when no non-hub devices exist', async () => {
         getZWaveNonHubsStub.returns([]);
 
-        const config = await ZWaveNodeCard.getStubConfig(mockHass);
+        const config = await ZWaveDeviceInfo.getStubConfig(mockHass);
 
         expect(config).to.deep.equal({ device_id: '' });
       });

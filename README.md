@@ -35,7 +35,7 @@ This project brings a set of cards to display info about your Z-Wave devices. Ma
 
 ## Cards
 
-### [Z-Wave Node Info](src/cards/node-info/README.md)
+### [Z-Wave Device Info](src/cards/node-info/README.md)
 
 Universal card for all Z-Wave devices showing detailed device information and controls.
 
@@ -88,7 +88,7 @@ Add the cards to your dashboard using the UI editor or YAML.
 
 See the README files of the individual cards for configuration and detailed information.
 
-- [Z-Wave Node Info](src/cards/node-info/README.md)
+- [Z-Wave Device Info](src/cards/node-info/README.md)
 - [Device Center](src/cards/device-center/README.md)
 - [Z-Wave Nodes Status Card](src/cards/node-states/README.md)
 - [Z-Wave Hub Card](src/cards/controller-info/README.md)
@@ -99,7 +99,7 @@ Some cards may require the hub to be labeled with a "Hub" label:
 
 ## Supported Devices
 
-All Z-Wave devices are supported through the universal Node Info card. I have tested mainly Zooz devices as this is my Z-Wave devices of choice. Let me know if you have any issues and we'll get them fixed!
+All Z-Wave devices are supported through the universal Device Info card. I have tested mainly Zooz devices as this is my Z-Wave devices of choice. Let me know if you have any issues and we'll get them fixed!
 
 ## Project Roadmap
 

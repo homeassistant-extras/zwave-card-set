@@ -15,6 +15,12 @@ export const styles = css`
     justify-content: space-between;
   }
 
+  .card-header .name {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
   .card-content {
     padding: 16px;
   }
@@ -23,6 +29,7 @@ export const styles = css`
     display: flex;
     justify-content: space-between;
     padding: 4px 0;
+    cursor: pointer;
   }
 
   .status-label {

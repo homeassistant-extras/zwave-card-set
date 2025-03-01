@@ -1,6 +1,6 @@
 import type { Device, Entity, HomeAssistant, State } from '@type/homeassistant';
 import {
-  getZWaveHubs,
+  getZWaveControllers,
   getZWaveNonHubs,
   isZWaveDevice,
   processDeviceEntities,
@@ -527,7 +527,7 @@ describe('util', () => {
     });
 
     it('should return only Z-Wave hub devices', () => {
-      const result = getZWaveHubs(mockHass);
+      const result = getZWaveControllers(mockHass);
 
       expect(result.length).to.equal(2);
       expect(result.map((d) => d.id)).to.have.members([
@@ -562,7 +562,7 @@ describe('util', () => {
         },
       };
 
-      const result = getZWaveHubs(noZWaveHubsHass);
+      const result = getZWaveControllers(noZWaveHubsHass);
       expect(result).to.deep.equal([]);
     });
   });

@@ -1,9 +1,9 @@
 import { fireEvent } from '@common/fire-event';
+import type { Config } from '@node/types';
 import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant } from '@type/homeassistant';
 import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
-import type { Config } from '../cards/controller-info/types';
 
 export class BasicEditor extends LitElement {
   /**
@@ -50,6 +50,12 @@ export class BasicEditor extends LitElement {
 
   private _valueChanged(ev: CustomEvent) {
     const config = ev.detail.value as Config;
-    fireEvent(this, 'config-changed', { config });
+    if (!config.features?.length) {
+      delete config.features;
+    }
+
+    fireEvent(this, 'config-changed', {
+      config,
+    });
   }
 }

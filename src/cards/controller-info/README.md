@@ -26,7 +26,7 @@ No configuration for this debice
 Example configuration in YAML:
 
 ```yaml
-type: custom:zwave-controller-info
+type: custom:zwave-controller
 ```
 
 ## Status Indicators

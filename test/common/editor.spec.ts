@@ -6,7 +6,7 @@ import { expect } from 'chai';
 import { nothing, type TemplateResult } from 'lit';
 import { stub } from 'sinon';
 
-describe('ZWaveHubCard', () => {
+describe('BasicEditor', () => {
   describe('editor.ts', () => {
     let card: BasicEditor;
     let hass: HomeAssistant;

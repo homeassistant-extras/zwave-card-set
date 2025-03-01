@@ -59,6 +59,9 @@ export type Entity = {
   /** ID of the device this entity belongs to */
   device_id: string;
 
+  /** Name of the entity */
+  name?: string;
+
   /** Categorey the entity shows on the device */
   entity_category?: string;
 
@@ -81,4 +84,7 @@ export type State = {
 
   /** Additional attributes associated with the state */
   attributes?: Record<string, any>;
+
+  /** Returns the domain portion of the entity_id */
+  domain: string;
 };

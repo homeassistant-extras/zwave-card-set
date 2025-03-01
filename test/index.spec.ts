@@ -33,10 +33,10 @@ describe('index.ts', () => {
   });
 
   // Base component registration tests
-  it('should register zwave-node-info', () => {
+  it('should register zwave-device', () => {
     require('@/index.ts');
     const calls = customElementsStub.getCalls();
-    expect(calls.some((call) => call.args[0] === 'zwave-node-info')).to.be.true;
+    expect(calls.some((call) => call.args[0] === 'zwave-device')).to.be.true;
   });
 
   it('should register device-center', () => {
@@ -46,10 +46,10 @@ describe('index.ts', () => {
       .true;
   });
 
-  it('should register zwave-controller-info components', () => {
+  it('should register zwave-controller components', () => {
     require('@/index.ts');
     const calls = customElementsStub.getCalls();
-    expect(calls.some((call) => call.args[0] === 'zwave-controller-info')).to.be
+    expect(calls.some((call) => call.args[0] === 'zwave-controller')).to.be
       .true;
   });
 
@@ -87,15 +87,15 @@ describe('index.ts', () => {
 
     const expectedCards = [
       {
-        type: 'zwave-node-info',
-        name: 'Z-Wave Node Info',
+        type: 'zwave-device',
+        name: 'Z-Wave Device Info',
         description: 'A card to summarize a Z-Wave node.',
         preview: true,
         documentationURL:
           'https://github.com/homeassistant-extras/zwave-card-set',
       },
       {
-        type: 'zwave-controller-info',
+        type: 'zwave-controller',
         name: 'Z-Wave Hub Info',
         description: 'A card to summarize information about the hub.',
         preview: true,

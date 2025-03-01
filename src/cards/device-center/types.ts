@@ -1,4 +1,4 @@
-import type { Device } from '@type/homeassistant';
+import type { ZWaveDevice } from '@type/zwave';
 
 /**
  * System-wide configuration settings
@@ -6,7 +6,13 @@ import type { Device } from '@type/homeassistant';
 export interface Config {
   /** Optional area to filter on */
   area?: string;
+
+  /** Options to enable disable features **/
+  features?: Features[];
 }
+
+/** Features to enable or disable functionality */
+export type Features = 'use_icons_instead_of_names' | 'show_headers';
 
 /**
  * Device center state
@@ -18,5 +24,5 @@ export interface Center {
    * Second level keys: model names
    * Values: arrays of devices
    */
-  devices: Record<string, Record<string, Device[]>>;
+  devices: Record<string, Record<string, ZWaveDevice[]>>;
 }

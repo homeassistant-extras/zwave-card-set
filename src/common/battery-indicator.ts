@@ -14,22 +14,18 @@ export class BatteryIndicator extends LitElement {
   static override styles = css`
     :host {
       display: inline-block;
-      width: 25px;
-      height: 25px;
-      margin-right: 8px;
+      width: var(--icon-size);
+      height: var(--icon-size);
       vertical-align: middle;
     }
 
     .battery-text {
       fill: var(--primary-text-color, #fff);
-      font-size: 16px;
+      font-size: 13px;
       font-weight: bold;
       text-anchor: middle;
       alignment-baseline: middle;
-    }
-
-    .battery-text tspan {
-      font-size: 10px;
+      cursor: pointer;
     }
 
     .battery-circle {
@@ -61,8 +57,7 @@ export class BatteryIndicator extends LitElement {
           style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${offset};"
         />
         <text x="50%" y="54%" class="battery-text">
-          ${Math.round(this.level)}
-          <tspan>%</tspan>
+          ${Math.round(this.level)}%
         </text>
       </svg>
     `;
