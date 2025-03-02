@@ -19,23 +19,27 @@ import type { Config, Controller } from './types';
 const equal = require('fast-deep-equal');
 
 /**
- * Z-Wave Hub Card
+ * Z-Wave Controller Card
+ *
+ * A custom card component that displays information about a Z-Wave controller/hub.
+ * Shows controller status, signal strength (RSSI), and can list all connected Z-Wave devices.
  */
 export class ZWaveController extends LitElement {
   /**
-   * Card configuration object
+   * Card configuration object containing settings like device_id and title
    */
   @state()
   private _config!: Config;
 
   /**
-   * Hub object containing information about the Z-Wave hub
+   * Controller object containing detailed information about the Z-Wave hub
+   * including status, connected devices, RSSI values, and potential error messages
    */
   @state()
   private _controller!: Controller;
 
   /**
-   * Flag to indicate if the card is expanded
+   * Flag to indicate if the connected devices list is expanded
    */
   @state()
   private expanded: boolean = false;
@@ -47,13 +51,17 @@ export class ZWaveController extends LitElement {
   private _hass!: HomeAssistant;
 
   /**
-   * Returns the component's styles
+   * Returns the component's CSS styles
+   * @returns {CSSResult} The CSS styles for this component
    */
   static override get styles(): CSSResult {
     return styles;
   }
 
-  // getters
+  /**
+   * Determines if the card is being rendered in preview mode
+   * @returns {boolean} True if in preview mode, false otherwise
+   */
   get isPreview(): boolean {
     return (
       (this as HTMLElement).parentElement?.classList.contains('preview') ||
@@ -63,19 +71,25 @@ export class ZWaveController extends LitElement {
 
   /**
    * Sets up the card configuration
-   * @param {Config} config - The card configuration
+   * @param {Config} config - The card configuration object
    */
   setConfig(config: Config) {
     this._config = config;
   }
 
-  // required for device center
+  /**
+   * Alternative method to set configuration for compatibility with device center
+   * @param {Config} config - The card configuration object
+   */
   set config(config: Config) {
     this.setConfig(config);
   }
 
   /**
    * Updates the card's state when Home Assistant state changes
+   * Processes the hub device and its entities, checks if it's a valid controller,
+   * and gathers information about connected devices
+   *
    * @param {HomeAssistant} hass - The Home Assistant instance
    */
   set hass(hass: HomeAssistant) {
@@ -126,6 +140,9 @@ export class ZWaveController extends LitElement {
     }
   }
 
+  /**
+   * Sets up event listeners when the component is connected to the DOM
+   */
   override connectedCallback(): void {
     super.connectedCallback();
 
@@ -136,6 +153,9 @@ export class ZWaveController extends LitElement {
     );
   }
 
+  /**
+   * Cleans up event listeners when the component is disconnected from the DOM
+   */
   override disconnectedCallback(): void {
     super.disconnectedCallback();
 
@@ -146,6 +166,12 @@ export class ZWaveController extends LitElement {
     );
   }
 
+  /**
+   * Event handler for Home Assistant update events
+   * Updates the card when Home Assistant state changes externally
+   *
+   * @param {Event} event - The custom event containing updated Home Assistant data
+   */
   private _handleHassUpdate(event: Event): void {
     const {
       detail: { hass },
@@ -153,7 +179,12 @@ export class ZWaveController extends LitElement {
     this.hass = hass;
   }
 
-  // card configuration
+  /**
+   * Returns the configuration element for the card
+   * Creates a basic editor with a schema for the available configuration options
+   *
+   * @returns {Element} An editor element with the configuration schema
+   */
   static getConfigElement() {
     const SCHEMA = [
       {
@@ -189,7 +220,10 @@ export class ZWaveController extends LitElement {
 
   /**
    * Returns a stub configuration for the card
+   * Used when the card is first added to the dashboard
+   *
    * @param {HomeAssistant} hass - The Home Assistant instance
+   * @returns {Promise<Config>} A promise resolving to the default configuration
    */
   public static async getStubConfig(hass: HomeAssistant): Promise<Config> {
     const devices = getZWaveControllers(hass);
@@ -205,8 +239,9 @@ export class ZWaveController extends LitElement {
   }
 
   /**
-   * Renders the lit element card
-   * @returns {TemplateResult} The rendered HTML template
+   * Renders the card
+   *
+   * @returns {TemplateResult | typeof nothing} The rendered HTML template or nothing if no data is available
    */
   override render(): TemplateResult | typeof nothing {
     if (!this._controller) {
@@ -289,6 +324,12 @@ export class ZWaveController extends LitElement {
     `;
   }
 
+  /**
+   * Determines the CSS class to apply based on RSSI value
+   *
+   * @param {string} rssi - The RSSI value as a string
+   * @returns {string} The CSS class name based on signal strength
+   */
   _getRssiClass(rssi: string) {
     if (rssi === 'N/A') return '';
 
@@ -300,10 +341,20 @@ export class ZWaveController extends LitElement {
     return 'status-bad';
   }
 
+  /**
+   * Toggles the expanded state of the connected devices list
+   */
   _toggleExpanded() {
     this.expanded = !this.expanded;
   }
 
+  /**
+   * Gets the Z-Wave controller device based on configuration
+   * Either uses the specified device_id from config or finds the first available controller
+   *
+   * @param {Controller} controller - The controller object to update with error messages if needed
+   * @returns {ZWaveDevice | undefined} The controller device or undefined if not found
+   */
   _getController(controller: Controller): ZWaveDevice | undefined {
     if (this._config.device_id) {
       const device = getHassDeviceIfZWave(this._hass, this._config.device_id);
@@ -316,12 +367,12 @@ export class ZWaveController extends LitElement {
     } else {
       const devices = getZWaveControllers(this._hass);
 
-      if (devices.length > 1) {
-        this._controller.error =
+      if (devices?.length > 1) {
+        controller.error =
           'Multiple Z-Wave controllers found. Please specify one.';
         return undefined;
-      } else if (devices.length === 0) {
-        this._controller.error = 'No Z-Wave controller found.';
+      } else if (!devices || devices.length === 0) {
+        controller.error = 'No Z-Wave controller found.';
         return undefined;
       }
 

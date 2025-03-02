@@ -45,7 +45,7 @@ describe('BasicEditor', () => {
       it('should set the configuration correctly', () => {
         const testConfig: Config = {
           title: 'title_1',
-          columns: 2,
+          device_id: 'device_1',
         };
 
         card.setConfig(testConfig);
@@ -68,6 +68,7 @@ describe('BasicEditor', () => {
       it('should render ha-form when both hass and config are set', async () => {
         const testConfig: Config = {
           title: 'title_1',
+          device_id: 'device_1',
         };
         card.setConfig(testConfig);
 
@@ -78,7 +79,7 @@ describe('BasicEditor', () => {
       it('should pass correct props to ha-form', async () => {
         const testConfig: Config = {
           title: 'title_1',
-          columns: 2,
+          device_id: 'device_1',
         };
         card.setConfig(testConfig);
 
@@ -93,7 +94,7 @@ describe('BasicEditor', () => {
       it('should compute labels correctly', async () => {
         const testConfig: Config = {
           title: 'title_1',
-          columns: 2,
+          device_id: 'device_1',
         };
         card.setConfig(testConfig);
 
@@ -112,7 +113,7 @@ describe('BasicEditor', () => {
       it('should fire config-changed event with config when features are present', () => {
         const testConfig: Config = {
           title: 'title_1',
-          columns: 2,
+          device_id: 'device_1',
         };
         card.setConfig(testConfig);
 

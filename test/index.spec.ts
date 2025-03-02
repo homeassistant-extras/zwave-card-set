@@ -30,6 +30,12 @@ describe('index.ts', () => {
     consoleInfoStub.restore();
     customCardsStub = undefined;
     delete require.cache[require.resolve('@/index.ts')];
+    delete require.cache[require.resolve('@node/card')];
+    delete require.cache[require.resolve('@center/card')];
+    delete require.cache[require.resolve('@common/basic-editor')];
+    delete require.cache[require.resolve('@common/battery-indicator')];
+    delete require.cache[require.resolve('@controller-info/card')];
+    delete require.cache[require.resolve('@node-states/card')];
   });
 
   // Base component registration tests
@@ -96,8 +102,8 @@ describe('index.ts', () => {
       },
       {
         type: 'zwave-controller',
-        name: 'Z-Wave Hub Info',
-        description: 'A card to summarize information about the hub.',
+        name: 'Z-Wave Controller Info',
+        description: 'A card to summarize information about the controller.',
         preview: true,
         documentationURL:
           'https://github.com/homeassistant-extras/zwave-card-set',

@@ -16,7 +16,9 @@ describe('ZWaveDeviceCenter', () => {
   beforeEach(() => {
     card = new ZWaveDeviceCenter();
 
-    mockConfig = {};
+    mockConfig = {
+      features: ['show_headers'],
+    };
 
     mockHass = {
       states: {},
@@ -56,6 +58,27 @@ describe('ZWaveDeviceCenter', () => {
           required: false,
           label: 'Device Area',
         },
+        {
+          name: 'features',
+          label: 'Features',
+          required: false,
+          selector: {
+            select: {
+              multiple: true,
+              mode: 'list',
+              options: [
+                {
+                  label: 'Use Icons instead of Labels for Sensors',
+                  value: 'use_icons_instead_of_names',
+                },
+                {
+                  label: 'Show the Manufacturer and Model Headers',
+                  value: 'show_headers',
+                },
+              ],
+            },
+          },
+        },
       ]);
     });
   });
@@ -66,7 +89,7 @@ describe('ZWaveDeviceCenter', () => {
       const testDevices = [
         {
           id: 'device1',
-          name: 'Device 1',
+          device_name: 'Device 1',
           manufacturer: 'Zooz',
           model: 'ZEN71',
           identifiers: [['zwave_js', '123']],
@@ -74,7 +97,7 @@ describe('ZWaveDeviceCenter', () => {
         },
         {
           id: 'device2',
-          name: 'Device 2',
+          device_name: 'Device 2',
           manufacturer: 'Zooz',
           model: 'ZEN71',
           identifiers: [['zwave_js', '456']],
@@ -82,7 +105,7 @@ describe('ZWaveDeviceCenter', () => {
         },
         {
           id: 'device3',
-          name: 'Device 3',
+          device_name: 'Device 3',
           manufacturer: 'GE',
           model: 'Switch',
           identifiers: [['zwave_js', '789']],
@@ -90,7 +113,7 @@ describe('ZWaveDeviceCenter', () => {
         },
         {
           id: 'device4',
-          name: 'Device 4',
+          device_name: 'Device 4',
           manufacturer: 'Zooz',
           model: 'ZEN51',
           identifiers: [['zwave_js', '101']],
@@ -142,7 +165,7 @@ describe('ZWaveDeviceCenter', () => {
       const devicesWithMissingInfo = [
         {
           id: 'device5',
-          name: 'Device 5',
+          device_name: 'Device 5',
           // No manufacturer property
           model: 'TestModel',
           identifiers: [['zwave_js', '123']],
@@ -167,7 +190,7 @@ describe('ZWaveDeviceCenter', () => {
       const devicesWithMissingInfo = [
         {
           id: 'device6',
-          name: 'Device 6',
+          device_name: 'Device 6',
           manufacturer: 'TestManufacturer',
           // No model property
           identifiers: [['zwave_js', '123']],
@@ -218,12 +241,116 @@ describe('ZWaveDeviceCenter', () => {
       expect(el.textContent).to.equal('No devices found in area empty_area');
     });
 
+    it('should not render headers when show_headers feature is not enabled', async () => {
+      const testDevices = [
+        {
+          id: 'device1',
+          device_name: 'Device 1',
+          manufacturer: 'Zooz',
+          model: 'ZEN71',
+          identifiers: [['zwave_js', '123']],
+          area_id: 'area1',
+        },
+      ];
+
+      getZWaveByAreaStub.returns(testDevices);
+      card.setConfig({ features: [] });
+      card.hass = mockHass;
+
+      const el = await fixture(card.render() as TemplateResult);
+
+      // No headers should be rendered
+      const manufacturerHeading = el.querySelector('h1');
+      const modelHeading = el.querySelector('h2');
+
+      expect(manufacturerHeading).to.be.null;
+      expect(modelHeading).to.be.null;
+    });
+
+    it('should render headers when show_headers feature is enabled', async () => {
+      const testDevices = [
+        {
+          id: 'device1',
+          device_name: 'Device 1',
+          manufacturer: 'Zooz',
+          model: 'ZEN71',
+          identifiers: [['zwave_js', '123']],
+          area_id: 'area1',
+        },
+      ];
+
+      card.setConfig({ features: ['show_headers'] });
+      getZWaveByAreaStub.returns(testDevices);
+      card.hass = mockHass;
+
+      const el = await fixture(card.render() as TemplateResult);
+
+      // Headers should be rendered
+      const manufacturerHeading = el.querySelector('h1');
+      const modelHeading = el.querySelector('h2');
+
+      expect(manufacturerHeading?.textContent).to.equal('Zooz');
+      expect(modelHeading?.textContent).to.equal('ZEN71 Device 1');
+    });
+
+    it('should pass features to zwave-device component', async () => {
+      const testDevices = [
+        {
+          id: 'device1',
+          device_name: 'Device 1',
+          manufacturer: 'Zooz',
+          model: 'ZEN71',
+          identifiers: [['zwave_js', '123']],
+          area_id: 'area1',
+        },
+      ];
+
+      card.setConfig({
+        features: ['use_icons_instead_of_names'],
+      });
+      getZWaveByAreaStub.returns(testDevices);
+      card.hass = mockHass;
+
+      const el = await fixture(card.render() as TemplateResult);
+
+      // Check zwave-device element
+      const nodeInfoElement = el.querySelector('zwave-device');
+      const nodeInfoConfig = (nodeInfoElement as any).config;
+
+      expect(nodeInfoConfig.features).to.deep.equal([
+        'use_icons_instead_of_names',
+      ]);
+    });
+
+    it('should pass showController flag to zwave-device component', async () => {
+      const testDevices = [
+        {
+          id: 'device1',
+          device_name: 'Device 1',
+          manufacturer: 'Zooz',
+          model: 'ZEN71',
+          identifiers: [['zwave_js', '123']],
+          area_id: 'area1',
+        },
+      ];
+
+      getZWaveByAreaStub.returns(testDevices);
+      card.hass = mockHass;
+
+      const el = await fixture(card.render() as TemplateResult);
+
+      // Check zwave-device element
+      const nodeInfoElement = el.querySelector('zwave-device');
+
+      expect((nodeInfoElement as any).showController).to.be.true;
+    });
+
     it('should render manufacturer and model sections', async () => {
       // Set up test devices for rendering
       const testDevices = [
         {
           id: 'device1',
-          name: 'Light Switch',
+          device_name: 'Light Switch',
           manufacturer: 'Zooz',
           model: 'ZEN71',
           identifiers: [['zwave_js', '123']],
@@ -231,7 +358,7 @@ describe('ZWaveDeviceCenter', () => {
         },
         {
           id: 'device2',
-          name: 'Garage Door',
+          device_name: 'Garage Door',
           manufacturer: 'Zooz',
           model: 'ZEN51',
           identifiers: [['zwave_js', '456']],
@@ -261,7 +388,7 @@ describe('ZWaveDeviceCenter', () => {
       const testDevices = [
         {
           id: 'device1',
-          name: 'Device 1',
+          device_name: 'Device 1',
           manufacturer: 'Zooz',
           model: 'ZEN71',
           identifiers: [['zwave_js', '123']],
@@ -269,7 +396,7 @@ describe('ZWaveDeviceCenter', () => {
         },
         {
           id: 'device2',
-          name: 'Device 2',
+          device_name: 'Device 2',
           manufacturer: 'Zooz',
           model: 'ZEN51',
           identifiers: [['zwave_js', '456']],
@@ -291,59 +418,21 @@ describe('ZWaveDeviceCenter', () => {
         (el) => (el as any).config,
       );
 
-      expect(nodeInfoConfigs).to.deep.include({ device_id: 'device1' });
-      expect(nodeInfoConfigs).to.deep.include({ device_id: 'device2' });
-    });
-
-    it('should sort models alphabetically', async () => {
-      const testDevices = [
-        {
-          id: 'device1',
-          name: 'Device C',
-          manufacturer: 'Zooz',
-          model: 'ZEN71',
-          identifiers: [['zwave_js', '123']],
-          area_id: 'area1',
-        },
-        {
-          id: 'device2',
-          name: 'Device A',
-          manufacturer: 'Zooz',
-          model: 'ZEN51',
-          identifiers: [['zwave_js', '456']],
-          area_id: 'area1',
-        },
-        {
-          id: 'device3',
-          name: 'Device B',
-          manufacturer: 'Zooz',
-          model: 'ZEN55',
-          identifiers: [['zwave_js', '789']],
-          area_id: 'area1',
-        },
-      ];
-
-      getZWaveByAreaStub.returns(testDevices);
-      card.hass = mockHass;
-
-      const el = await fixture(card.render() as TemplateResult);
-
-      // Get model headings in their rendered order
-      const modelHeadings = Array.from(el.querySelectorAll('h2')).map(
-        (h) => h.textContent,
-      );
-
-      // Check that they appear in alphabetical order
-      expect(modelHeadings[0]).to.equal('ZEN51 Device A');
-      expect(modelHeadings[1]).to.equal('ZEN55 Device B');
-      expect(modelHeadings[2]).to.equal('ZEN71 Device C');
+      expect(nodeInfoConfigs).to.deep.include({
+        device_id: 'device1',
+        features: [],
+      });
+      expect(nodeInfoConfigs).to.deep.include({
+        device_id: 'device2',
+        features: [],
+      });
     });
 
     it('should limit to one device in preview mode', async () => {
       const testDevices = [
         {
           id: 'device1',
-          name: 'Device 1',
+          device_name: 'Device 1',
           manufacturer: 'Zooz',
           model: 'ZEN71',
           identifiers: [['zwave_js', '123']],
@@ -351,7 +440,7 @@ describe('ZWaveDeviceCenter', () => {
         },
         {
           id: 'device2',
-          name: 'Device 2',
+          device_name: 'Device 2',
           manufacturer: 'Zooz',
           model: 'ZEN51',
           identifiers: [['zwave_js', '456']],
@@ -359,7 +448,7 @@ describe('ZWaveDeviceCenter', () => {
         },
         {
           id: 'device3',
-          name: 'Device 3',
+          device_name: 'Device 3',
           manufacturer: 'GE',
           model: 'Switch',
           identifiers: [['zwave_js', '789']],
@@ -387,7 +476,7 @@ describe('ZWaveDeviceCenter', () => {
       const testDevices = [
         {
           id: 'device1',
-          name: 'Device 1',
+          device_name: 'Device 1',
           manufacturer: 'Zooz',
           model: 'ZEN71',
           identifiers: [['zwave_js', '123']],

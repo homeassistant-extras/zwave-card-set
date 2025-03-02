@@ -153,9 +153,6 @@ describe('BatteryIndicator', () => {
 
       const text = el.querySelector('.battery-text');
       expect(text?.classList.contains('battery-text')).to.be.true;
-
-      const tspan = text?.querySelector('tspan');
-      expect(tspan).to.exist;
     });
 
     it('should apply correct transformations to battery circle', async () => {

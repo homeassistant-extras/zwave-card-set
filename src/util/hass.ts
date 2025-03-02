@@ -1,6 +1,13 @@
 import type { Device, Entity, HomeAssistant, State } from '@type/homeassistant';
 import type { ZWaveDevice } from '@type/zwave';
 
+/**
+ * Transforms a HomeAssistant Device object into a ZWaveDevice with standardized fields.
+ * This normalizes properties like names and adds type safety.
+ *
+ * @param {Device} device - The HomeAssistant device object to transform
+ * @returns {ZWaveDevice} A standardized ZWaveDevice object
+ */
 const _transformDeviceFields = (device: Device): ZWaveDevice => {
   return {
     id: device.id,
@@ -13,12 +20,13 @@ const _transformDeviceFields = (device: Device): ZWaveDevice => {
 
 /**
  * Processes entities from the hass object, filtering by device ID and applying a callback.
+ * Enhanced to detect controller status and clean up friendly names.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing entities and states.
  * @param {string} device_id - The device ID to filter entities.
- * @param {string[]} domains - The list of domains to filter entities.
  * @param {Function} callback - The function to execute on each matching entity.
  * @returns {boolean} True if the device is a controller, false otherwise.
+ * @private
  */
 const _processDeviceEntities = (
   hass: HomeAssistant,
@@ -53,8 +61,8 @@ const _processDeviceEntities = (
         domain: state.entity_id.split('.')[0]!,
         attributes: {
           ...state.attributes,
-          // a convenienct to clean up the friendly name
-          friendly_name: state.attributes?.friendly_name.replace(
+          // a convenience to clean up the friendly name
+          friendly_name: state.attributes?.friendly_name?.replace(
             device?.name || '',
             '',
           ),
@@ -68,29 +76,14 @@ const _processDeviceEntities = (
 
 /**
  * Gets Z-Wave devices from the Home Assistant object with optional filtering.
+ * Internal implementation with various filtering options.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing devices, entities, and states.
- * @param {Boolean} hubOnly - When true, returns only Z-Wave hub devices (devices with 'hub' label).
- * @param {Boolean} noHubs - When true, returns only Z-Wave non-hub devices (devices without 'hub' label).
- * @param {string} [model] - Optional model name to filter devices by specific model.
- *                           Note: If both hubOnly and noHubs are true, hubOnly takes precedence.
- * @returns {Device[]} An array of Device objects that match the specified criteria.
- *
- * @example
- * // Get all Z-Wave devices
- * const allZWaveDeviceInfos = getZWaveDeviceInfos(hass);
- *
- * @example
- * // Get only Z-Wave hub devices
- * const zWaveHubs = getZWaveDeviceInfos(hass, true);
- *
- * @example
- * // Get only Z-Wave non-hub devices
- * const zWaveNonHubs = getZWaveDeviceInfos(hass, false, true);
- *
- * @example
- * // Get Z-Wave devices by model
- * const zen55Devices = getZWaveDeviceInfos(hass, false, false, 'ZEN55 LR');
+ * @param {Boolean} hubOnly - When true, returns only Z-Wave controller devices.
+ * @param {Boolean} noHubs - When true, returns only Z-Wave non-controller devices.
+ * @param {string} [area] - Optional area ID to filter devices by specific area.
+ * @returns {ZWaveDevice[]} An array of ZWaveDevice objects that match the specified criteria.
+ * @private
  */
 const _getZWaveHassDevices = (
   hass: HomeAssistant,
@@ -125,10 +118,13 @@ const _getZWaveHassDevices = (
 };
 
 /**
- * Checks if a device is a Z-Wave controller
- * @param hass - The Home Assistant object containing entities and states.
- * @param device - The device to check
- * @returns {boolean} True if the device is a Z-Wave controller
+ * Checks if a device is a Z-Wave controller by examining entity translation keys.
+ * A controller device will have an entity with translation_key of 'controller_status'.
+ *
+ * @param {HomeAssistant} hass - The Home Assistant object containing entities.
+ * @param {Device} device - The device to check.
+ * @returns {boolean} True if the device is a Z-Wave controller.
+ * @private
  */
 const _isZWaveController = (hass: HomeAssistant, device: Device): boolean =>
   Object.values(hass.entities).some(
@@ -138,9 +134,12 @@ const _isZWaveController = (hass: HomeAssistant, device: Device): boolean =>
   );
 
 /**
- * Checks if a device is a Z-Wave device
- * @param device - The device to check
- * @returns {boolean} True if the device is a Z-Wave device
+ * Checks if a device is a Z-Wave device by examining its identifiers.
+ * A Z-Wave device will have 'zwave_js' in its identifiers array.
+ *
+ * @param {Device | undefined} device - The device to check.
+ * @returns {boolean} True if the device is a Z-Wave device.
+ * @private
  */
 const _isZWaveDevice = (device: Device | undefined): boolean => {
   if (!device || !device.identifiers) {
@@ -158,10 +157,10 @@ const _isZWaveDevice = (device: Device | undefined): boolean => {
 
 /**
  * Processes entities from the hass object, filtering by device ID and applying a callback.
+ * Also checks if the device is a controller.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing entities and states.
  * @param {string} device_id - The device ID to filter entities.
- * @param {string[]} domains - The list of domains to filter entities.
  * @param {Function} callback - The function to execute on each matching entity.
  * @returns {boolean} True if the device is a controller, false otherwise.
  */
@@ -172,36 +171,62 @@ export const processDeviceEntitiesAndCheckIfController = (
 ): boolean => _processDeviceEntities(hass, device_id, callback);
 
 /**
- * Gets all Z-Wave hub devices from the Home Assistant object.
- * A hub device is defined as any Z-Wave device that has the 'hub' label.
+ * Gets all Z-Wave controller devices from the Home Assistant object.
+ * A controller is a special Z-Wave device that manages the Z-Wave network.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing devices, entities, and states.
- * @returns {Device[]} An array of Z-Wave hub devices.
+ * @returns {ZWaveDevice[]} An array of Z-Wave controller devices.
  *
  * @example
- * const zWaveHubs = getZWaveHubs(hass);
+ * const zWaveControllers = getZWaveControllers(hass);
+ * console.log(`Found ${zWaveControllers.length} Z-Wave controllers`);
  */
 export const getZWaveControllers = (hass: HomeAssistant): ZWaveDevice[] =>
   _getZWaveHassDevices(hass, true);
 
 /**
- * Gets all Z-Wave non-hub devices from the Home Assistant object.
- * A non-hub device is defined as any Z-Wave device that does not have the 'hub' label.
+ * Gets all Z-Wave non-controller devices from the Home Assistant object.
+ * These are the regular Z-Wave devices like switches, sensors, etc.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing devices, entities, and states.
- * @returns {Device[]} An array of Z-Wave non-hub devices (switches, dimmers, sensors, etc.).
+ * @returns {ZWaveDevice[]} An array of Z-Wave non-controller devices.
  *
  * @example
  * const zWaveDevices = getZWaveNonHubs(hass);
+ * console.log(`Found ${zWaveDevices.length} Z-Wave devices`);
  */
 export const getZWaveNonHubs = (hass: HomeAssistant): ZWaveDevice[] =>
   _getZWaveHassDevices(hass, false, true);
 
+/**
+ * Gets Z-Wave devices from the specified area.
+ *
+ * @param {HomeAssistant} hass - The Home Assistant object containing devices.
+ * @param {string} area - Optional area ID to filter devices.
+ * @returns {ZWaveDevice[]} An array of Z-Wave devices in the specified area.
+ *
+ * @example
+ * const livingRoomDevices = getZWaveByArea(hass, 'living_room');
+ * console.log(`Found ${livingRoomDevices.length} Z-Wave devices in the living room`);
+ */
 export const getZWaveByArea = (
   hass: HomeAssistant,
   area?: string,
 ): ZWaveDevice[] => _getZWaveHassDevices(hass, false, false, area);
 
+/**
+ * Gets a device by ID if it's a Z-Wave device, otherwise returns undefined.
+ *
+ * @param {HomeAssistant} hass - The Home Assistant object.
+ * @param {string} device_id - The device ID to retrieve.
+ * @returns {ZWaveDevice | undefined} The Z-Wave device if found and is a Z-Wave device, undefined otherwise.
+ *
+ * @example
+ * const zwaveDevice = getHassDeviceIfZWave(hass, 'device_123');
+ * if (zwaveDevice) {
+ *   console.log(`Found Z-Wave device: ${zwaveDevice.name}`);
+ * }
+ */
 export const getHassDeviceIfZWave = (
   hass: HomeAssistant,
   device_id: string,
@@ -212,6 +237,20 @@ export const getHassDeviceIfZWave = (
   return _transformDeviceFields(device);
 };
 
+/**
+ * Gets any device by ID, regardless of whether it's a Z-Wave device.
+ * Returns the device with standardized fields.
+ *
+ * @param {HomeAssistant} hass - The Home Assistant object.
+ * @param {string} device_id - The device ID to retrieve.
+ * @returns {ZWaveDevice | undefined} The device with standardized fields if found, undefined otherwise.
+ *
+ * @example
+ * const device = getHassDevice(hass, 'device_123');
+ * if (device) {
+ *   console.log(`Found device: ${device.name}`);
+ * }
+ */
 export const getHassDevice = (
   hass: HomeAssistant,
   device_id: string,

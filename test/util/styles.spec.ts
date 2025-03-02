@@ -1,21 +1,15 @@
+import { createState as s } from '@test/test-helpers';
 import { getEntityIconStyles } from '@util/styles';
 import { expect } from 'chai';
 import { nothing } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
-
-// Helper function to create test state objects
-const createTestState = (domain: string, state: string, attributes = {}) => ({
-  entity_id: `${domain}.test`,
-  state,
-  attributes,
-});
 
 describe('util', () => {
   describe('styles', () => {
     describe('getEntityIconStyles', () => {
       describe('Active States', () => {
         it('should handle "on" state', () => {
-          const state = createTestState('light', 'on');
+          const state = s('light', 'on');
           const result = getEntityIconStyles(state);
 
           expect(result).to.deep.equal(
@@ -27,7 +21,7 @@ describe('util', () => {
         });
 
         it('should handle "true" state', () => {
-          const state = createTestState('switch', 'true');
+          const state = s('switch', 'true');
           const result = getEntityIconStyles(state);
 
           expect(result).to.deep.equal(
@@ -39,7 +33,7 @@ describe('util', () => {
         });
 
         it('should handle numeric state > 0', () => {
-          const state = createTestState('light', '100');
+          const state = s('light', '100');
           const result = getEntityIconStyles(state);
 
           expect(result).to.deep.equal(
@@ -53,7 +47,7 @@ describe('util', () => {
 
       describe('Inactive States', () => {
         it('should handle "off" state', () => {
-          const state = createTestState('light', 'off', { off_color: 'grey' });
+          const state = s('light', 'off', { off_color: 'grey' });
           const result = getEntityIconStyles(state);
 
           expect(result).to.deep.equal(
@@ -65,7 +59,7 @@ describe('util', () => {
         });
 
         it('should handle "false" state', () => {
-          const state = createTestState('switch', 'false', {
+          const state = s('switch', 'false', {
             off_color: 'grey',
           });
           const result = getEntityIconStyles(state);
@@ -79,7 +73,7 @@ describe('util', () => {
         });
 
         it('should handle numeric state of 0', () => {
-          const state = createTestState('light', '0', { off_color: 'grey' });
+          const state = s('light', '0', { off_color: 'grey' });
           const result = getEntityIconStyles(state);
 
           expect(result).to.deep.equal(
@@ -108,7 +102,7 @@ describe('util', () => {
 
         testCases.forEach(({ domain, expectedColor }) => {
           it(`should use correct color for ${domain} domain`, () => {
-            const state = createTestState(domain, 'on');
+            const state = s(domain, 'on');
             const result = getEntityIconStyles(state);
 
             expect(result).to.deep.equal(
@@ -123,7 +117,7 @@ describe('util', () => {
 
       describe('Custom Colors', () => {
         it('should handle custom on_color attribute', () => {
-          const state = createTestState('light', 'on', { on_color: 'purple' });
+          const state = s('light', 'on', { on_color: 'purple' });
           const result = getEntityIconStyles(state);
 
           expect(result).to.deep.equal(
@@ -135,7 +129,7 @@ describe('util', () => {
         });
 
         it('should handle custom off_color attribute', () => {
-          const state = createTestState('light', 'off', { off_color: 'brown' });
+          const state = s('light', 'off', { off_color: 'brown' });
           const result = getEntityIconStyles(state);
 
           expect(result).to.deep.equal(
@@ -147,7 +141,7 @@ describe('util', () => {
         });
 
         it('should handle primary color', () => {
-          const state = createTestState('light', 'on', { on_color: 'primary' });
+          const state = s('light', 'on', { on_color: 'primary' });
           const result = getEntityIconStyles(state);
 
           expect(result).to.deep.equal(
@@ -159,7 +153,7 @@ describe('util', () => {
         });
 
         it('should handle accent color', () => {
-          const state = createTestState('light', 'on', { on_color: 'accent' });
+          const state = s('light', 'on', { on_color: 'accent' });
           const result = getEntityIconStyles(state);
 
           expect(result).to.deep.equal(
@@ -173,13 +167,13 @@ describe('util', () => {
 
       describe('Edge Cases', () => {
         it('should handle undefined state', () => {
-          const state = createTestState('light', undefined as any as string);
+          const state = s('light', undefined as any as string);
           const result = getEntityIconStyles(state);
           expect(result).to.equal(nothing);
         });
 
         it('should handle invalid color names', () => {
-          const state = createTestState('light', 'on', {
+          const state = s('light', 'on', {
             on_color: 'invalid-color',
           });
           const result = getEntityIconStyles(state);
@@ -193,7 +187,7 @@ describe('util', () => {
         });
 
         it('should handle unknown domains', () => {
-          const state = createTestState('unknown_domain', 'on');
+          const state = s('unknown_domain', 'on');
           const result = getEntityIconStyles(state);
 
           expect(result).to.deep.equal(
@@ -206,7 +200,7 @@ describe('util', () => {
 
         it('should handle malformed entity_id', () => {
           const state = {
-            ...createTestState('light', 'on'),
+            ...s('light', 'on'),
             entity_id: 'malformed',
           };
           const result = getEntityIconStyles(state);

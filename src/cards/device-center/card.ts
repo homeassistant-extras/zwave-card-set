@@ -28,7 +28,6 @@ export class ZWaveDeviceCenter extends LitElement {
    * Home Assistant instance
    * Not marked as @state as it's handled differently
    */
-  //@property({ type: Object }) // todo - this does lots of renders, anyway to fix?
   private _hass!: HomeAssistant;
 
   /**

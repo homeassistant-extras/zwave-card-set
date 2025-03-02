@@ -6,6 +6,11 @@ import {
 import type { HomeAssistant, State } from '@type/homeassistant';
 import { html, nothing, type TemplateResult } from 'lit';
 
+/**
+ * Renders an error alert
+ * @param error - The error message to display
+ * @returns Template for rendering the error alert
+ */
 export const renderError = (error: string) =>
   html`<ha-alert alert-type="error">${error}</ha-alert>`;
 

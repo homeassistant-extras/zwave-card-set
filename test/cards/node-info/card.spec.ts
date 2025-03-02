@@ -2,25 +2,13 @@ import * as actionHandlerModule from '@common/action-handler';
 import { ZWaveDeviceInfo } from '@node/card';
 import type { Config } from '@node/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
+import { createState as s } from '@test/test-helpers';
 import type { ActionHandlerEvent } from '@type/action';
-import type { HomeAssistant, State } from '@type/homeassistant';
+import type { HomeAssistant } from '@type/homeassistant';
 import * as hassUtils from '@util/hass';
 import { expect } from 'chai';
 import { nothing, type TemplateResult } from 'lit';
 import { match, stub } from 'sinon';
-
-// Helper function to create state objects for testing
-const createState = (
-  entity_id: string,
-  state: string,
-  attributes: Record<string, any> = {},
-): State => {
-  return {
-    entity_id,
-    state,
-    attributes,
-  };
-};
 
 describe('ZWaveDeviceInfo', () => {
   let card: ZWaveDeviceInfo;
@@ -172,19 +160,19 @@ describe('ZWaveDeviceInfo', () => {
       });
 
       it('should identify and set common states', () => {
-        mockHass.states['update.test_device_firmware'] = createState(
+        mockHass.states['update.test_device_firmware'] = s(
           'update.test_device_firmware',
           'available',
         );
-        mockHass.states['sensor.test_device_last_seen'] = createState(
+        mockHass.states['sensor.test_device_last_seen'] = s(
           'sensor.test_device_last_seen',
           '2024-02-19T12:34:56Z',
         );
-        mockHass.states['sensor.test_device_node_status'] = createState(
+        mockHass.states['sensor.test_device_node_status'] = s(
           'sensor.test_device_node_status',
           'online',
         );
-        mockHass.states['sensor.test_device_battery_level'] = createState(
+        mockHass.states['sensor.test_device_battery_level'] = s(
           'sensor.test_device_battery_level',
           '75',
           { device_class: 'battery' },
@@ -200,15 +188,15 @@ describe('ZWaveDeviceInfo', () => {
       });
 
       it('should process entities that are not special categories', () => {
-        mockHass.states['sensor.test_device_test_1'] = createState(
+        mockHass.states['sensor.test_device_test_1'] = s(
           'sensor.test_device_test_1',
           'test1',
         );
-        mockHass.states['sensor.test_device_test_2'] = createState(
+        mockHass.states['sensor.test_device_test_2'] = s(
           'sensor.test_device_test_2',
           'test2',
         );
-        mockHass.states['switch.test_device_test_1'] = createState(
+        mockHass.states['switch.test_device_test_1'] = s(
           'switch.test_device_test_1',
           'on',
         );
@@ -258,15 +246,15 @@ describe('ZWaveDeviceInfo', () => {
       });
 
       it('should render all card sections when data is available', async () => {
-        mockHass.states['update.test_device_firmware'] = createState(
+        mockHass.states['update.test_device_firmware'] = s(
           'update.test_device_firmware',
           'available',
         );
-        mockHass.states['sensor.test_device_last_seen'] = createState(
+        mockHass.states['sensor.test_device_last_seen'] = s(
           'sensor.test_device_last_seen',
           'recent',
         );
-        mockHass.states['sensor.test_device_node_status'] = createState(
+        mockHass.states['sensor.test_device_node_status'] = s(
           'sensor.test_device_node_status',
           'online',
         );
@@ -281,11 +269,11 @@ describe('ZWaveDeviceInfo', () => {
       });
 
       it('should render device-specific entities', async () => {
-        mockHass.states['sensor.test_device_test_1'] = createState(
+        mockHass.states['sensor.test_device_test_1'] = s(
           'sensor.test_device_test_1',
           'test1',
         );
-        mockHass.states['sensor.test_device_test_2'] = createState(
+        mockHass.states['sensor.test_device_test_2'] = s(
           'sensor.test_device_test_2',
           'test2',
         );
@@ -299,7 +287,7 @@ describe('ZWaveDeviceInfo', () => {
       });
 
       it('should render title using sensor name', async () => {
-        mockHass.states['update.test_device_firmware'] = createState(
+        mockHass.states['update.test_device_firmware'] = s(
           'update.test_device_firmware',
           'available',
         );
@@ -314,7 +302,7 @@ describe('ZWaveDeviceInfo', () => {
       });
 
       it('should render manufacturer and model information', async () => {
-        mockHass.states['update.test_device_firmware'] = createState(
+        mockHass.states['update.test_device_firmware'] = s(
           'update.test_device_firmware',
           'available',
         );
@@ -335,7 +323,7 @@ describe('ZWaveDeviceInfo', () => {
           device_id: 'test_device_id',
         });
 
-        mockHass.states['update.test_device_firmware'] = createState(
+        mockHass.states['update.test_device_firmware'] = s(
           'update.test_device_firmware',
           'available',
         );
@@ -407,7 +395,7 @@ describe('ZWaveDeviceInfo', () => {
 
     describe('_renderIcon method', () => {
       it('should use toggleAction for switch entities', async () => {
-        mockHass.states['switch.test_device_test_1'] = createState(
+        mockHass.states['switch.test_device_test_1'] = s(
           'switch.test_device_test_1',
           'on',
         );
@@ -430,7 +418,7 @@ describe('ZWaveDeviceInfo', () => {
       });
 
       it('should use moreInfoAction for non-switch entities', async () => {
-        mockHass.states['sensor.test_device_test_1'] = createState(
+        mockHass.states['sensor.test_device_test_1'] = s(
           'sensor.test_device_test_1',
           'active',
         );
@@ -453,7 +441,7 @@ describe('ZWaveDeviceInfo', () => {
       });
 
       it('should apply entity styles to icon', async () => {
-        mockHass.states['switch.test_device_test_1'] = createState(
+        mockHass.states['switch.test_device_test_1'] = s(
           'switch.test_device_test_1',
           'on',
           { on_color: 'blue' },
@@ -483,7 +471,7 @@ describe('ZWaveDeviceInfo', () => {
       });
 
       it('should apply custom class name when provided', async () => {
-        mockHass.states['sensor.test_device_test_1'] = createState(
+        mockHass.states['sensor.test_device_test_1'] = s(
           'sensor.test_device_test_1',
           'active',
         );
@@ -502,11 +490,11 @@ describe('ZWaveDeviceInfo', () => {
     });
 
     it('should render battery indicator when battery state is available', async () => {
-      mockHass.states['update.test_device_firmware'] = createState(
+      mockHass.states['update.test_device_firmware'] = s(
         'update.test_device_firmware',
         'available',
       );
-      mockHass.states['sensor.test_device_battery_level'] = createState(
+      mockHass.states['sensor.test_device_battery_level'] = s(
         'sensor.test_device_battery_level',
         '75',
         { device_class: 'battery' },
@@ -521,7 +509,7 @@ describe('ZWaveDeviceInfo', () => {
     });
 
     it('should not render battery indicator when battery state is not available', async () => {
-      mockHass.states['update.test_device_firmware'] = createState(
+      mockHass.states['update.test_device_firmware'] = s(
         'update.test_device_firmware',
         'available',
       );

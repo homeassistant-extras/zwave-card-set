@@ -2,8 +2,10 @@ import * as actionHandlerModule from '@common/action-handler';
 import { ZWaveNodesStatus } from '@node-states/card';
 import type { Config, NodeInfo } from '@node-states/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
+import { createState as s } from '@test/test-helpers';
 import type { ActionHandlerEvent } from '@type/action';
 import type { HomeAssistant } from '@type/homeassistant';
+import * as hassUtils from '@util/hass';
 import { expect } from 'chai';
 import { nothing } from 'lit';
 import { stub } from 'sinon';
@@ -117,31 +119,31 @@ describe('ZWaveNodesStatus', () => {
         mockHass.devices = {
           device1: {
             id: 'device1',
-            name_by_user: 'Z-Wave Switch 1',
+            name: 'Z-Wave Switch 1',
             identifiers: [['zwave_js', '']],
             labels: [],
           },
           device2: {
             id: 'device2',
-            name_by_user: 'Z-Wave Switch 2',
+            name: 'Z-Wave Switch 2',
             identifiers: [['zwave_js', '']],
             labels: [],
           },
           device3: {
             id: 'device3',
-            name_by_user: 'Z-Wave Switch 3',
+            name: 'Z-Wave Switch 3',
             identifiers: [['zwave_js', '']],
             labels: [],
           },
           hubDevice: {
             id: 'hubDevice',
-            name_by_user: 'Z-Wave Hub',
+            name: 'Z-Wave Hub',
             identifiers: [['zwave_js', '']],
             labels: ['hub'],
           },
           otherDevice: {
             id: 'otherDevice',
-            name_by_user: 'Other Device',
+            name: 'Other Device',
             manufacturer: 'Other',
             labels: [],
           },
@@ -179,31 +181,36 @@ describe('ZWaveNodesStatus', () => {
         const oneDayAgo = new Date(now.getTime() - 86400000 * 2);
 
         mockHass.states = {
-          'switch.device1_node_status': {
-            entity_id: 'switch.device1_node_status',
-            state: 'alive',
-          },
-          'sensor.device1_last_seen': {
-            entity_id: 'sensor.device1_last_seen',
-            state: now.toISOString(),
-          },
-          'switch.device2_node_status': {
-            entity_id: 'switch.device2_node_status',
-            state: 'dead',
-          },
-          'sensor.device2_last_seen': {
-            entity_id: 'sensor.device2_last_seen',
-            state: oneDayAgo.toISOString(),
-          },
-          'switch.device3_node_status': {
-            entity_id: 'switch.device3_node_status',
-            state: 'asleep',
-          },
-          'sensor.device3_last_seen': {
-            entity_id: 'sensor.device3_last_seen',
-            state: oneHourAgo.toISOString(),
-          },
+          'switch.device1_node_status': s(
+            'switch.device1_node_status',
+            'alive',
+          ),
+          'sensor.device1_last_seen': s(
+            'sensor.device1_last_seen',
+            now.toISOString(),
+          ),
+          'switch.device2_node_status': s('switch.device2_node_status', 'dead'),
+          'sensor.device2_last_seen': s(
+            'sensor.device2_last_seen',
+            oneDayAgo.toISOString(),
+          ),
+          'switch.device3_node_status': s(
+            'switch.device3_node_status',
+            'asleep',
+          ),
+          'sensor.device3_last_seen': s(
+            'sensor.device3_last_seen',
+            oneHourAgo.toISOString(),
+          ),
         };
+
+        // Mock getZWaveNonHubs function
+        const getZWaveNonHubsStub = stub(hassUtils, 'getZWaveNonHubs');
+        getZWaveNonHubsStub.returns([
+          { id: 'device1', name: 'Z-Wave Switch 1' },
+          { id: 'device2', name: 'Z-Wave Switch 2' },
+          { id: 'device3', name: 'Z-Wave Switch 3' },
+        ]);
 
         // Set hass property
         card.hass = mockHass;
@@ -219,6 +226,9 @@ describe('ZWaveNodesStatus', () => {
         expect((card as any)._sleepingNodes[0].name).to.equal(
           'Z-Wave Switch 3',
         );
+
+        // Restore stub after this test
+        getZWaveNonHubsStub.restore();
       });
 
       it('should sort live nodes by last seen timestamp', () => {
@@ -275,30 +285,30 @@ describe('ZWaveNodesStatus', () => {
         const twoHoursAgo = new Date(now.getTime() - 7200000);
 
         mockHass.states = {
-          'switch.device1_node_status': {
-            entity_id: 'switch.device1_node_status',
-            state: 'alive',
-          },
-          'sensor.device1_last_seen': {
-            entity_id: 'sensor.device1_last_seen',
-            state: twoHoursAgo.toISOString(),
-          },
-          'switch.device2_node_status': {
-            entity_id: 'switch.device2_node_status',
-            state: 'alive',
-          },
-          'sensor.device2_last_seen': {
-            entity_id: 'sensor.device2_last_seen',
-            state: now.toISOString(),
-          },
-          'switch.device3_node_status': {
-            entity_id: 'switch.device3_node_status',
-            state: 'alive',
-          },
-          'sensor.device3_last_seen': {
-            entity_id: 'sensor.device3_last_seen',
-            state: oneHourAgo.toISOString(),
-          },
+          'switch.device1_node_status': s(
+            'switch.device1_node_status',
+            'alive',
+          ),
+          'sensor.device1_last_seen': s(
+            'sensor.device1_last_seen',
+            twoHoursAgo.toISOString(),
+          ),
+          'switch.device2_node_status': s(
+            'switch.device2_node_status',
+            'alive',
+          ),
+          'sensor.device2_last_seen': s(
+            'sensor.device2_last_seen',
+            now.toISOString(),
+          ),
+          'switch.device3_node_status': s(
+            'switch.device3_node_status',
+            'alive',
+          ),
+          'sensor.device3_last_seen': s(
+            'sensor.device3_last_seen',
+            oneHourAgo.toISOString(),
+          ),
         };
 
         card.hass = mockHass;
@@ -364,30 +374,30 @@ describe('ZWaveNodesStatus', () => {
         const twoHoursAgo = new Date(now.getTime() - 7200000);
 
         mockHass.states = {
-          'switch.device1_node_status': {
-            entity_id: 'switch.device1_node_status',
-            state: 'asleep',
-          },
-          'sensor.device1_last_seen': {
-            entity_id: 'sensor.device1_last_seen',
-            state: twoHoursAgo.toISOString(),
-          },
-          'switch.device2_node_status': {
-            entity_id: 'switch.device2_node_status',
-            state: 'asleep',
-          },
-          'sensor.device2_last_seen': {
-            entity_id: 'sensor.device2_last_seen',
-            state: now.toISOString(),
-          },
-          'switch.device3_node_status': {
-            entity_id: 'switch.device3_node_status',
-            state: 'asleep',
-          },
-          'sensor.device3_last_seen': {
-            entity_id: 'sensor.device3_last_seen',
-            state: oneHourAgo.toISOString(),
-          },
+          'switch.device1_node_status': s(
+            'switch.device1_node_status',
+            'asleep',
+          ),
+          'sensor.device1_last_seen': s(
+            'sensor.device1_last_seen',
+            twoHoursAgo.toISOString(),
+          ),
+          'switch.device2_node_status': s(
+            'switch.device2_node_status',
+            'asleep',
+          ),
+          'sensor.device2_last_seen': s(
+            'sensor.device2_last_seen',
+            now.toISOString(),
+          ),
+          'switch.device3_node_status': s(
+            'switch.device3_node_status',
+            'asleep',
+          ),
+          'sensor.device3_last_seen': s(
+            'sensor.device3_last_seen',
+            oneHourAgo.toISOString(),
+          ),
         };
 
         card.hass = mockHass;
@@ -434,18 +444,18 @@ describe('ZWaveNodesStatus', () => {
         const now = new Date();
 
         mockHass.states = {
-          'switch.device1_node_status': {
-            entity_id: 'switch.device1_node_status',
-            state: 'alive',
-          },
-          'sensor.device1_last_seen': {
-            entity_id: 'sensor.device1_last_seen',
-            state: now.toISOString(),
-          },
-          'switch.device2_node_status': {
-            entity_id: 'switch.device2_node_status',
-            state: 'alive',
-          },
+          'switch.device1_node_status': s(
+            'switch.device1_node_status',
+            'alive',
+          ),
+          'sensor.device1_last_seen': s(
+            'sensor.device1_last_seen',
+            now.toISOString(),
+          ),
+          'switch.device2_node_status': s(
+            'switch.device2_node_status',
+            'alive',
+          ),
         };
 
         card.hass = mockHass;
@@ -544,14 +554,11 @@ describe('ZWaveNodesStatus', () => {
         };
 
         mockHass.states = {
-          'switch.device1_node_status': {
-            entity_id: 'switch.device1_node_status',
-            state: 'dead',
-          },
-          'sensor.device1_last_seen': {
-            entity_id: 'sensor.device1_last_seen',
-            state: new Date().toISOString(),
-          },
+          'switch.device1_node_status': s('switch.device1_node_status', 'dead'),
+          'sensor.device1_last_seen': s(
+            'sensor.device1_last_seen',
+            new Date().toISOString(),
+          ),
         };
 
         card.hass = mockHass;
@@ -589,14 +596,14 @@ describe('ZWaveNodesStatus', () => {
         };
 
         mockHass.states = {
-          'switch.device1_node_status': {
-            entity_id: 'switch.device1_node_status',
-            state: 'alive',
-          },
-          'sensor.device1_last_seen': {
-            entity_id: 'sensor.device1_last_seen',
-            state: new Date().toISOString(),
-          },
+          'switch.device1_node_status': s(
+            'switch.device1_node_status',
+            'alive',
+          ),
+          'sensor.device1_last_seen': s(
+            'sensor.device1_last_seen',
+            new Date().toISOString(),
+          ),
         };
 
         card.hass = mockHass;
@@ -634,14 +641,14 @@ describe('ZWaveNodesStatus', () => {
         };
 
         mockHass.states = {
-          'switch.device1_node_status': {
-            entity_id: 'switch.device1_node_status',
-            state: 'asleep',
-          },
-          'sensor.device1_last_seen': {
-            entity_id: 'sensor.device1_last_seen',
-            state: new Date().toISOString(),
-          },
+          'switch.device1_node_status': s(
+            'switch.device1_node_status',
+            'asleep',
+          ),
+          'sensor.device1_last_seen': s(
+            'sensor.device1_last_seen',
+            new Date().toISOString(),
+          ),
         };
 
         card.hass = mockHass;
@@ -707,30 +714,27 @@ describe('ZWaveNodesStatus', () => {
         };
 
         mockHass.states = {
-          'switch.device1_node_status': {
-            entity_id: 'switch.device1_node_status',
-            state: 'dead',
-          },
-          'sensor.device1_last_seen': {
-            entity_id: 'sensor.device1_last_seen',
-            state: new Date().toISOString(),
-          },
-          'switch.device2_node_status': {
-            entity_id: 'switch.device2_node_status',
-            state: 'alive',
-          },
-          'sensor.device2_last_seen': {
-            entity_id: 'sensor.device2_last_seen',
-            state: new Date().toISOString(),
-          },
-          'switch.device3_node_status': {
-            entity_id: 'switch.device3_node_status',
-            state: 'asleep',
-          },
-          'sensor.device3_last_seen': {
-            entity_id: 'sensor.device3_last_seen',
-            state: new Date().toISOString(),
-          },
+          'switch.device1_node_status': s('switch.device1_node_status', 'dead'),
+          'sensor.device1_last_seen': s(
+            'sensor.device1_last_seen',
+            new Date().toISOString(),
+          ),
+          'switch.device2_node_status': s(
+            'switch.device2_node_status',
+            'alive',
+          ),
+          'sensor.device2_last_seen': s(
+            'sensor.device2_last_seen',
+            new Date().toISOString(),
+          ),
+          'switch.device3_node_status': s(
+            'switch.device3_node_status',
+            'asleep',
+          ),
+          'sensor.device3_last_seen': s(
+            'sensor.device3_last_seen',
+            new Date().toISOString(),
+          ),
         };
 
         card.hass = mockHass;
@@ -833,37 +837,31 @@ describe('ZWaveNodesStatus', () => {
         };
 
         mockHass.states = {
-          'switch.device1_node_status': {
-            entity_id: 'switch.device1_node_status',
-            state: 'dead',
-          },
-          'switch.device2_node_status': {
-            entity_id: 'switch.device2_node_status',
-            state: 'dead',
-          },
-          'switch.device3_node_status': {
-            entity_id: 'switch.device3_node_status',
-            state: 'alive',
-          },
-          'switch.device4_node_status': {
-            entity_id: 'switch.device4_node_status',
-            state: 'alive',
-          },
-          'switch.device5_node_status': {
-            entity_id: 'switch.device5_node_status',
-            state: 'asleep',
-          },
-          'switch.device6_node_status': {
-            entity_id: 'switch.device6_node_status',
-            state: 'asleep',
-          },
+          'switch.device1_node_status': s('switch.device1_node_status', 'dead'),
+          'switch.device2_node_status': s('switch.device2_node_status', 'dead'),
+          'switch.device3_node_status': s(
+            'switch.device3_node_status',
+            'alive',
+          ),
+          'switch.device4_node_status': s(
+            'switch.device4_node_status',
+            'alive',
+          ),
+          'switch.device5_node_status': s(
+            'switch.device5_node_status',
+            'asleep',
+          ),
+          'switch.device6_node_status': s(
+            'switch.device6_node_status',
+            'asleep',
+          ),
           ...Object.keys(mockHass.devices).reduce(
             (acc, deviceId) => ({
               ...acc,
-              [`sensor.${deviceId}_last_seen`]: {
-                entity_id: `sensor.${deviceId}_last_seen`,
-                state: new Date().toISOString(),
-              },
+              [`sensor.${deviceId}_last_seen`]: s(
+                `sensor.${deviceId}_last_seen`,
+                new Date().toISOString(),
+              ),
             }),
             {},
           ),
@@ -913,11 +911,11 @@ describe('ZWaveNodesStatus', () => {
         const mockNode: NodeInfo = {
           name: 'Test Node',
           device_id: 'test-device',
-          statusState: { entity_id: 'switch.test_node_status', state: 'alive' },
-          lastSeenState: {
-            entity_id: 'sensor.test_node_last_seen',
-            state: new Date().toISOString(),
-          },
+          statusState: s('switch.test_node_status', 'alive'),
+          lastSeenState: s(
+            'sensor.test_node_last_seen',
+            new Date().toISOString(),
+          ),
           lastSeen: Date.now(),
         };
 
@@ -995,11 +993,11 @@ describe('ZWaveNodesStatus', () => {
         const mockNode: NodeInfo = {
           name: 'Test Node',
           device_id: 'test-device',
-          statusState: { entity_id: 'switch.test_node_status', state: 'alive' },
-          lastSeenState: {
-            entity_id: 'sensor.test_node_last_seen',
-            state: new Date().toISOString(),
-          },
+          statusState: s('switch.test_node_status', 'alive'),
+          lastSeenState: s(
+            'sensor.test_node_last_seen',
+            new Date().toISOString(),
+          ),
           lastSeen: Date.now(),
         };
         card.setConfig({

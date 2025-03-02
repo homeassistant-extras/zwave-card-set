@@ -57,7 +57,11 @@ export class ZWaveNodesStatus extends LitElement {
     return styles;
   }
 
-  // getters
+  /**
+   * Determines if the card is being displayed in preview mode
+   * Used to limit the number of nodes shown in the UI editor
+   * @returns {boolean} True if the card is in preview mode
+   */
   get isPreview(): boolean {
     return (
       (this as HTMLElement).parentElement?.classList.contains('preview') ||
@@ -118,11 +122,11 @@ export class ZWaveNodesStatus extends LitElement {
     // Separate dead nodes and live nodes
     const nodes = Object.values(zWaveNodes);
     const deadNodes = nodes.filter(
-      (node) => !['alive', 'asleep'].includes(node.statusState.state),
+      (node) => !['alive', 'asleep'].includes(node.statusState?.state),
     );
 
     const liveNodes = nodes
-      .filter((node) => node.statusState.state === 'alive')
+      .filter((node) => node.statusState?.state === 'alive')
       .sort((a, b) => {
         if (a.lastSeen && b.lastSeen) {
           return b.lastSeen - a.lastSeen;
@@ -135,7 +139,7 @@ export class ZWaveNodesStatus extends LitElement {
       });
 
     const asleepNodes = nodes
-      .filter((node) => node.statusState.state === 'asleep')
+      .filter((node) => node.statusState?.state === 'asleep')
       .sort((a, b) => {
         if (a.lastSeen && b.lastSeen) {
           return b.lastSeen - a.lastSeen;

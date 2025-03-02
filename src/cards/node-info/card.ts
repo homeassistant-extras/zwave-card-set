@@ -20,6 +20,7 @@ import { property, state } from 'lit/decorators.js';
 import { styles } from './styles';
 import type { Config, Sensor } from './types';
 const equal = require('fast-deep-equal');
+const debounce = require('debounce');
 
 /**
  * Base component for Z-Wave device cards
@@ -45,6 +46,12 @@ export class ZWaveDeviceInfo extends LitElement {
   private _sensorsExpanded: boolean = false;
 
   /**
+   * Flag to toggle small card layout
+   */
+  @property({ type: Boolean })
+  private _isSmallCard: boolean = false;
+
+  /**
    * Home Assistant instance
    * Not marked as @state as it's handled differently
    */
@@ -55,6 +62,10 @@ export class ZWaveDeviceInfo extends LitElement {
 
     // Listen for hass updates
     window.addEventListener('hass-update', this._handleHassUpdate.bind(this));
+    window.addEventListener(
+      'resize',
+      debounce(this._handleResize.bind(this), 100),
+    );
   }
 
   override disconnectedCallback(): void {
@@ -72,6 +83,10 @@ export class ZWaveDeviceInfo extends LitElement {
       detail: { hass },
     } = event as CustomEvent<HassUpdateEvent>;
     this.hass = hass;
+  }
+
+  private _handleResize(_: Event): void {
+    this._isSmallCard = this._getCardWidth() < 450;
   }
 
   /**
@@ -117,8 +132,6 @@ export class ZWaveDeviceInfo extends LitElement {
       entities: [],
       sensors: [],
     };
-
-    console.log('width', this._getCardWidth());
 
     sensor.isController = processDeviceEntitiesAndCheckIfController(
       hass,
@@ -265,7 +278,19 @@ export class ZWaveDeviceInfo extends LitElement {
       ></zwave-controller>`;
     }
 
-    const hasSensors = this._sensor.sensors.length > 0;
+    // if the card is small, we need to move the firmware and last seen states to the sensors array
+
+    const sensors = Object.values(this._sensor.sensors);
+    if (this._isSmallCard) {
+      if (this._sensor.nodeStatusState) {
+        sensors.push(this._sensor.nodeStatusState);
+      }
+      if (this._sensor.lastSeenState) {
+        sensors.push(this._sensor.lastSeenState);
+      }
+    }
+
+    const hasSensors = sensors.length > 0;
 
     return html`
       <ha-card
@@ -308,22 +333,26 @@ export class ZWaveDeviceInfo extends LitElement {
             </div>
           </div>
 
-          ${renderStateDisplay(
-            this,
-            this._hass,
-            this._sensor.lastSeenState,
-            ['status-section', 'seen', 'ellipsis'],
-            'status-label',
-            'Last Seen',
-          )}
-          ${renderStateDisplay(
-            this,
-            this._hass,
-            this._sensor.nodeStatusState,
-            ['status-section', 'status', 'ellipsis'],
-            'status-label',
-            'Status',
-          )}
+          ${this._isSmallCard
+            ? nothing
+            : renderStateDisplay(
+                this,
+                this._hass,
+                this._sensor.lastSeenState,
+                ['status-section', 'seen', 'ellipsis'],
+                'status-label',
+                'Last Seen',
+              )}
+          ${this._isSmallCard
+            ? nothing
+            : renderStateDisplay(
+                this,
+                this._hass,
+                this._sensor.nodeStatusState,
+                ['status-section', 'status', 'ellipsis'],
+                'status-label',
+                'Status',
+              )}
 
           <div
             class="entities ${this._sensor.entities.length > 3 ? 'wrap' : ''}"
@@ -364,7 +393,7 @@ export class ZWaveDeviceInfo extends LitElement {
                       paddingBottom: '30px',
                     })}"
               >
-                ${this._sensor.sensors.map((entity, index) => {
+                ${sensors.map((entity, index) => {
                   return html`
                     <div
                       class="sensor-item"
@@ -412,6 +441,14 @@ export class ZWaveDeviceInfo extends LitElement {
           : nothing}
       </ha-card>
     `;
+  }
+
+  /**
+   * Lifecycle method that triggers when the component is first updated
+   */
+  override firstUpdated(_: any) {
+    // bounding client rect is not available until after first render
+    this._handleResize(new Event('resize'));
   }
 
   private _isSensorData(state: State) {

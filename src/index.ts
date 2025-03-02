@@ -1,9 +1,9 @@
-import { ZWaveDeviceInfo } from '@/cards/node-info/card';
 import { ZWaveDeviceCenter } from '@center/card';
 import { BasicEditor } from '@common/basic-editor';
 import { BatteryIndicator } from '@common/battery-indicator';
 import { ZWaveController } from '@controller-info/card';
 import { ZWaveNodesStatus } from '@node-states/card';
+import { ZWaveDeviceInfo } from '@node/card';
 import type { CardConfig } from '@type/config';
 import { version } from '../package.json';
 
