@@ -106,9 +106,10 @@ All Z-Wave devices are supported through the universal Device Info card. I have 
 - [x] **`Initial design`**: <strike>create initial room card based on button-card template in UI minimialist theme.</strike>
 - [x] **`Editors`**: <strike>make sure stub configs and previews are solid.</strike>
 - [x] **`Node cards`**: <strike>show info about different nodes.</strike>
-- [ ] **`Node status card sizing`**: make sizing dynamic, can't figure it out.
+- [x] **`Node status card sizing`**: make sizing dynamic, can't figure it out.
+- [x] **`Device Center`**: add docs and pics towards end.
+- [ ] **`Tests`**: small refactors to simplify testing
 - [ ] **`Themes`**: test default theme, etc.
-- [ ] **`Device Center`**: add docs and pics towards end.
 
 ## Contributing
 

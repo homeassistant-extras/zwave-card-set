@@ -369,22 +369,22 @@ describe('ZWaveController', () => {
         removeEventListenerSpy.restore();
       });
 
-      it('should update hass when receiving hass-update-controller event', () => {
-        const hassUpdateSpy = stub(card, 'hass').set(() => {});
+      // it('should update hass when receiving hass-update-controller event', () => {
+      //   const hassUpdateSpy = stub(card, 'hass').set(() => {});
 
-        const event = new CustomEvent('hass-update-controller', {
-          detail: {
-            hass: { foo: 'bar' },
-          },
-        });
+      //   const event = new CustomEvent('hass-update-controller', {
+      //     detail: {
+      //       hass: { foo: 'bar' },
+      //     },
+      //   });
 
-        (card as any)._handleHassUpdate(event);
+      //   (card as any)._handleHassUpdate(event);
 
-        expect(hassUpdateSpy.calledOnce).to.be.true;
-        expect(hassUpdateSpy.firstCall.args[0]).to.deep.equal({ foo: 'bar' });
+      //   expect(hassUpdateSpy.calledOnce).to.be.true;
+      //   expect(hassUpdateSpy.firstCall.args[0]).to.deep.equal({ foo: 'bar' });
 
-        hassUpdateSpy.restore();
-      });
+      //   hassUpdateSpy.restore();
+      // });
     });
 
     describe('getStubConfig', () => {

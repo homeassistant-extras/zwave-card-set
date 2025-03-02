@@ -9,19 +9,27 @@ A custom card for Home Assistant that displays detailed information about indivi
 - Universal card for all Z-Wave device types
 - Displays device firmware information and status
 - Shows battery level indicator for battery-powered devices
-- Shows last seen timestamp
+- Shows last seen timestamp and node status
 - Integrated controls for all device entities
+- Expandable sensor section for detailed sensor data
 - Automatic handling of hub devices (displays hub card)
-- Responsive design that works on both desktop and mobile
+- Fully responsive design that adapts to different card sizes
 - Easy configuration through the Home Assistant UI
 
 ## Configuration
 
-| Name      | Type   | Default     | Description                         |
-| --------- | ------ | ----------- | ----------------------------------- |
-| device_id | string | _Required_  | The device ID of your Z-Wave device |
-| title     | string | Device name | Custom title for the card           |
-| icon      | string | mdi:z-wave  | Custom icon for the device          |
+| Name      | Type   | Default     | Description                                        |
+| --------- | ------ | ----------- | -------------------------------------------------- |
+| device_id | string | _Required_  | The device ID of your Z-Wave device                |
+| title     | string | Device name | Custom title for the card                          |
+| icon      | string | mdi:z-wave  | Custom icon for the device                         |
+| features  | list   | None        | Optional features to enable (see Features Options) |
+
+### Feature Options
+
+| Name                       | Type | Description                                                 |
+| -------------------------- | ---- | ----------------------------------------------------------- |
+| use_icons_instead_of_names | flag | Display icons instead of sensor names in the sensor section |
 
 ## Usage
 
@@ -46,6 +54,35 @@ title: Living Room Motion Sensor
 icon: mdi:motion-sensor
 ```
 
+With feature options:
+
+```yaml
+type: custom:zwave-device
+device_id: your_device_id_here
+features:
+  - use_icons_instead_of_names
+```
+
+## Responsive Design
+
+The card automatically adapts to different sizes:
+
+- On larger cards: All information is displayed in the main view
+- On smaller cards: Status and last seen information moves to the expandable sensor section
+- Entity controls remain accessible regardless of card size
+
+![card](../../../assets/cards/node-info/sensors-small.png)
+
+## Expandable Sensor Section
+
+The card now includes an expandable section for sensor data:
+
+- Click the chevron icon to expand/collapse the sensor section
+- View detailed sensor information including measurements, events, and diagnostics
+- Configure how sensors are displayed using the feature options
+
+![card](../../../assets/cards/node-info/sensors.png)
+
 ## Status Indicators
 
 The card displays several important status indicators:
@@ -55,6 +92,7 @@ The card displays several important status indicators:
 - **Node Status**: Current operational status of the device (online/offline/etc.)
 - **Battery Level**: Battery percentage for battery-powered devices
 - **Entity Controls**: Interactive elements for controlling device entities
+- **Sensor Data**: Measurements, events, and diagnostic data from the device
 
 ## Interactive Elements
 

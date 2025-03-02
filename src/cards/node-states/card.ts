@@ -87,24 +87,12 @@ export class ZWaveNodesStatus extends LitElement {
     // Object to store the Z-Wave devices
     const zWaveNodes: Record<string, NodeInfo> = {};
 
-    // Iterate through all devices
-    getZWaveNonHubs(hass).forEach((device) => {
-      zWaveNodes[device.id] = {
-        name: device.name,
-        device_id: device.id,
-      } as NodeInfo;
-    });
-
-    // If no Z-Wave devices are found, return early
-    if (!Object.keys(zWaveNodes).length) {
-      return;
-    }
-
     getZWaveNonHubs(hass).forEach((device) => {
       const node = {
         name: device.name,
         device_id: device.id,
       } as NodeInfo;
+      zWaveNodes[device.id] = node;
       processDeviceEntitiesAndCheckIfController(
         hass,
         device.id,
