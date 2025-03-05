@@ -218,6 +218,267 @@ describe('util', () => {
       });
     });
 
+    describe('processDeviceEntitiesAndCheckIfController edge cases', () => {
+      it('should skip hidden entities', () => {
+        const mockHass: HomeAssistant = {
+          entities: {
+            'sensor.visible': {
+              entity_id: 'sensor.visible',
+              device_id: 'device_123',
+            },
+            'sensor.hidden': {
+              entity_id: 'sensor.hidden',
+              device_id: 'device_123',
+              hidden: true,
+            },
+          },
+          states: {
+            'sensor.visible': {
+              entity_id: 'sensor.visible',
+              state: 'on',
+              domain: 'sensor',
+              attributes: {
+                friendly_name: 'Visible Sensor',
+              },
+            },
+            'sensor.hidden': {
+              entity_id: 'sensor.hidden',
+              state: 'on',
+              domain: 'sensor',
+              attributes: {
+                friendly_name: 'Hidden Sensor',
+              },
+            },
+          },
+          devices: {
+            device_123: {
+              id: 'device_123',
+              name: 'Test Device',
+            },
+          },
+        };
+
+        const processedEntities: string[] = [];
+        processDeviceEntitiesAndCheckIfController(
+          mockHass,
+          'device_123',
+          (entity) => {
+            processedEntities.push(entity.entity_id);
+          },
+        );
+
+        // Should only process the visible entity
+        expect(processedEntities).to.deep.equal(['sensor.visible']);
+        expect(processedEntities).to.not.include('sensor.hidden');
+      });
+
+      it('should skip entities that have no corresponding state', () => {
+        const mockHass: HomeAssistant = {
+          entities: {
+            'sensor.with_state': {
+              entity_id: 'sensor.with_state',
+              device_id: 'device_123',
+            },
+            'sensor.no_state': {
+              entity_id: 'sensor.no_state',
+              device_id: 'device_123',
+            },
+          },
+          states: {
+            'sensor.with_state': {
+              entity_id: 'sensor.with_state',
+              state: 'on',
+              domain: 'sensor',
+              attributes: {
+                friendly_name: 'Sensor With State',
+              },
+            },
+            // No state for 'sensor.no_state'
+          },
+          devices: {
+            device_123: {
+              id: 'device_123',
+              name: 'Test Device',
+            },
+          },
+        };
+
+        const processedEntities: string[] = [];
+        processDeviceEntitiesAndCheckIfController(
+          mockHass,
+          'device_123',
+          (entity) => {
+            processedEntities.push(entity.entity_id);
+          },
+        );
+
+        // Should only process the entity with state
+        expect(processedEntities).to.deep.equal(['sensor.with_state']);
+        expect(processedEntities).to.not.include('sensor.no_state');
+      });
+
+      it('should handle undefined friendly_name in attributes', () => {
+        const mockHass: HomeAssistant = {
+          entities: {
+            'sensor.test': {
+              entity_id: 'sensor.test',
+              device_id: 'device_123',
+            },
+          },
+          states: {
+            'sensor.test': {
+              entity_id: 'sensor.test',
+              state: 'on',
+              domain: 'sensor',
+              attributes: {
+                // No friendly_name attribute
+              },
+            },
+          },
+          devices: {
+            device_123: {
+              id: 'device_123',
+              name: 'Test Device',
+            },
+          },
+        };
+
+        let capturedState: State | null = null;
+        processDeviceEntitiesAndCheckIfController(
+          mockHass,
+          'device_123',
+          (_, state) => {
+            capturedState = state;
+          },
+        );
+
+        expect(capturedState).to.not.be.null;
+        // Should not throw error when friendly_name is undefined
+        expect((capturedState! as State)?.attributes!.friendly_name).to.be
+          .undefined;
+      });
+
+      it('should handle undefined attributes', () => {
+        const mockHass: HomeAssistant = {
+          entities: {
+            'sensor.test': {
+              entity_id: 'sensor.test',
+              device_id: 'device_123',
+            },
+          },
+          states: {
+            'sensor.test': {
+              entity_id: 'sensor.test',
+              state: 'on',
+              domain: 'sensor',
+              attributes: undefined,
+            },
+          },
+          devices: {
+            device_123: {
+              id: 'device_123',
+              name: 'Test Device',
+            },
+          },
+        };
+
+        let capturedState: State | null = null;
+        processDeviceEntitiesAndCheckIfController(
+          mockHass,
+          'device_123',
+          (_, state) => {
+            capturedState = state;
+          },
+        );
+
+        expect(capturedState).to.not.be.null;
+        // Should not throw error when friendly_name is undefined
+        expect((capturedState! as State)?.attributes!.friendly_name).to.be
+          .undefined;
+      });
+
+      it('should handle null device name when cleaning up friendly_name', () => {
+        const mockHass: HomeAssistant = {
+          entities: {
+            'sensor.test': {
+              entity_id: 'sensor.test',
+              device_id: 'device_123',
+            },
+          },
+          states: {
+            'sensor.test': {
+              entity_id: 'sensor.test',
+              state: 'on',
+              domain: 'sensor',
+              attributes: {
+                friendly_name: 'Original Friendly Name',
+              },
+            },
+          },
+          devices: {
+            device_123: {
+              id: 'device_123',
+              // No name property
+            },
+          },
+        };
+
+        let capturedState: State | null = null;
+        processDeviceEntitiesAndCheckIfController(
+          mockHass,
+          'device_123',
+          (_, state) => {
+            capturedState = state;
+          },
+        );
+
+        expect(capturedState).to.not.be.null;
+        // Should handle null device name and not modify friendly_name
+        expect((capturedState! as State)?.attributes!.friendly_name).to.equal(
+          'Original Friendly Name',
+        );
+      });
+
+      it('should handle undefined device when cleaning up friendly_name', () => {
+        const mockHass: HomeAssistant = {
+          entities: {
+            'sensor.test': {
+              entity_id: 'sensor.test',
+              device_id: 'device_123',
+            },
+          },
+          states: {
+            'sensor.test': {
+              entity_id: 'sensor.test',
+              state: 'on',
+              domain: 'sensor',
+              attributes: {
+                friendly_name: 'Original Friendly Name',
+              },
+            },
+          },
+          devices: {
+            // No device with ID 'device_123'
+          },
+        };
+
+        let capturedState: State | null = null;
+        processDeviceEntitiesAndCheckIfController(
+          mockHass,
+          'device_123',
+          (_, state) => {
+            capturedState = state;
+          },
+        );
+
+        expect(capturedState).to.not.be.null;
+        // Should handle undefined device and not modify friendly_name
+        expect((capturedState! as State)?.attributes!.friendly_name).to.equal(
+          'Original Friendly Name',
+        );
+      });
+    });
+
     describe('getHassDevice', () => {
       it('should return device with standardized fields', () => {
         const mockHass: HomeAssistant = {

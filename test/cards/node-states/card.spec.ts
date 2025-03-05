@@ -1,5 +1,7 @@
 import * as actionHandlerModule from '@common/action-handler';
 import { ZWaveNodesStatus } from '@node-states/card';
+import * as helpersModule from '@node-states/helpers';
+import { styles } from '@node-states/styles';
 import type { Config, NodeInfo } from '@node-states/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
 import { createState as s } from '@test/test-helpers';
@@ -109,357 +111,182 @@ describe('ZWaveNodesStatus', () => {
     });
 
     describe('hass property setter', () => {
-      it('should not process anything when no Z-Wave devices exist', () => {
-        // Make sure getZWaveNonHubs returns an empty array
-        getZWaveNonHubsStub.returns([]);
+      let card: ZWaveNodesStatus;
+      let mockHass: HomeAssistant;
+      let getZWaveNodesStub: sinon.SinonStub;
 
-        // Setup mock with no Z-Wave devices
+      // Create node mock data
+      const deadNode = {
+        name: 'Dead Node',
+        device_id: 'dead_device',
+        statusState: s('sensor.dead_node_status', 'dead'),
+        lastSeen: Date.now() - 48 * 60 * 60 * 1000,
+      } as NodeInfo;
+
+      const liveNode = {
+        name: 'Live Node',
+        device_id: 'live_device',
+        statusState: s('sensor.live_node_status', 'alive'),
+        lastSeen: Date.now(),
+      } as NodeInfo;
+
+      const sleepingNode = {
+        name: 'Sleeping Node',
+        device_id: 'sleeping_device',
+        statusState: s('sensor.sleeping_node_status', 'asleep'),
+        lastSeen: Date.now() - 3 * 60 * 60 * 1000,
+      } as NodeInfo;
+
+      beforeEach(() => {
+        // Create a new card instance
+        card = new ZWaveNodesStatus();
+
+        // Create basic mock Hass object
+        mockHass = {
+          states: {},
+          entities: {},
+          devices: {},
+        };
+
+        // Create stub for getZWaveNodes
+        getZWaveNodesStub = stub(helpersModule, 'getZWaveNodes');
+
+        // Set up the card with basic config
+        card.setConfig({ title: 'Test Z-Wave Nodes' });
+      });
+
+      afterEach(() => {
+        getZWaveNodesStub.restore();
+      });
+
+      it('should update node arrays when nodes change', () => {
+        // Set up the mock response for getZWaveNodes
+        const mockNodes = {
+          deadNodes: [deadNode],
+          liveNodes: [liveNode],
+          sleepingNodes: [sleepingNode],
+        };
+
+        getZWaveNodesStub.returns(mockNodes);
+
+        // Verify initial state
+        expect((card as any)._deadNodes).to.be.an('array').that.is.empty;
+        expect((card as any)._liveNodes).to.be.an('array').that.is.empty;
+        expect((card as any)._sleepingNodes).to.be.an('array').that.is.empty;
+
+        // Call the hass setter
         card.hass = mockHass;
 
-        // Check internal state
+        // Verify getZWaveNodes was called
+        expect(getZWaveNodesStub.calledOnceWith(mockHass)).to.be.true;
+
+        // Verify arrays were updated
+        expect((card as any)._deadNodes).to.deep.equal([deadNode]);
+        expect((card as any)._liveNodes).to.deep.equal([liveNode]);
+        expect((card as any)._sleepingNodes).to.deep.equal([sleepingNode]);
+      });
+
+      it('should not update node arrays when nodes have not changed', () => {
+        // Set up initial nodes
+        const initialNodes = {
+          deadNodes: [deadNode],
+          liveNodes: [liveNode],
+          sleepingNodes: [sleepingNode],
+        };
+
+        getZWaveNodesStub.returns(initialNodes);
+
+        // First call to set initial state
+        card.hass = mockHass;
+
+        // Get references to the original arrays
+        const originalDeadNodes = (card as any)._deadNodes;
+        const originalLiveNodes = (card as any)._liveNodes;
+        const originalSleepingNodes = (card as any)._sleepingNodes;
+
+        // Reset the stub so we can verify it's called again
+        getZWaveNodesStub.resetHistory();
+
+        // Call hass setter again with same data
+        card.hass = mockHass;
+
+        // Verify getZWaveNodes was called
+        expect(getZWaveNodesStub.calledOnceWith(mockHass)).to.be.true;
+
+        // Verify references remain the same (arrays were not recreated)
+        expect((card as any)._deadNodes).to.equal(originalDeadNodes);
+        expect((card as any)._liveNodes).to.equal(originalLiveNodes);
+        expect((card as any)._sleepingNodes).to.equal(originalSleepingNodes);
+      });
+
+      it('should update only changed node arrays', () => {
+        // Set up initial nodes
+        const initialNodes = {
+          deadNodes: [deadNode],
+          liveNodes: [liveNode],
+          sleepingNodes: [sleepingNode],
+        };
+
+        getZWaveNodesStub.returns(initialNodes);
+
+        // First call to set initial state
+        card.hass = mockHass;
+
+        // Get references to the original arrays
+        const originalDeadNodes = (card as any)._deadNodes;
+        const originalLiveNodes = (card as any)._liveNodes;
+        const originalSleepingNodes = (card as any)._sleepingNodes;
+
+        // Create modified nodes with only liveNodes changed
+        const updatedLiveNode: NodeInfo = {
+          ...liveNode,
+          lastSeen: Date.now() + 1000, // just change the lastSeen value
+        };
+
+        const modifiedNodes = {
+          deadNodes: [deadNode], // Same as before
+          liveNodes: [updatedLiveNode], // Changed
+          sleepingNodes: [sleepingNode], // Same as before
+        };
+
+        getZWaveNodesStub.returns(modifiedNodes);
+
+        // Reset the stub so we can verify it's called again
+        getZWaveNodesStub.resetHistory();
+
+        // Call hass setter again with modified data
+        card.hass = mockHass;
+
+        // Verify getZWaveNodes was called
+        expect(getZWaveNodesStub.calledOnceWith(mockHass)).to.be.true;
+
+        // Verify only liveNodes was updated
+        expect((card as any)._deadNodes).to.equal(originalDeadNodes);
+        expect((card as any)._liveNodes).to.not.equal(originalLiveNodes);
+        expect((card as any)._sleepingNodes).to.equal(originalSleepingNodes);
+
+        // Verify content of liveNodes was updated
+        expect((card as any)._liveNodes).to.deep.equal([updatedLiveNode]);
+      });
+
+      it('should handle empty arrays from getZWaveNodes', () => {
+        // Set up empty mock response
+        const emptyNodes = {
+          deadNodes: [],
+          liveNodes: [],
+          sleepingNodes: [],
+        };
+
+        getZWaveNodesStub.returns(emptyNodes);
+
+        // Call the hass setter
+        card.hass = mockHass;
+
+        // Verify all arrays are empty
         expect((card as any)._deadNodes).to.be.an('array').that.is.empty;
         expect((card as any)._liveNodes).to.be.an('array').that.is.empty;
         expect((card as any)._sleepingNodes).to.be.an('array').that.is.empty;
       });
-
-      // it('should identify and categorize Z-Wave devices correctly', () => {
-      //   // Mock Z-Wave device data
-      //   const mockDevices = [
-      //     {
-      //       id: 'device1',
-      //       name: 'Z-Wave Switch 1',
-      //       name_by_user: 'Z-Wave Switch 1',
-      //     },
-      //     {
-      //       id: 'device2',
-      //       name: 'Z-Wave Switch 2',
-      //       name_by_user: 'Z-Wave Switch 2',
-      //     },
-      //     {
-      //       id: 'device3',
-      //       name: 'Z-Wave Switch 3',
-      //       name_by_user: 'Z-Wave Switch 3',
-      //     },
-      //   ];
-
-      //   getZWaveNonHubsStub.returns(mockDevices);
-
-      //   mockHass.entities = {
-      //     'switch.device1_node_status': {
-      //       entity_id: 'switch.device1_node_status',
-      //       device_id: 'device1',
-      //       translation_key: 'node_status',
-      //     },
-      //     'sensor.device1_last_seen': {
-      //       entity_id: 'sensor.device1_last_seen',
-      //       device_id: 'device1',
-      //       translation_key: 'last_seen',
-      //     },
-      //     'switch.device2_node_status': {
-      //       entity_id: 'switch.device2_node_status',
-      //       device_id: 'device2',
-      //       translation_key: 'node_status',
-      //     },
-      //     'sensor.device2_last_seen': {
-      //       entity_id: 'sensor.device2_last_seen',
-      //       device_id: 'device2',
-      //       translation_key: 'last_seen',
-      //     },
-      //     'switch.device3_node_status': {
-      //       entity_id: 'switch.device3_node_status',
-      //       device_id: 'device3',
-      //       translation_key: 'node_status',
-      //     },
-      //     'sensor.device3_last_seen': {
-      //       entity_id: 'sensor.device3_last_seen',
-      //       device_id: 'device3',
-      //       translation_key: 'last_seen',
-      //     },
-      //   };
-
-      //   const now = new Date();
-      //   const oneHourAgo = new Date(now.getTime() - 3600000);
-      //   const oneDayAgo = new Date(now.getTime() - 86400000 * 2);
-
-      //   mockHass.states = {
-      //     'switch.device1_node_status': s(
-      //       'switch.device1_node_status',
-      //       'alive',
-      //     ),
-      //     'sensor.device1_last_seen': s(
-      //       'sensor.device1_last_seen',
-      //       now.toISOString(),
-      //     ),
-      //     'switch.device2_node_status': s('switch.device2_node_status', 'dead'),
-      //     'sensor.device2_last_seen': s(
-      //       'sensor.device2_last_seen',
-      //       oneDayAgo.toISOString(),
-      //     ),
-      //     'switch.device3_node_status': s(
-      //       'switch.device3_node_status',
-      //       'asleep',
-      //     ),
-      //     'sensor.device3_last_seen': s(
-      //       'sensor.device3_last_seen',
-      //       oneHourAgo.toISOString(),
-      //     ),
-      //   };
-
-      //   // Set hass property
-      //   card.hass = mockHass;
-
-      //   // Verify device categorization
-      //   expect((card as any)._liveNodes).to.have.lengthOf(1);
-      //   expect((card as any)._liveNodes[0].name).to.equal('Z-Wave Switch 1');
-
-      //   expect((card as any)._deadNodes).to.have.lengthOf(1);
-      //   expect((card as any)._deadNodes[0].name).to.equal('Z-Wave Switch 2');
-
-      //   expect((card as any)._sleepingNodes).to.have.lengthOf(1);
-      //   expect((card as any)._sleepingNodes[0].name).to.equal(
-      //     'Z-Wave Switch 3',
-      //   );
-      // });
-
-      // it('should sort live nodes by last seen timestamp', () => {
-      //   // Mock Z-Wave device data
-      //   const mockDevices = [
-      //     {
-      //       id: 'device1',
-      //       name: 'Z-Wave Device 1',
-      //       name_by_user: 'Z-Wave Device 1',
-      //     },
-      //     {
-      //       id: 'device2',
-      //       name: 'Z-Wave Device 2',
-      //       name_by_user: 'Z-Wave Device 2',
-      //     },
-      //     {
-      //       id: 'device3',
-      //       name: 'Z-Wave Device 3',
-      //       name_by_user: 'Z-Wave Device 3',
-      //     },
-      //   ];
-
-      //   getZWaveNonHubsStub.returns(mockDevices);
-
-      //   mockHass.entities = {
-      //     'switch.device1_node_status': {
-      //       entity_id: 'switch.device1_node_status',
-      //       device_id: 'device1',
-      //     },
-      //     'sensor.device1_last_seen': {
-      //       entity_id: 'sensor.device1_last_seen',
-      //       device_id: 'device1',
-      //     },
-      //     'switch.device2_node_status': {
-      //       entity_id: 'switch.device2_node_status',
-      //       device_id: 'device2',
-      //     },
-      //     'sensor.device2_last_seen': {
-      //       entity_id: 'sensor.device2_last_seen',
-      //       device_id: 'device2',
-      //     },
-      //     'switch.device3_node_status': {
-      //       entity_id: 'switch.device3_node_status',
-      //       device_id: 'device3',
-      //     },
-      //     'sensor.device3_last_seen': {
-      //       entity_id: 'sensor.device3_last_seen',
-      //       device_id: 'device3',
-      //     },
-      //   };
-
-      //   const now = new Date();
-      //   const oneHourAgo = new Date(now.getTime() - 3600000);
-      //   const twoHoursAgo = new Date(now.getTime() - 7200000);
-
-      //   mockHass.states = {
-      //     'switch.device1_node_status': s(
-      //       'switch.device1_node_status',
-      //       'alive',
-      //     ),
-      //     'sensor.device1_last_seen': s(
-      //       'sensor.device1_last_seen',
-      //       twoHoursAgo.toISOString(),
-      //     ),
-      //     'switch.device2_node_status': s(
-      //       'switch.device2_node_status',
-      //       'alive',
-      //     ),
-      //     'sensor.device2_last_seen': s(
-      //       'sensor.device2_last_seen',
-      //       now.toISOString(),
-      //     ),
-      //     'switch.device3_node_status': s(
-      //       'switch.device3_node_status',
-      //       'alive',
-      //     ),
-      //     'sensor.device3_last_seen': s(
-      //       'sensor.device3_last_seen',
-      //       oneHourAgo.toISOString(),
-      //     ),
-      //   };
-
-      //   card.hass = mockHass;
-
-      //   const liveNodes = (card as any)._liveNodes;
-      //   expect(liveNodes).to.have.lengthOf(3);
-      //   expect(liveNodes[0].name).to.equal('Z-Wave Device 2'); // most recent
-      //   expect(liveNodes[1].name).to.equal('Z-Wave Device 3'); // second most recent
-      //   expect(liveNodes[2].name).to.equal('Z-Wave Device 1'); // least recent
-      // });
-
-      // it('should sort sleeping nodes by last seen timestamp', () => {
-      //   mockHass.devices = {
-      //     device1: {
-      //       id: 'device1',
-      //       name_by_user: 'Z-Wave Device 1',
-      //       identifiers: [['zwave_js', '']],
-      //       labels: [],
-      //     },
-      //     device2: {
-      //       id: 'device2',
-      //       name_by_user: 'Z-Wave Device 2',
-      //       identifiers: [['zwave_js', '']],
-      //       labels: [],
-      //     },
-      //     device3: {
-      //       id: 'device3',
-      //       name_by_user: 'Z-Wave Device 3',
-      //       identifiers: [['zwave_js', '']],
-      //       labels: [],
-      //     },
-      //   };
-
-      //   mockHass.entities = {
-      //     'switch.device1_node_status': {
-      //       entity_id: 'switch.device1_node_status',
-      //       device_id: 'device1',
-      //     },
-      //     'sensor.device1_last_seen': {
-      //       entity_id: 'sensor.device1_last_seen',
-      //       device_id: 'device1',
-      //     },
-      //     'switch.device2_node_status': {
-      //       entity_id: 'switch.device2_node_status',
-      //       device_id: 'device2',
-      //     },
-      //     'sensor.device2_last_seen': {
-      //       entity_id: 'sensor.device2_last_seen',
-      //       device_id: 'device2',
-      //     },
-      //     'switch.device3_node_status': {
-      //       entity_id: 'switch.device3_node_status',
-      //       device_id: 'device3',
-      //     },
-      //     'sensor.device3_last_seen': {
-      //       entity_id: 'sensor.device3_last_seen',
-      //       device_id: 'device3',
-      //     },
-      //   };
-
-      //   const now = new Date();
-      //   const oneHourAgo = new Date(now.getTime() - 3600000);
-      //   const twoHoursAgo = new Date(now.getTime() - 7200000);
-
-      //   mockHass.states = {
-      //     'switch.device1_node_status': s(
-      //       'switch.device1_node_status',
-      //       'asleep',
-      //     ),
-      //     'sensor.device1_last_seen': s(
-      //       'sensor.device1_last_seen',
-      //       twoHoursAgo.toISOString(),
-      //     ),
-      //     'switch.device2_node_status': s(
-      //       'switch.device2_node_status',
-      //       'asleep',
-      //     ),
-      //     'sensor.device2_last_seen': s(
-      //       'sensor.device2_last_seen',
-      //       now.toISOString(),
-      //     ),
-      //     'switch.device3_node_status': s(
-      //       'switch.device3_node_status',
-      //       'asleep',
-      //     ),
-      //     'sensor.device3_last_seen': s(
-      //       'sensor.device3_last_seen',
-      //       oneHourAgo.toISOString(),
-      //     ),
-      //   };
-
-      //   card.hass = mockHass;
-
-      //   const sleepingNodes = (card as any)._sleepingNodes;
-      //   expect(sleepingNodes).to.have.lengthOf(3);
-      //   expect(sleepingNodes[0].name).to.equal('Z-Wave Device 2'); // most recent
-      //   expect(sleepingNodes[1].name).to.equal('Z-Wave Device 3'); // second most recent
-      //   expect(sleepingNodes[2].name).to.equal('Z-Wave Device 1'); // least recent
-      // });
-
-      // it('should handle nodes without last seen information', () => {
-      //   mockHass.devices = {
-      //     device1: {
-      //       id: 'device1',
-      //       name_by_user: 'Z-Wave Device With LastSeen',
-      //       identifiers: [['zwave_js', '']],
-      //       labels: [],
-      //     },
-      //     device2: {
-      //       id: 'device2',
-      //       name_by_user: 'Z-Wave Device No LastSeen',
-      //       identifiers: [['zwave_js', '']],
-      //       labels: [],
-      //     },
-      //   };
-
-      //   mockHass.entities = {
-      //     'switch.device1_node_status': {
-      //       entity_id: 'switch.device1_node_status',
-      //       device_id: 'device1',
-      //     },
-      //     'sensor.device1_last_seen': {
-      //       entity_id: 'sensor.device1_last_seen',
-      //       device_id: 'device1',
-      //     },
-      //     'switch.device2_node_status': {
-      //       entity_id: 'switch.device2_node_status',
-      //       device_id: 'device2',
-      //     },
-      //     // No last_seen entity for device2
-      //   };
-
-      //   const now = new Date();
-
-      //   mockHass.states = {
-      //     'switch.device1_node_status': s(
-      //       'switch.device1_node_status',
-      //       'alive',
-      //     ),
-      //     'sensor.device1_last_seen': s(
-      //       'sensor.device1_last_seen',
-      //       now.toISOString(),
-      //     ),
-      //     'switch.device2_node_status': s(
-      //       'switch.device2_node_status',
-      //       'alive',
-      //     ),
-      //   };
-
-      //   card.hass = mockHass;
-
-      //   const liveNodes = (card as any)._liveNodes;
-      //   expect(liveNodes).to.have.lengthOf(2);
-
-      //   // Device without last_seen should still be included
-      //   const nodeNames = liveNodes.map((node: NodeInfo) => node.name);
-      //   expect(nodeNames).to.include('Z-Wave Device No LastSeen');
-
-      //   // Device without last_seen should be sorted after devices with last_seen
-      //   expect(liveNodes[1].name).to.equal('Z-Wave Device No LastSeen');
-      // });
     });
 
     describe('_getStatusColor', () => {
@@ -509,6 +336,13 @@ describe('ZWaveNodesStatus', () => {
       it('should handle invalid last seen times', () => {
         const color = (card as any)._getLastSeenColor(nothing);
         expect(color).to.equal('rgb(var(--rgb-grey))');
+      });
+    });
+
+    describe('styles', () => {
+      it('should return expected styles', () => {
+        const actual = ZWaveNodesStatus.styles;
+        expect(actual).to.deep.equal(styles);
       });
     });
 

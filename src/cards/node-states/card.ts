@@ -5,13 +5,10 @@ import {
 } from '@common/action-handler';
 import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant } from '@type/homeassistant';
-import {
-  getZWaveNonHubs,
-  processDeviceEntitiesAndCheckIfController,
-} from '@util/hass';
 import { CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { state } from 'lit/decorators.js';
+import { getZWaveNodes } from './helpers';
 import { styles } from './styles';
 import type { Config, NodeInfo } from './types';
 const equal = require('fast-deep-equal');
@@ -84,60 +81,8 @@ export class ZWaveNodesStatus extends LitElement {
   set hass(hass: HomeAssistant) {
     this._hass = hass;
 
-    // Object to store the Z-Wave devices
-    const zWaveNodes: Record<string, NodeInfo> = {};
-
-    getZWaveNonHubs(hass).forEach((device) => {
-      const node = {
-        name: device.name,
-        device_id: device.id,
-      } as NodeInfo;
-      zWaveNodes[device.id] = node;
-      processDeviceEntitiesAndCheckIfController(
-        hass,
-        device.id,
-        (entity, state) => {
-          if (entity.translation_key === 'node_status') {
-            node.statusState = state;
-          } else if (entity.translation_key === 'last_seen') {
-            node.lastSeenState = state;
-            node.lastSeen = new Date(state.state).getTime();
-          }
-        },
-      );
-    });
-
     // Separate dead nodes and live nodes
-    const nodes = Object.values(zWaveNodes);
-    const deadNodes = nodes.filter(
-      (node) => !['alive', 'asleep'].includes(node.statusState?.state),
-    );
-
-    const liveNodes = nodes
-      .filter((node) => node.statusState?.state === 'alive')
-      .sort((a, b) => {
-        if (a.lastSeen && b.lastSeen) {
-          return b.lastSeen - a.lastSeen;
-        } else if (a.lastSeen) {
-          return -1;
-        } else if (b.lastSeen) {
-          return 1;
-        }
-        return 0;
-      });
-
-    const asleepNodes = nodes
-      .filter((node) => node.statusState?.state === 'asleep')
-      .sort((a, b) => {
-        if (a.lastSeen && b.lastSeen) {
-          return b.lastSeen - a.lastSeen;
-        } else if (a.lastSeen) {
-          return -1;
-        } else if (b.lastSeen) {
-          return 1;
-        }
-        return 0;
-      });
+    const { deadNodes, liveNodes, sleepingNodes } = getZWaveNodes(hass);
 
     if (!equal(deadNodes, this._deadNodes)) {
       this._deadNodes = deadNodes;
@@ -145,8 +90,8 @@ export class ZWaveNodesStatus extends LitElement {
     if (!equal(liveNodes, this._liveNodes)) {
       this._liveNodes = liveNodes;
     }
-    if (!equal(asleepNodes, this._sleepingNodes)) {
-      this._sleepingNodes = asleepNodes;
+    if (!equal(sleepingNodes, this._sleepingNodes)) {
+      this._sleepingNodes = sleepingNodes;
     }
   }
 

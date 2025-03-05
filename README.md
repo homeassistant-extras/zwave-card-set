@@ -63,6 +63,8 @@ Shows info about the Z-Wave Hub.
 
 ### HACS (Recommended)
 
+[![HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=homeassistant-extras&repository=zwave-card-sets&category=dashboard)
+
 1. Open HACS in your Home Assistant instance
 2. Click the menu icon in the top right and select "Custom repositories"
 3. Add this repository URL and select "Dashboard" as the category
@@ -157,6 +159,27 @@ This project is protected under the MIT License. For more details, refer to the 
 [![contributors](https://contrib.rocks/image?repo=homeassistant-extras/zwave-card-set)](https://github.com{/homeassistant-extras/zwave-card-set/}graphs/contributors)
 
 [![ko-fi](https://img.shields.io/badge/buy%20me%20a%20coffee-72A5F2?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/N4N71AQZQG)
+
+## Code Quality
+
+Forgive me and my badges..
+
+Stats
+
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=bugs)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=coverage)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
+
+Ratings
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=homeassistant-extras_zwave-card-set&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=homeassistant-extras_zwave-card-set)
 
 ## Build Status
 
