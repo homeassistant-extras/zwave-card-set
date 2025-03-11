@@ -19,6 +19,11 @@ export const styles = css`
     --columns: 3;
   }
 
+  .card-header {
+    justify-content: space-between;
+    display: flex;
+  }
+
   .card-content {
     padding: 16px;
   }

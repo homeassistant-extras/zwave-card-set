@@ -146,7 +146,11 @@ export class ZWaveNodesStatus extends LitElement {
     }
 
     return html`
-      <ha-card header="${this._config.title || 'Z-Wave Nodes Status'}">
+      <ha-card>
+        <div class="card-header">
+          ${this._config.title || 'Z-Wave Nodes Status'}
+          <ha-icon icon="mdi:z-wave"></ha-icon>
+        </div>
         <div
           class="card-content"
           style="${styleMap({

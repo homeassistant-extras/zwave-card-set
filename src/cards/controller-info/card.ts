@@ -264,6 +264,7 @@ export class ZWaveController extends LitElement {
             this._controller.name ||
             'Z-Wave Controller'}
           </div>
+          <ha-icon icon="mdi:z-wave"></ha-icon>
         </div>
 
         <div class="card-content">
