@@ -52,6 +52,12 @@ export class ZWaveDeviceInfo extends LitElement {
   private _isSmallCard: boolean = false;
 
   /**
+   * Indicates if the card is in dark mode
+   */
+  @property({ type: Boolean, reflect: true })
+  private isDarkMode!: boolean;
+
+  /**
    * Home Assistant instance
    * Not marked as @state as it's handled differently
    */
@@ -115,6 +121,7 @@ export class ZWaveDeviceInfo extends LitElement {
    */
   set hass(hass: HomeAssistant) {
     this._hass = hass;
+    this.isDarkMode = hass.themes.darkMode;
 
     if (!this._config) {
       return;
@@ -296,6 +303,7 @@ export class ZWaveDeviceInfo extends LitElement {
       <ha-card
         class="${classMap({
           expanded: this._sensorsExpanded && hasSensors,
+          dead: this._sensor.nodeStatusState?.state === 'dead',
         })}"
       >
         <div class="grid">

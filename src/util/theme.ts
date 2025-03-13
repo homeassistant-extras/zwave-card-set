@@ -106,3 +106,11 @@ export const themeColors = css`
   --rgb-card-background: var(--card-background-color-minimalist);
   );
 `;
+
+export const colorsLight = css`
+  --opacity-background: 1;
+`;
+
+export const colorsDark = css`
+  --opacity-background: 0.8;
+`;

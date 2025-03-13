@@ -110,8 +110,8 @@ All Z-Wave devices are supported through the universal Device Info card. I have 
 - [x] **`Node cards`**: <strike>show info about different nodes.</strike>
 - [x] **`Node status card sizing`**: make sizing dynamic, can't figure it out.
 - [x] **`Device Center`**: add docs and pics towards end.
+- [x] **`Themes`**: test default theme, etc.
 - [ ] **`Tests`**: small refactors to simplify testing
-- [ ] **`Themes`**: test default theme, etc.
 
 ## Contributing
 
@@ -119,6 +119,7 @@ All Z-Wave devices are supported through the universal Device Info card. I have 
 - **🐛 [Report Issues](https://github.com/homeassistant-extras/zwave-card-set/issues)**: Submit bugs found or log feature requests for the `zwave-card-set` project.
 - **💡 [Submit Pull Requests](https://github.com/homeassistant-extras/zwave-card-set/blob/main/CONTRIBUTING.md)**: Review open PRs, and submit your own PRs.
 - **📣 [Check out discord](https://discord.gg/F28wupKC)**: Need further help, have ideas, want to chat?
+- **🃏 [Check out my other cards!](https://github.com/orgs/homeassistant-extras/repositories)** Maybe you have an integration that I made cards for.
 
 <details closed>
 <summary>Contributing Guidelines</summary>

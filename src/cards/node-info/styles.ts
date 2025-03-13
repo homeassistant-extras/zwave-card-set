@@ -1,5 +1,7 @@
 import { chevronToggleStyles } from '@util/styles';
 import {
+  colorsDark,
+  colorsLight,
   homeAssistantRgbColors,
   minimalistRgbColors,
   themeColors,
@@ -12,6 +14,11 @@ export const styles = css`
     ${homeAssistantRgbColors}
     ${minimalistRgbColors}
     ${themeColors}
+    ${colorsLight}
+  }
+
+  :host([isDarkMode]) {
+    ${colorsDark}
   }
 
   :host {
@@ -52,10 +59,25 @@ export const styles = css`
 
   ha-card {
     padding: 12px;
+    position: relative;
+    z-index: 1;
   }
 
   ha-card.expanded {
     height: auto;
+  }
+
+  ha-card.dead::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--error-color, #f44336);
+    border-radius: var(--ha-card-border-radius, 12px);
+    opacity: var(--opacity-background, 0.1);
+    z-index: -1;
   }
 
   .grid {

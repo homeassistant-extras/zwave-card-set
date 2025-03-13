@@ -19,7 +19,7 @@ describe('BasicEditor', () => {
         titles: {},
         entities: {},
         devices: {},
-      } as HomeAssistant;
+      } as unknown as HomeAssistant;
       card = new BasicEditor();
       dispatchStub = stub(card, 'dispatchEvent');
 

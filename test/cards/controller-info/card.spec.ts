@@ -37,7 +37,7 @@ describe('ZWaveController', () => {
         states: {},
         entities: {},
         devices: {},
-      };
+      } as HomeAssistant;
 
       // Stub utility functions
       getZWaveControllersStub = stub(hassUtils, 'getZWaveControllers');

@@ -21,7 +21,7 @@ describe('ZWaveNodesStatus', () => {
           states: {},
           entities: {},
           devices: {},
-        };
+        } as HomeAssistant;
 
         // Stub the imported utility functions
         getZWaveNonHubsStub = stub(hassUtils, 'getZWaveNonHubs');

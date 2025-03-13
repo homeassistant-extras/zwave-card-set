@@ -24,7 +24,7 @@ describe('ZWaveDeviceCenter', () => {
       states: {},
       entities: {},
       devices: {},
-    };
+    } as HomeAssistant;
 
     // Stub the getZWaveByArea function to control test data
     getZWaveByAreaStub = stub(hassUtils, 'getZWaveByArea');

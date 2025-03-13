@@ -15,6 +15,7 @@ A custom card for Home Assistant that displays detailed information about indivi
 - Automatic handling of hub devices (displays hub card)
 - Fully responsive design that adapts to different card sizes
 - Easy configuration through the Home Assistant UI
+- Red coloring for dead nodes for easy identification
 
 ## Configuration
 

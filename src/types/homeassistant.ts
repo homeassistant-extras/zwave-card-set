@@ -4,6 +4,8 @@
  * devices, states, and action handlers.
  */
 
+import type { Themes } from '@/hass/data/ws-themes';
+
 /**
  * Main interface representing the Home Assistant system that manages devices, entities, and states
  */
@@ -16,6 +18,9 @@ export interface HomeAssistant {
 
   /** Dictionary of all devices, keyed by device_id */
   devices: Record<string, Device>;
+
+  /** Themes of HA */
+  themes: Themes;
 }
 
 /**

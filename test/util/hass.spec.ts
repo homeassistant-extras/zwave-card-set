@@ -30,7 +30,7 @@ describe('util', () => {
             devices: { 'test-device': mockDevice },
             entities: {},
             states: {},
-          };
+          } as unknown as HomeAssistant;
 
           const result = getHassDevice(mockHass, 'test-device');
 
@@ -55,7 +55,7 @@ describe('util', () => {
             devices: { 'test-device': mockDevice },
             entities: {},
             states: {},
-          };
+          } as unknown as HomeAssistant;
 
           const result = getHassDevice(mockHass, 'test-device');
 
@@ -94,7 +94,7 @@ describe('util', () => {
               name: 'Device Name',
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         let callCount = 0;
         const isController = processDeviceEntitiesAndCheckIfController(
@@ -134,7 +134,7 @@ describe('util', () => {
               name: 'Device Name',
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         let callCount = 0;
         const isController = processDeviceEntitiesAndCheckIfController(
@@ -170,7 +170,7 @@ describe('util', () => {
               name: 'Test Device',
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         let capturedState: State | null = null;
         processDeviceEntitiesAndCheckIfController(
@@ -202,7 +202,7 @@ describe('util', () => {
               name: 'Device Name',
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         let capturedState: State | null = null;
         processDeviceEntitiesAndCheckIfController(
@@ -256,7 +256,7 @@ describe('util', () => {
               name: 'Test Device',
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         const processedEntities: string[] = [];
         processDeviceEntitiesAndCheckIfController(
@@ -301,7 +301,7 @@ describe('util', () => {
               name: 'Test Device',
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         const processedEntities: string[] = [];
         processDeviceEntitiesAndCheckIfController(
@@ -341,7 +341,7 @@ describe('util', () => {
               name: 'Test Device',
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         let capturedState: State | null = null;
         processDeviceEntitiesAndCheckIfController(
@@ -380,7 +380,7 @@ describe('util', () => {
               name: 'Test Device',
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         let capturedState: State | null = null;
         processDeviceEntitiesAndCheckIfController(
@@ -421,7 +421,7 @@ describe('util', () => {
               // No name property
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         let capturedState: State | null = null;
         processDeviceEntitiesAndCheckIfController(
@@ -460,7 +460,7 @@ describe('util', () => {
           devices: {
             // No device with ID 'device_123'
           },
-        };
+        } as unknown as HomeAssistant;
 
         let capturedState: State | null = null;
         processDeviceEntitiesAndCheckIfController(
@@ -492,7 +492,7 @@ describe('util', () => {
           },
           entities: {},
           states: {},
-        };
+        } as unknown as HomeAssistant;
 
         const result = getHassDevice(mockHass, 'device_123');
 
@@ -510,7 +510,7 @@ describe('util', () => {
           devices: {},
           entities: {},
           states: {},
-        };
+        } as HomeAssistant;
 
         const result = getHassDevice(mockHass, 'device_123');
 
@@ -530,7 +530,7 @@ describe('util', () => {
           },
           entities: {},
           states: {},
-        };
+        } as unknown as HomeAssistant;
 
         const result = getHassDeviceIfZWave(mockHass, 'device_123');
 
@@ -554,7 +554,7 @@ describe('util', () => {
           },
           entities: {},
           states: {},
-        };
+        } as unknown as HomeAssistant;
 
         const result = getHassDeviceIfZWave(mockHass, 'device_123');
 
@@ -566,7 +566,7 @@ describe('util', () => {
           devices: {},
           entities: {},
           states: {},
-        };
+        } as HomeAssistant;
 
         const result = getHassDeviceIfZWave(mockHass, 'device_123');
 
@@ -623,7 +623,7 @@ describe('util', () => {
               labels: ['hub', 'lighting'],
             },
           },
-        };
+        } as unknown as HomeAssistant;
       });
 
       it('should return only Z-Wave controller devices', () => {
@@ -656,7 +656,7 @@ describe('util', () => {
               labels: ['hub'],
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         const result = getZWaveControllers(noZWaveHubsHass);
         expect(result).to.deep.equal([]);
@@ -712,7 +712,7 @@ describe('util', () => {
               name: 'GE Switch',
             },
           },
-        };
+        } as unknown as HomeAssistant;
       });
 
       it('should return only Z-Wave non-hub devices', () => {
@@ -755,7 +755,7 @@ describe('util', () => {
               name: 'Philips Light',
             },
           },
-        };
+        } as unknown as HomeAssistant;
 
         const result = getZWaveNonHubs(onlyZWaveHubsHass);
         expect(result).to.deep.equal([]);
@@ -808,7 +808,7 @@ describe('util', () => {
               area_id: 'living_room',
             },
           },
-        };
+        } as unknown as HomeAssistant;
       });
 
       it('should return Z-Wave devices in the specified area', () => {

@@ -150,6 +150,10 @@ describe('ZWaveDeviceInfo', () => {
           identifiers: [['other_protocol', '9012']],
         },
       },
+      themes: {
+        theme: 'default',
+        darkMode: false,
+      },
     };
 
     // Set up states with appropriate attributes for testing

@@ -35,7 +35,7 @@ describe('ZWaveNodesStatus', () => {
         states: {},
         entities: {},
         devices: {},
-      };
+      } as HomeAssistant;
 
       // Setup stubs for action handlers
       actionHandlerStub = stub(actionHandlerModule, 'actionHandler').returns({
@@ -146,7 +146,7 @@ describe('ZWaveNodesStatus', () => {
           states: {},
           entities: {},
           devices: {},
-        };
+        } as HomeAssistant;
 
         // Create stub for getZWaveNodes
         getZWaveNodesStub = stub(helpersModule, 'getZWaveNodes');
