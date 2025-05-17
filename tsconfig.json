@@ -25,6 +25,7 @@
       "@node-states/*": ["./src/cards/node-states/*"],
       "@base/*": ["./src/cards/base/*"],
       "@common/*": ["./src/common/*"],
+      "@config/*": ["./src/config/*"],
       "@type/*": ["./src/types/*"],
       "@test/*": ["./test/*"],
       "@util/*": ["./src/util/*"],

@@ -9,7 +9,7 @@ import type { HomeAssistant } from '@type/homeassistant';
 import * as hassUtils from '@util/hass';
 import * as renderUtils from '@util/render';
 import { expect } from 'chai';
-import { html, nothing, type TemplateResult } from 'lit';
+import { html, type TemplateResult } from 'lit';
 import { spy, stub } from 'sinon';
 
 describe('ZWaveDeviceInfo', () => {
@@ -286,56 +286,12 @@ describe('ZWaveDeviceInfo', () => {
       expect((card as any)._sensor.batteryState.state).to.equal('75');
     });
 
-    // it('should separate entities and sensors correctly', () => {
-    //   card.hass = mockHass;
-
-    //   // Regular entities
-    //   expect((card as any)._sensor.entities).to.have.lengthOf(1);
-    //   expect((card as any)._sensor.entities[0].entity_id).to.equal(
-    //     'switch.test_device_test_1',
-    //   );
-
-    //   // Sensor data entities
-    //   expect((card as any)._sensor.sensors).to.have.lengthOf(4);
-    //   const sensorIds = (card as any)._sensor.sensors.map(
-    //     (s: State) => s.entity_id,
-    //   );
-    //   expect(sensorIds).to.include('sensor.test_device_power');
-    //   expect(sensorIds).to.include('sensor.test_device_energy');
-    //   expect(sensorIds).to.include('sensor.test_device_heat');
-    //   expect(sensorIds).to.include('event.test_device_scene');
-    // });
-
-    // it('should set sensor name from device name_by_user if available', () => {
-    //   card.hass = mockHass;
-    //   expect((card as any)._sensor.name).to.equal('Test Device');
-    // });
-
     it('should fallback to device name if name_by_user not available', () => {
       mockHass.devices.test_device_id!.name_by_user = undefined;
 
       card.hass = mockHass;
       expect((card as any)._sensor.name).to.equal('Default Device Name');
     });
-
-    // it('should dispatch hass-update-controller event for controllers', () => {
-    //   const fireEventSpy = spy(fireEvent);
-
-    //   // Set up a controller
-    //   card.setConfig({ device_id: 'test_controller_id' });
-    //   card.hass = mockHass;
-
-    //   // Update with same data to trigger the else branch for controllers
-    //   card.hass = mockHass;
-
-    //   expect(
-    //     fireEventSpy.calledWith(card, 'hass-update-controller', {
-    //       hass: mockHass,
-    //     }),
-    //   ).to.be.true;
-
-    //   fireEventSpy.restore();
-    // });
   });
 
   describe('_isSensorData method', () => {
@@ -397,10 +353,11 @@ describe('ZWaveDeviceInfo', () => {
   });
 
   describe('render method', () => {
-    it('should return nothing when sensor is not initialized', () => {
+    it('should return error when sensor is not initialized', async () => {
       (card as any)._sensor = undefined;
-      const result = card.render();
-      expect(result).to.equal(nothing);
+      const el = await fixture(card.render() as TemplateResult);
+      expect(el.tagName).to.equal('HA-ALERT');
+      expect(el.textContent).to.equal('Sensor not found for test_device_id');
     });
 
     it('should render controller component when device is a controller', async () => {
@@ -681,37 +638,59 @@ describe('ZWaveDeviceInfo', () => {
           label: `Z Wave Devices`,
         },
         {
-          name: 'title',
-          required: false,
-          label: 'Card Title',
-          selector: {
-            text: {},
-          },
-        },
-        {
-          name: 'icon',
-          required: false,
-          label: 'Icon',
-          selector: {
-            icon: {},
-          },
+          name: 'content',
+          label: 'Content',
+          type: 'expandable',
+          flatten: true,
+          icon: 'mdi:text-short',
+          schema: [
+            {
+              name: 'title',
+              required: false,
+              label: 'Card Title',
+              selector: {
+                text: {},
+              },
+            },
+            {
+              name: 'icon',
+              required: false,
+              label: 'Icon',
+              selector: {
+                icon: {},
+              },
+            },
+          ],
         },
         {
           name: 'features',
           label: 'Features',
-          required: false,
-          selector: {
-            select: {
-              multiple: true,
-              mode: 'list',
-              options: [
-                {
-                  label: 'Use Icons instead of Labels for Sensors',
-                  value: 'use_icons_instead_of_names',
+          type: 'expandable',
+          flatten: true,
+          icon: 'mdi:list-box',
+          schema: [
+            {
+              name: 'features',
+              label: 'Features',
+              required: false,
+              selector: {
+                select: {
+                  multiple: true,
+                  mode: 'list',
+                  options: [
+                    {
+                      label: 'Use Icons instead of Labels for Sensors',
+                      value: 'use_icons_instead_of_names',
+                    },
+                    {
+                      label: 'Debug mode - exclusively for minchinweb',
+                      value: 'debug',
+                    },
+                  ],
                 },
-              ],
+              },
             },
-          },
+          ],
         },
       ]);
     });

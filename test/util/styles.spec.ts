@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { nothing } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
 
-describe('util', () => {
+export default () => {
   describe('styles', () => {
     describe('getEntityIconStyles', () => {
       describe('Active States', () => {
@@ -215,4 +215,4 @@ describe('util', () => {
       });
     });
   });
-});
+};

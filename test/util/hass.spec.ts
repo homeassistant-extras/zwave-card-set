@@ -10,7 +10,7 @@ import {
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
-describe('util', () => {
+export default () => {
   describe('hass.ts', () => {
     describe('internal methods', () => {
       // Note: We can't directly test private methods (_isZWaveDevice, _transformDeviceFields, etc.)
@@ -867,4 +867,4 @@ describe('util', () => {
       });
     });
   });
-});
+};

@@ -11,7 +11,7 @@ import { expect } from 'chai';
 import { nothing, type TemplateResult } from 'lit';
 import { stub } from 'sinon';
 
-describe('util', () => {
+export default () => {
   describe('render.ts', () => {
     describe('renderError', () => {
       it('should render an ha-alert with the error message', async () => {
@@ -233,4 +233,4 @@ describe('util', () => {
       });
     });
   });
-});
+};

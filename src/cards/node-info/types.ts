@@ -24,7 +24,7 @@ export interface Config {
 }
 
 /** Features to enable or disable functionality */
-export type Features = 'use_icons_instead_of_names';
+export type Features = 'debug' | 'use_icons_instead_of_names';
 
 /**
  * Represents the states of various sensors in a Z-Wave device

@@ -6,12 +6,17 @@ import {
 } from '@common/action-handler';
 import { fireEvent, type HassUpdateEvent } from '@common/fire-event';
 import type { HomeAssistant, State } from '@type/homeassistant';
+import { d } from '@util/debug';
 import {
   getHassDeviceIfZWave,
   getZWaveNonHubs,
   processDeviceEntitiesAndCheckIfController,
 } from '@util/hass';
-import { renderChevronToggle, renderStateDisplay } from '@util/render';
+import {
+  renderChevronToggle,
+  renderError,
+  renderStateDisplay,
+} from '@util/render';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { styleMap } from 'lit-html/directives/style-map.js';
@@ -55,6 +60,12 @@ export class ZWaveDeviceInfo extends LitElement {
    */
   @property({ type: Boolean, reflect: true })
   private isDarkMode!: boolean;
+
+  /**
+   * Keep track of any errors
+   */
+  @state()
+  private _error?: string;
 
   /**
    * Home Assistant instance
@@ -106,6 +117,7 @@ export class ZWaveDeviceInfo extends LitElement {
    * @param {Config} config - The card configuration
    */
   setConfig(config: Config) {
+    d(config, 'Setting up Z-Wave device info card', config);
     this._config = config;
   }
 
@@ -119,15 +131,23 @@ export class ZWaveDeviceInfo extends LitElement {
    * @param {HomeAssistant} hass - The Home Assistant instance
    */
   set hass(hass: HomeAssistant) {
+    d(this._config, 'Updating Z-Wave device info card');
     this._hass = hass;
     this.isDarkMode = hass.themes.darkMode;
 
     if (!this._config) {
+      this._error = 'No configuration found';
       return;
     }
 
     const device = getHassDeviceIfZWave(hass, this._config.device_id);
     if (!device) {
+      d(
+        this._config,
+        'No device found.  It should be this device, no?',
+        hass.devices[this._config.device_id],
+      );
+      this._error = 'No device found';
       return;
     }
 
@@ -172,6 +192,13 @@ export class ZWaveDeviceInfo extends LitElement {
       },
     );
 
+    d(
+      this._config,
+      'Sensor data changing',
+      sensor,
+      this._sensor,
+      equal(sensor, this._sensor),
+    );
     if (!equal(sensor, this._sensor)) {
       this._sensor = sensor;
     } else {
@@ -202,37 +229,59 @@ export class ZWaveDeviceInfo extends LitElement {
         label: `Z Wave Devices`,
       },
       {
-        name: 'title',
-        required: false,
-        label: 'Card Title',
-        selector: {
-          text: {},
-        },
-      },
-      {
-        name: 'icon',
-        required: false,
-        label: 'Icon',
-        selector: {
-          icon: {},
-        },
+        name: 'content',
+        label: 'Content',
+        type: 'expandable',
+        flatten: true,
+        icon: 'mdi:text-short',
+        schema: [
+          {
+            name: 'title',
+            required: false,
+            label: 'Card Title',
+            selector: {
+              text: {},
+            },
+          },
+          {
+            name: 'icon',
+            required: false,
+            label: 'Icon',
+            selector: {
+              icon: {},
+            },
+          },
+        ],
       },
       {
         name: 'features',
         label: 'Features',
-        required: false,
-        selector: {
-          select: {
-            multiple: true,
-            mode: 'list',
-            options: [
-              {
-                label: 'Use Icons instead of Labels for Sensors',
-                value: 'use_icons_instead_of_names',
+        type: 'expandable',
+        flatten: true,
+        icon: 'mdi:list-box',
+        schema: [
+          {
+            name: 'features',
+            label: 'Features',
+            required: false,
+            selector: {
+              select: {
+                multiple: true,
+                mode: 'list',
+                options: [
+                  {
+                    label: 'Use Icons instead of Labels for Sensors',
+                    value: 'use_icons_instead_of_names',
+                  },
+                  {
+                    label: 'Debug mode - exclusively for minchinweb',
+                    value: 'debug',
+                  },
+                ],
               },
-            ],
+            },
           },
-        },
+        ],
       },
     ];
 
@@ -271,7 +320,9 @@ export class ZWaveDeviceInfo extends LitElement {
    */
   override render(): TemplateResult | typeof nothing {
     if (!this._sensor) {
-      return nothing;
+      return renderError(
+        this._error ?? `Sensor not found for ${this._config?.device_id}`,
+      );
     }
 
     // for convenience, render the controller card
