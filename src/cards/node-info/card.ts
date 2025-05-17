@@ -1,8 +1,8 @@
+import { stateIcon } from '@/html/state-icon';
 import {
   actionHandler,
   handleClickAction,
   moreInfoAction,
-  toggleAction,
 } from '@common/action-handler';
 import { fireEvent, type HassUpdateEvent } from '@common/fire-event';
 import type { HomeAssistant, State } from '@type/homeassistant';
@@ -12,7 +12,6 @@ import {
   processDeviceEntitiesAndCheckIfController,
 } from '@util/hass';
 import { renderChevronToggle, renderStateDisplay } from '@util/render';
-import { getEntityIconStyles } from '@util/styles';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { styleMap } from 'lit-html/directives/style-map.js';
@@ -319,7 +318,9 @@ export class ZWaveDeviceInfo extends LitElement {
                     moreInfoAction(this._sensor.batteryState!.entity_id),
                   )}
                 ></battery-indicator>`
-              : this._renderIcon(
+              : stateIcon(
+                  this,
+                  this._hass,
                   this._sensor.firmwareState,
                   undefined,
                   this._config.icon || 'mdi:z-wave',
@@ -334,7 +335,9 @@ export class ZWaveDeviceInfo extends LitElement {
                 moreInfoAction(this._sensor.firmwareState!.entity_id),
               )}
             >
-              <span class="title ellipsis">${this._sensor.name}</span>
+              <span class="title ellipsis"
+                >${this._config.title ?? this._sensor.name}</span
+              >
               <span class="status-label ellipsis"
                 >${this._sensor.model} by ${this._sensor.manufacturer}</span
               >
@@ -377,7 +380,7 @@ export class ZWaveDeviceInfo extends LitElement {
                     'status-label',
                     entity.attributes?.friendly_name,
                   )
-                : this._renderIcon(entity, `e${index + 1}`),
+                : stateIcon(this, this._hass, entity, `e${index + 1}`),
             )}
           </div>
         </div>
@@ -416,7 +419,7 @@ export class ZWaveDeviceInfo extends LitElement {
                       ${this._config.features?.includes(
                         'use_icons_instead_of_names',
                       )
-                        ? this._renderIcon(entity, `s${index + 1}`)
+                        ? stateIcon(this, this._hass, entity, `s${index + 1}`)
                         : html`<span class="status-label" ellipsis
                             >${entity.attributes?.friendly_name}</span
                           >`}
@@ -492,43 +495,6 @@ export class ZWaveDeviceInfo extends LitElement {
 
     return false;
   }
-
-  /**
-   * Renders an icon with state
-   * @param state - The state object
-   * @param className - Additional CSS class
-   * @param icon - Override icon
-   */
-  protected _renderIcon = (
-    state: State | undefined,
-    className: string | undefined = undefined,
-    icon: string | undefined = undefined,
-  ): TemplateResult => {
-    const classes = ['icon', className]
-      .filter((c) => c !== undefined)
-      .join(' ');
-    if (!state) {
-      return html`<div class="${classes}" />`;
-    }
-
-    const params = ['switch', 'light'].includes(state.domain)
-      ? toggleAction(state.entity_id)
-      : moreInfoAction(state.entity_id);
-    const styles = getEntityIconStyles(state);
-
-    return html` <div
-      style="${styles}"
-      class="${classes}"
-      @action=${handleClickAction(this, params)}
-      .actionHandler=${actionHandler(params)}
-    >
-      <ha-state-icon
-        .hass=${this._hass}
-        .stateObj=${state}
-        .icon="${icon}"
-      ></ha-state-icon>
-    </div>`;
-  };
 
   /**
    * Get card width for responsive layout

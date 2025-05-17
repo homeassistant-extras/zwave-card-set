@@ -1,3 +1,4 @@
+import * as stateIconModule from '@/html/state-icon';
 import * as actionHandlerModule from '@common/action-handler';
 import { ZWaveDeviceInfo } from '@node/card';
 import type { Config } from '@node/types';
@@ -508,7 +509,7 @@ describe('ZWaveDeviceInfo', () => {
 
     it('should use icons instead of names when feature is enabled', async () => {
       // Create a spy on the _renderIcon method
-      const renderIconSpy = stub(card as any, '_renderIcon').returns(
+      const renderIconSpy = stub(stateIconModule, 'stateIcon').returns(
         html`<div class="mock-icon"></div>`,
       );
 
