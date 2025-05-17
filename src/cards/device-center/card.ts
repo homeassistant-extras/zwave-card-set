@@ -67,20 +67,14 @@ export class ZWaveDeviceCenter extends LitElement {
     const devices = getZWaveByArea(hass, this._config.area);
 
     devices.forEach((device) => {
-      const manufacturer = device.manufacturer || 'unknown_manufacturer';
-      const model = device.model || 'unknown_model';
-      const name = device.device_name || 'unknown_name';
+      const manufacturer = device.manufacturer ?? 'unknown_manufacturer';
+      const model = device.model ?? 'unknown_model';
+      const name = device.device_name ?? 'unknown_name';
       const modelKey = `${model} ${name}`;
 
-      // Initialize manufacturer object if it doesn't exist
-      if (!center.devices[manufacturer]) {
-        center.devices[manufacturer] = {};
-      }
-
-      // Initialize model array if it doesn't exist
-      if (!center.devices[manufacturer][modelKey]) {
-        center.devices[manufacturer][modelKey] = [];
-      }
+      // Initialize objects if they don't exist
+      center.devices[manufacturer] ??= {};
+      center.devices[manufacturer][modelKey] ??= [];
 
       // Add device to the appropriate manufacturer and model
       center.devices[manufacturer][modelKey].push(device);

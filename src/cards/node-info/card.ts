@@ -312,10 +312,10 @@ export class ZWaveDeviceInfo extends LitElement {
                   .level=${Number(this._sensor.batteryState.state)}
                   @action=${handleClickAction(
                     this,
-                    moreInfoAction(this._sensor.batteryState!.entity_id),
+                    moreInfoAction(this._sensor.batteryState.entity_id),
                   )}
                   .actionHandler=${actionHandler(
-                    moreInfoAction(this._sensor.batteryState!.entity_id),
+                    moreInfoAction(this._sensor.batteryState.entity_id),
                   )}
                 ></battery-indicator>`
               : stateIcon(
@@ -323,7 +323,7 @@ export class ZWaveDeviceInfo extends LitElement {
                   this._hass,
                   this._sensor.firmwareState,
                   undefined,
-                  this._config.icon || 'mdi:z-wave',
+                  this._config.icon ?? 'mdi:z-wave',
                 )}
             <div
               class="firmware-info"
@@ -500,6 +500,6 @@ export class ZWaveDeviceInfo extends LitElement {
    * Get card width for responsive layout
    */
   private _getCardWidth(): number {
-    return this.shadowRoot?.host.getBoundingClientRect().width || 500;
+    return this.shadowRoot?.host.getBoundingClientRect().width ?? 500;
   }
 }

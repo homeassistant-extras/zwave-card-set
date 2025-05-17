@@ -131,7 +131,7 @@ export class ZWaveController extends LitElement {
     }
 
     if (!hub.error) {
-      hub.name = hubDevice.name || 'Z-Wave Hub';
+      hub.name = hubDevice.name ?? 'Z-Wave Hub';
       hub.connectedDevices = getZWaveNonHubs(hass);
     }
 
@@ -260,8 +260,8 @@ export class ZWaveController extends LitElement {
       <ha-card>
         <div class="card-header">
           <div class="name">
-            ${this._config.title ||
-            this._controller.name ||
+            ${this._config.title ??
+            this._controller.name ??
             'Z-Wave Controller'}
           </div>
           <ha-icon icon="mdi:z-wave"></ha-icon>

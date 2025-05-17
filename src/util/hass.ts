@@ -12,7 +12,7 @@ const _transformDeviceFields = (device: Device): ZWaveDevice => {
   return {
     id: device.id,
     manufacturer: device.manufacturer,
-    name: device.name_by_user || device.name,
+    name: device.name_by_user ?? device.name,
     device_name: device.name,
     model: device.model,
   };
@@ -63,7 +63,7 @@ const _processDeviceEntities = (
           ...state.attributes,
           // a convenience to clean up the friendly name
           friendly_name: state.attributes?.friendly_name?.replace(
-            device?.name || '',
+            device?.name ?? '',
             '',
           ),
         },

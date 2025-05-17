@@ -136,7 +136,7 @@ export const getEntityIconStyles = (
 ): DirectiveResult<typeof StyleMapDirective> | typeof nothing => {
   const isActive = isEntityActive(state);
   const onColor =
-    state?.attributes?.on_color || activeColorFromDomain(state.domain);
+    state?.attributes?.on_color ?? activeColorFromDomain(state.domain);
   const offColor = state?.attributes?.off_color;
   const iconColor = isActive ? onColor : offColor;
 

@@ -148,7 +148,7 @@ export class ZWaveNodesStatus extends LitElement {
     return html`
       <ha-card>
         <div class="card-header">
-          ${this._config.title || 'Z-Wave Nodes Status'}
+          ${this._config.title ?? 'Z-Wave Nodes Status'}
           <ha-icon icon="mdi:z-wave"></ha-icon>
         </div>
         <div
@@ -220,6 +220,7 @@ export class ZWaveNodesStatus extends LitElement {
         return 'rgb(var(--rgb-red))';
       }
     } catch (e) {
+      console.error('Error parsing last seen date:', e);
       return 'rgb(var(--rgb-grey))';
     }
   }
