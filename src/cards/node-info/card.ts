@@ -1,9 +1,5 @@
+import { firmware } from '@/html/node-info/firmware';
 import { stateIcon } from '@/html/state-icon';
-import {
-  actionHandler,
-  handleClickAction,
-  moreInfoAction,
-} from '@common/action-handler';
 import { fireEvent, type HassUpdateEvent } from '@common/fire-event';
 import type { HomeAssistant, State } from '@type/homeassistant';
 import { d } from '@util/debug';
@@ -191,14 +187,12 @@ export class ZWaveDeviceInfo extends LitElement {
     if (!equal(sensor, this._sensor)) {
       d(this._config, 'zwave-device:  sensor being set');
       this._sensor = sensor;
-    } else {
-      if (this._sensor.isController) {
-        // update children who are subscribed
-        d(this._config, 'zwave-device:  controller sensor hass update');
-        fireEvent(this, 'hass-update-controller', {
-          hass,
-        });
-      }
+    } else if (this._sensor.isController) {
+      // update children who are subscribed
+      d(this._config, 'zwave-device:  controller sensor hass update');
+      fireEvent(this, 'hass-update-controller', {
+        hass,
+      });
     }
   }
 
@@ -265,7 +259,7 @@ export class ZWaveDeviceInfo extends LitElement {
                     value: 'use_icons_instead_of_names',
                   },
                   {
-                    label: 'Debug mode - exclusively for minchinweb',
+                    label: 'Debug mode - do not use in production',
                     value: 'debug',
                   },
                 ],
@@ -345,6 +339,29 @@ export class ZWaveDeviceInfo extends LitElement {
 
     const hasSensors = sensors.length > 0;
 
+    // templates
+    const firm = firmware(this, this._hass, this._config, this._sensor);
+    const seen = this._isSmallCard
+      ? nothing
+      : renderStateDisplay(
+          this,
+          this._hass,
+          this._sensor.lastSeenState,
+          ['status-section', 'seen', 'ellipsis'],
+          'status-label',
+          'Last Seen',
+        );
+    const status = this._isSmallCard
+      ? nothing
+      : renderStateDisplay(
+          this,
+          this._hass,
+          this._sensor.nodeStatusState,
+          ['status-section', 'status', 'ellipsis'],
+          'status-label',
+          'Status',
+        );
+
     return html`
       <ha-card
         class="${classMap({
@@ -353,71 +370,14 @@ export class ZWaveDeviceInfo extends LitElement {
         })}"
       >
         <div class="grid">
-          <div class="firmware">
-            ${this._sensor.batteryState
-              ? html`<battery-indicator
-                  .level=${Number(this._sensor.batteryState.state)}
-                  @action=${handleClickAction(
-                    this,
-                    moreInfoAction(this._sensor.batteryState.entity_id),
-                  )}
-                  .actionHandler=${actionHandler(
-                    moreInfoAction(this._sensor.batteryState.entity_id),
-                  )}
-                ></battery-indicator>`
-              : stateIcon(
-                  this,
-                  this._hass,
-                  this._sensor.firmwareState,
-                  undefined,
-                  this._config.icon ?? 'mdi:z-wave',
-                )}
-            <div
-              class="firmware-info"
-              @action=${handleClickAction(
-                this,
-                moreInfoAction(this._sensor.firmwareState!.entity_id),
-              )}
-              .actionHandler=${actionHandler(
-                moreInfoAction(this._sensor.firmwareState!.entity_id),
-              )}
-            >
-              <span class="title ellipsis"
-                >${this._config.title ?? this._sensor.name}</span
-              >
-              <span class="status-label ellipsis"
-                >${this._sensor.model} by ${this._sensor.manufacturer}</span
-              >
-            </div>
-          </div>
-
-          ${this._isSmallCard
-            ? nothing
-            : renderStateDisplay(
-                this,
-                this._hass,
-                this._sensor.lastSeenState,
-                ['status-section', 'seen', 'ellipsis'],
-                'status-label',
-                'Last Seen',
-              )}
-          ${this._isSmallCard
-            ? nothing
-            : renderStateDisplay(
-                this,
-                this._hass,
-                this._sensor.nodeStatusState,
-                ['status-section', 'status', 'ellipsis'],
-                'status-label',
-                'Status',
-              )}
+          ${firm} ${seen} ${status}
 
           <div
             class="entities ${this._sensor.entities.length > 3 ? 'wrap' : ''}"
           >
             ${this._sensor.entities.map((entity, index) =>
               ['humidity', 'temperature'].includes(
-                entity.attributes?.device_class!,
+                entity.attributes?.device_class,
               )
                 ? renderStateDisplay(
                     this,

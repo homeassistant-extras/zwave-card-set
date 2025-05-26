@@ -683,7 +683,7 @@ describe('ZWaveDeviceInfo', () => {
                       value: 'use_icons_instead_of_names',
                     },
                     {
-                      label: 'Debug mode - exclusively for minchinweb',
+                      label: 'Debug mode - do not use in production',
                       value: 'debug',
                     },
                   ],

@@ -79,16 +79,16 @@ const _processDeviceEntities = (
  * Internal implementation with various filtering options.
  *
  * @param {HomeAssistant} hass - The Home Assistant object containing devices, entities, and states.
- * @param {Boolean} hubOnly - When true, returns only Z-Wave controller devices.
- * @param {Boolean} noHubs - When true, returns only Z-Wave non-controller devices.
+ * @param {boolean} hubOnly - When true, returns only Z-Wave controller devices.
+ * @param {boolean} noHubs - When true, returns only Z-Wave non-controller devices.
  * @param {string} [area] - Optional area ID to filter devices by specific area.
  * @returns {ZWaveDevice[]} An array of ZWaveDevice objects that match the specified criteria.
  * @private
  */
 const _getZWaveHassDevices = (
   hass: HomeAssistant,
-  hubOnly: Boolean = false,
-  noHubs: Boolean = false,
+  hubOnly: boolean = false,
+  noHubs: boolean = false,
   area?: string,
 ): ZWaveDevice[] => {
   let devices = Object.values(hass.devices).filter((device) => {
@@ -142,7 +142,7 @@ const _isZWaveController = (hass: HomeAssistant, device: Device): boolean =>
  * @private
  */
 const _isZWaveDevice = (device: Device | undefined): boolean => {
-  if (!device || !device.identifiers) {
+  if (!device?.identifiers) {
     return false;
   }
   for (const parts of device.identifiers) {

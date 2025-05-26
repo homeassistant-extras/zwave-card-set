@@ -29,6 +29,13 @@ export const firmware = (
   config: Config,
   sensor: Sensor,
 ) => {
+  const action = sensor.firmwareState
+    ? handleClickAction(element, moreInfoAction(sensor.firmwareState.entity_id))
+    : undefined;
+  const handler = sensor.firmwareState
+    ? actionHandler(moreInfoAction(sensor.firmwareState.entity_id))
+    : undefined;
+
   return html`<div class="firmware">
     ${sensor.batteryState
       ? html`<battery-indicator
@@ -46,18 +53,9 @@ export const firmware = (
           hass,
           sensor.firmwareState,
           undefined,
-          config.icon || 'mdi:z-wave',
+          config.icon ?? 'mdi:z-wave',
         )}
-    <div
-      class="firmware-info"
-      @action=${handleClickAction(
-        element,
-        moreInfoAction(sensor.firmwareState!.entity_id),
-      )}
-      .actionHandler=${actionHandler(
-        moreInfoAction(sensor.firmwareState!.entity_id),
-      )}
-    >
+    <div class="firmware-info" @action=${action} .actionHandler=${handler}>
       <span class="title ellipsis">${config.title ?? sensor.name}</span>
       <span class="status-label ellipsis"
         >${sensor.model} by ${sensor.manufacturer}</span

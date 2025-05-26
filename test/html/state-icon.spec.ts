@@ -1,14 +1,14 @@
-import { stateIcon } from '@/html/state-icon';
 import * as actionHandlerModule from '@common/action-handler';
+import * as haIconModule from '@html/ha-icon';
+import { stateIcon } from '@html/state-icon';
 import { fixture } from '@open-wc/testing-helpers';
 import { createState as s } from '@test/test-helpers';
 import type { ActionHandlerEvent } from '@type/action';
 import type { HomeAssistant } from '@type/homeassistant';
 import * as getEntityIconStylesModule from '@util/styles';
 import { expect } from 'chai';
-import { html } from 'lit';
+import { html, type TemplateResult } from 'lit';
 import { stub } from 'sinon';
-
 export default () => {
   describe('state-icon.ts', () => {
     let mockElement: HTMLElement;
@@ -18,6 +18,7 @@ export default () => {
     let moreInfoActionStub: sinon.SinonStub;
     let toggleActionStub: sinon.SinonStub;
     let getEntityIconStylesStub: sinon.SinonStub;
+    let haIconStub: sinon.SinonStub;
 
     beforeEach(() => {
       // Create mock element and hass
@@ -39,6 +40,9 @@ export default () => {
       ).returns({
         handleEvent: (ev: ActionHandlerEvent): void => {},
       });
+      haIconStub = stub(haIconModule, 'haIcon').returns(
+        html`<div class="ha-icon-mock"></div>`,
+      );
 
       // Set default return values
       moreInfoActionStub = stub(actionHandlerModule, 'moreInfoAction').returns({
@@ -61,6 +65,7 @@ export default () => {
       moreInfoActionStub.restore();
       toggleActionStub.restore();
       getEntityIconStylesStub.restore();
+      haIconStub.restore();
     });
 
     it('should render an empty div when state is undefined', async () => {
@@ -184,6 +189,25 @@ export default () => {
 
       // Should only have the 'icon' class
       expect(el.className).to.equal('icon');
+    });
+
+    it('should call haIcon when no state is provided but icon is provided', async () => {
+      const result = stateIcon(
+        mockElement,
+        mockHass,
+        undefined, // no state
+        'test-class',
+        'mdi:test-icon',
+      );
+
+      // Verify haIcon was called with correct parameters
+      expect(haIconStub.calledOnce).to.be.true;
+      expect(haIconStub.calledWith('mdi:test-icon', 'icon test-class')).to.be
+        .true;
+
+      // Verify the result is what haIcon returned
+      const el = await fixture(result as TemplateResult);
+      expect(el.classList.contains('ha-icon-mock')).to.be.true;
     });
   });
 };

@@ -7,6 +7,7 @@ import {
 import type { HomeAssistant, State } from '@type/homeassistant';
 import { getEntityIconStyles } from '@util/styles';
 import { html, type TemplateResult } from 'lit';
+import { haIcon } from './ha-icon';
 
 /**
  * Renders an icon with state
@@ -25,6 +26,9 @@ export const stateIcon = (
 ): TemplateResult => {
   const classes = ['icon', className].filter((c) => c !== undefined).join(' ');
   if (!state) {
+    if (icon) return haIcon(icon, classes);
+
+    // If no state is provided, return an empty div with the specified classes
     return html`<div class="${classes}" />`;
   }
 

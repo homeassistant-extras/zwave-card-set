@@ -27,6 +27,7 @@
       "@common/*": ["./src/common/*"],
       "@config/*": ["./src/config/*"],
       "@type/*": ["./src/types/*"],
+      "@html/*": ["./src/html/*"],
       "@test/*": ["./test/*"],
       "@util/*": ["./src/util/*"],
       "@/*": ["./src/*"]

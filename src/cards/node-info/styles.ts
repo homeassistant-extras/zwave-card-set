@@ -45,13 +45,13 @@ export const styles = css`
     cursor: pointer;
   }
 
-  /* Remove background if no ha-state-icon */
-  .icon:not(:has(ha-state-icon)) {
+  /* Remove background if no ha-state-icon or ha-icon */
+  .icon:not(:has(ha-state-icon, ha-icon)) {
     background-color: inherit;
   }
 
-  /* State icon styling */
-  .icon ha-state-icon {
+  /* Icon styling for both ha-state-icon and ha-icon */
+  .icon :is(ha-state-icon, ha-icon) {
     width: 50%;
     color: var(--icon-color);
     --mdc-icon-size: 100%;
