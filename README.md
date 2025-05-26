@@ -111,7 +111,7 @@ All Z-Wave devices are supported through the universal Device Info card. I have 
 - [x] **`Node status card sizing`**: make sizing dynamic, can't figure it out.
 - [x] **`Device Center`**: add docs and pics towards end.
 - [x] **`Themes`**: test default theme, etc.
-- [x] **`Node Info bugs`**: fix title, etc. - thanks @minchinweb
+- [x] **`Node Info bugs`**: fix title, firmware, etc. - thanks @minchinweb
 - [ ] **`Tests`**: small refactors to simplify testing
 
 ## Contributing
