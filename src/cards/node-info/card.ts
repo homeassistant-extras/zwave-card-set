@@ -131,22 +131,18 @@ export class ZWaveDeviceInfo extends LitElement {
    * @param {HomeAssistant} hass - The Home Assistant instance
    */
   set hass(hass: HomeAssistant) {
-    d(this._config, 'Updating Z-Wave device info card');
     this._hass = hass;
     this.isDarkMode = hass.themes.darkMode;
 
     if (!this._config) {
+      d(this._config, 'zwave-device:  no configuration found');
       this._error = 'No configuration found';
       return;
     }
 
     const device = getHassDeviceIfZWave(hass, this._config.device_id);
     if (!device) {
-      d(
-        this._config,
-        'No device found.  It should be this device, no?',
-        hass.devices[this._config.device_id],
-      );
+      d(this._config, 'zwave-device:  no device found');
       this._error = 'No device found';
       return;
     }
@@ -192,18 +188,13 @@ export class ZWaveDeviceInfo extends LitElement {
       },
     );
 
-    d(
-      this._config,
-      'Sensor data changing',
-      sensor,
-      this._sensor,
-      equal(sensor, this._sensor),
-    );
     if (!equal(sensor, this._sensor)) {
+      d(this._config, 'zwave-device:  sensor being set');
       this._sensor = sensor;
     } else {
       if (this._sensor.isController) {
         // update children who are subscribed
+        d(this._config, 'zwave-device:  controller sensor hass update');
         fireEvent(this, 'hass-update-controller', {
           hass,
         });
@@ -319,7 +310,10 @@ export class ZWaveDeviceInfo extends LitElement {
    * @returns {TemplateResult} The rendered HTML template
    */
   override render(): TemplateResult | typeof nothing {
+    d(this._config, 'zwave-device:  render');
+
     if (!this._sensor) {
+      d(this._config, 'zwave-device:  no sensor found');
       return renderError(
         this._error ?? `Sensor not found for ${this._config?.device_id}`,
       );
@@ -327,6 +321,7 @@ export class ZWaveDeviceInfo extends LitElement {
 
     // for convenience, render the controller card
     if (this._sensor.isController) {
+      d(this._config, 'zwave-device:  rendering controller card');
       return html` <zwave-controller
         .config=${{
           device_id: this._config.device_id,
@@ -339,6 +334,7 @@ export class ZWaveDeviceInfo extends LitElement {
 
     const sensors = Object.values(this._sensor.sensors);
     if (this._isSmallCard) {
+      d(this._config, 'zwave-device:  small card detected');
       if (this._sensor.nodeStatusState) {
         sensors.push(this._sensor.nodeStatusState);
       }
