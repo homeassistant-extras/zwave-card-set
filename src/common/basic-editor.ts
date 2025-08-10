@@ -1,6 +1,6 @@
 import { fireEvent } from '@common/fire-event';
+import type { HaFormSchema } from '@hass/data/components/ha-form/types';
 import type { Config } from '@node/types';
-import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant } from '@type/homeassistant';
 import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';

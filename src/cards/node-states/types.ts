@@ -12,6 +12,9 @@ export interface Config {
 
   /** Options to enable disable features **/
   features?: Features[];
+
+  /** Layout alignment for nodes */
+  layout?: 'centered' | 'left-aligned';
 }
 
 /** Features to enable or disable functionality */

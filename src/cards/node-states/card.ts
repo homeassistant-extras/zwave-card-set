@@ -3,7 +3,6 @@ import {
   handleClickAction,
   moreInfoAction,
 } from '@common/action-handler';
-import type { HaFormSchema } from '@type/ha-form';
 import type { HomeAssistant } from '@type/homeassistant';
 import { CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
@@ -97,35 +96,66 @@ export class ZWaveNodesStatus extends LitElement {
 
   // card configuration
   static getConfigElement() {
-    const SCHEMA: HaFormSchema[] = [
+    const SCHEMA = [
       {
-        name: 'title',
-        label: 'Card title.',
-        required: false,
-        selector: { text: {} },
-      },
-      {
-        name: 'columns',
-        label: 'Number of columns.',
-        required: false,
-        selector: { number: { min: 1, max: 3 } },
+        name: 'content',
+        label: 'Content',
+        type: 'expandable',
+        flatten: true,
+        icon: 'mdi:text-short',
+        schema: [
+          {
+            name: 'title',
+            label: 'Card title.',
+            required: false,
+            selector: { text: {} },
+          },
+          {
+            name: 'columns',
+            label: 'Number of columns.',
+            required: false,
+            selector: { number: { min: 1, max: 3 } },
+          },
+          {
+            name: 'layout',
+            label: 'Node Layout',
+            required: false,
+            selector: {
+              select: {
+                options: [
+                  { label: 'Left Aligned', value: 'left-aligned' },
+                  { label: 'Centered', value: 'centered' },
+                ],
+              },
+            },
+          },
+        ],
       },
       {
         name: 'features',
         label: 'Features',
-        required: false,
-        selector: {
-          select: {
-            multiple: true,
-            mode: 'list',
-            options: [
-              {
-                label: 'Show the card more compact.',
-                value: 'compact',
+        type: 'expandable',
+        flatten: true,
+        icon: 'mdi:list-box',
+        schema: [
+          {
+            name: 'features',
+            label: 'Features',
+            required: false,
+            selector: {
+              select: {
+                multiple: true,
+                mode: 'list',
+                options: [
+                  {
+                    label: 'Show the card more compact.',
+                    value: 'compact',
+                  },
+                ],
               },
-            ],
+            },
           },
-        },
+        ],
       },
     ];
 
@@ -227,6 +257,7 @@ export class ZWaveNodesStatus extends LitElement {
 
   _renderNode(node: NodeInfo): TemplateResult {
     const isCompact = this._config.features?.includes('compact');
+    const layoutClass = this._config.layout === 'centered' ? 'centered' : '';
     const entity = moreInfoAction(node.statusState?.entity_id);
 
     return html`
@@ -235,7 +266,7 @@ export class ZWaveNodesStatus extends LitElement {
         @action=${handleClickAction(this, entity)}
         .actionHandler=${actionHandler(entity)}
       >
-        <div class="node-content">
+        <div class="node-content ${layoutClass}">
           <div
             class="node-status-container"
             style="${styleMap({

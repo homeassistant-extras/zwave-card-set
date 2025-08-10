@@ -26,6 +26,7 @@
       "@base/*": ["./src/cards/base/*"],
       "@common/*": ["./src/common/*"],
       "@config/*": ["./src/config/*"],
+      "@hass/*": ["./src/hass/*"],
       "@type/*": ["./src/types/*"],
       "@html/*": ["./src/html/*"],
       "@test/*": ["./test/*"],

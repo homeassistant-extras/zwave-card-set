@@ -73,6 +73,11 @@ export const styles = css`
   .node-content {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .node-content.centered {
     align-items: center;
     text-align: center;
   }
