@@ -1,4 +1,4 @@
-import * as actionHandlerModule from '@common/action-handler';
+import * as actionHandlerModule from '@delegates/action-handler-delegate';
 import { ZWaveNodesStatus } from '@node-states/card';
 import * as helpersModule from '@node-states/helpers';
 import { styles } from '@node-states/styles';
@@ -78,33 +78,94 @@ describe('ZWaveNodesStatus', () => {
         expect(editor.tagName.toLowerCase()).to.equal('basic-editor');
         expect((editor as any).schema).to.deep.equal([
           {
-            name: 'title',
-            label: 'Card title.',
-            required: false,
-            selector: { text: {} },
-          },
-          {
-            name: 'columns',
-            label: 'Number of columns.',
-            required: false,
-            selector: { number: { min: 1, max: 3 } },
+            name: 'content',
+            label: 'Content',
+            type: 'expandable',
+            flatten: true,
+            icon: 'mdi:text-short',
+            schema: [
+              {
+                name: 'title',
+                label: 'Card title.',
+                required: false,
+                selector: { text: {} },
+              },
+              {
+                name: 'columns',
+                label: 'Number of columns.',
+                required: false,
+                selector: { number: { min: 1, max: 3 } },
+              },
+              {
+                name: 'layout',
+                label: 'Node Layout',
+                required: false,
+                selector: {
+                  select: {
+                    options: [
+                      { label: 'Left Aligned', value: 'left-aligned' },
+                      { label: 'Centered', value: 'centered' },
+                    ],
+                  },
+                },
+              },
+            ],
           },
           {
             name: 'features',
             label: 'Features',
-            required: false,
-            selector: {
-              select: {
-                multiple: true,
-                mode: 'list',
-                options: [
-                  {
-                    label: 'Show the card more compact.',
-                    value: 'compact',
+            type: 'expandable',
+            flatten: true,
+            icon: 'mdi:list-box',
+            schema: [
+              {
+                name: 'features',
+                label: 'Features',
+                required: false,
+                selector: {
+                  select: {
+                    multiple: true,
+                    mode: 'list',
+                    options: [
+                      {
+                        label: 'Show the card more compact.',
+                        value: 'compact',
+                      },
+                    ],
                   },
-                ],
+                },
               },
-            },
+            ],
+          },
+          {
+            name: 'interactions',
+            label: 'Interactions',
+            type: 'expandable',
+            flatten: true,
+            icon: 'mdi:gesture-tap',
+            schema: [
+              {
+                name: 'tap_action',
+                label: 'Tap Action',
+                selector: {
+                  ui_action: {},
+                },
+              },
+              {
+                name: 'hold_action',
+                label: 'Hold Action',
+                selector: {
+                  ui_action: {},
+                },
+              },
+              {
+                name: 'double_tap_action',
+                label: 'Double Tap Action',
+                selector: {
+                  ui_action: {},
+                },
+              },
+            ],
           },
         ]);
       });
@@ -618,6 +679,38 @@ describe('ZWaveNodesStatus', () => {
         expect([...statusContainer.children[1]!.classList]).to.contain(
           'node-name',
         );
+      });
+
+      it('should call userNodeStatusActions with correct parameters', async () => {
+        const userNodeStatusActionsStub = stub(
+          actionHandlerModule,
+          'userNodeStatusActions',
+        );
+        const mockNode: NodeInfo = {
+          name: 'Test Node',
+          device_id: 'test-device',
+          statusState: s('switch.test_node_status', 'alive'),
+          lastSeenState: s(
+            'sensor.test_node_last_seen',
+            new Date().toISOString(),
+          ),
+          lastSeen: Date.now(),
+        };
+
+        card.hass = mockHass;
+
+        await fixture((card as any)._renderNode(mockNode));
+
+        // Verify userNodeStatusActions was called with correct parameters
+        expect(userNodeStatusActionsStub.called).to.be.true;
+        expect(
+          userNodeStatusActionsStub.calledWith(
+            'switch.test_node_status',
+            mockConfig,
+          ),
+        ).to.be.true;
+
+        userNodeStatusActionsStub.restore();
       });
     });
   });

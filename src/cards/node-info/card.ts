@@ -1,6 +1,7 @@
 import { firmware } from '@/html/node-info/firmware';
 import { stateIcon } from '@/html/state-icon';
-import { fireEvent, type HassUpdateEvent } from '@common/fire-event';
+import type { HassUpdateEvent } from '@delegates/action-handler-delegate';
+import { fireEvent } from '@hass/common/dom/fire_event';
 import type { HomeAssistant, State } from '@type/homeassistant';
 import { d } from '@util/debug';
 import {

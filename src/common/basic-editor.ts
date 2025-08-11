@@ -1,4 +1,4 @@
-import { fireEvent } from '@common/fire-event';
+import { fireEvent } from '@hass/common/dom/fire_event';
 import type { HaFormSchema } from '@hass/data/components/ha-form/types';
 import type { Config } from '@node/types';
 import type { HomeAssistant } from '@type/homeassistant';
@@ -54,6 +54,7 @@ export class BasicEditor extends LitElement {
       delete config.features;
     }
 
+    // @ts-ignore
     fireEvent(this, 'config-changed', {
       config,
     });

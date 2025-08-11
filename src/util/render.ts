@@ -2,7 +2,7 @@ import {
   actionHandler,
   handleClickAction,
   moreInfoAction,
-} from '@common/action-handler';
+} from '@delegates/action-handler-delegate';
 import type { HomeAssistant, State } from '@type/homeassistant';
 import { html, nothing, type TemplateResult } from 'lit';
 

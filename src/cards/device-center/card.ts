@@ -1,5 +1,5 @@
 import type { Config as NodeConfig } from '@/cards/node-info/types';
-import { fireEvent } from '@common/fire-event';
+import { fireEvent } from '@hass/common/dom/fire_event';
 import type { HomeAssistant } from '@type/homeassistant';
 import { getZWaveByArea } from '@util/hass';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';

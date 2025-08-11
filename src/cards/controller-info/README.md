@@ -16,10 +16,10 @@ A custom card for Home Assistant that displays the status of your Z-Wave control
 
 ## Configuration
 
-| Name      | Type   | Default             | Description                                                                                                                |
-| --------- | ------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| device_id | string | Auto-detected       | Optional: The device ID of a Z-Wave controller. If not specified, the card will attempt to find a controller automatically |
-| title     | string | Controller/Hub name | Optional: Custom title for the card                                                                                        |
+| Name      | Type   | Default             | Description                                            |
+| --------- | ------ | ------------------- | ------------------------------------------------------ |
+| device_id | string | Auto-detected       | Optional: The Z-Wave controller. Card will auto detect |
+| title     | string | Controller/Hub name | Optional: Custom title for the card                    |
 
 ## Usage
 

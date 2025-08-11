@@ -1,96 +1,77 @@
-/**
- * Action Handler Directive Module
- *
- * This module implements a custom directive for handling actions in web components
- * using the Lit library. It manages action handlers for elements, supporting
- * features like double-click and hold actions.
- *
- * Implements custom click action handling for Home Assistant entities.
- * This module creates a handler that processes click events and dispatches
- * them as Home Assistant actions with the appropriate configuration.
- */
+import { fireEvent } from '@hass/common/dom/fire_event';
+import type { ActionConfig } from '@hass/data/lovelace/config/action';
+import { actionHandler as hassActionHandler } from '@hass/panels/lovelace/common/directives/action-handler-directive';
+import type { ActionConfigParams } from '@hass/panels/lovelace/common/handle-action';
+import type { Config } from '@node-states/types';
+import type { ActionHandlerEvent } from '@type/action';
+import type { HomeAssistant } from '@type/homeassistant';
 
-import { noChange } from 'lit';
-import {
-  type AttributePart,
-  Directive,
-  type DirectiveParameters,
-  directive,
-} from 'lit/directive.js';
+export interface HassUpdateEvent {
+  hass: HomeAssistant;
+}
 
-import { fireEvent } from '@common/fire-event';
-import type {
-  ActionConfigParams,
-  ActionHandlerElement,
-  ActionHandlerEvent,
-  ActionHandlerOptions,
-  ActionHandlerType,
-} from '@type/action';
+declare global {
+  // eslint-disable-next-line
+  interface HASSDomEvents {
+    'hass-update': HassUpdateEvent;
+    'hass-update-controller': HassUpdateEvent;
+  }
+}
 
 /**
- * Retrieves or creates the global action handler element.
- * The action handler is singleton element attached to the document body.
+ * Processes an action configuration to add data.entity_id if it's a perform-action
+ * with zwave_js.ping that doesn't have a data attribute.
  *
- * @returns {ActionHandlerType} The action handler element
+ * @param {ActionConfig | undefined} action - The action configuration to process
+ * @param {string} entity_id - The entity ID to add to the data.entity_id array
+ * @returns {ActionConfig | undefined} The processed action configuration
  */
-const getActionHandler = (): ActionHandlerType => {
-  const body = document.body;
-  const existingHandler = body.querySelector('action-handler');
+const processAction = (
+  action: ActionConfig | undefined,
+  entity_id: string,
+): ActionConfig | undefined => {
+  if (!action) return action;
 
-  if (existingHandler) {
-    return existingHandler as ActionHandlerType;
+  // Check if it's a perform-action with zwave_js.ping
+  if (
+    action.action === 'perform-action' &&
+    action.perform_action === 'zwave_js.ping' &&
+    !action.data
+  ) {
+    return {
+      ...action,
+      data: {
+        entity_id: [entity_id],
+      },
+    };
   }
 
-  const actionHandler = document.createElement('action-handler');
-  body.appendChild(actionHandler);
-
-  return actionHandler as ActionHandlerType;
+  return action;
 };
 
 /**
- * Binds an element to the action handler with specified options.
+ * Creates an action configuration that sets all interaction types to trigger the 'more-info' action
+ * for a specified entity.
  *
- * @param {ActionHandlerElement} element - The element to bind actions to
- * @param {ActionHandlerOptions} [options] - Configuration options for the action handler
+ * @param {string} entity_id - The ID of the entity to associate with the action.
+ * @param {Config} config - The configuration for the action.
+ * @returns {ActionConfigParams} An object containing entity ID and action configurations for tap,
+ *                               hold, and double tap interactions.
+ *
+ * @example
+ * // Create more-info actions for a light entity
  */
-const actionHandlerBind = (
-  element: ActionHandlerElement,
-  options?: ActionHandlerOptions,
-): void => {
-  const actionHandler: ActionHandlerType = getActionHandler();
-  if (!actionHandler) {
-    return;
-  }
-  actionHandler.bind(element, options);
+export const userNodeStatusActions = (
+  entity_id: string,
+  config: Config,
+): ActionConfigParams => {
+  return {
+    entity: entity_id,
+    tap_action: processAction(config.tap_action, entity_id),
+    hold_action: processAction(config.hold_action, entity_id),
+    double_tap_action: processAction(config.double_tap_action, entity_id),
+  };
 };
-
-/**
- * Creates a custom directive for handling actions.
- * This directive manages the lifecycle of action handling for elements.
- */
-const _actionHandler = directive(
-  class extends Directive {
-    /**
-     * Updates the directive when properties change.
-     *
-     * @param {AttributePart} part - The attribute part being updated
-     * @param {DirectiveParameters<this>} [options] - The options for the action handler
-     * @returns {Symbol} A symbol indicating no change is needed in the rendering
-     */
-    override update(part: AttributePart, [options]: DirectiveParameters<this>) {
-      actionHandlerBind(part.element as ActionHandlerElement, options);
-      return noChange;
-    }
-
-    /**
-     * Renders the directive.
-     * This is intentionally empty as the directive only handles actions.
-     *
-     * @param {ActionHandlerOptions} [_options] - Options for the action handler
-     */
-    render(_options?: ActionHandlerOptions) {}
-  },
-);
 
 /**
  * Creates an action handler for an entity with specified configuration.
@@ -100,7 +81,7 @@ const _actionHandler = directive(
  * @returns {Directive} A directive configured with the entity's action options
  */
 export const actionHandler = (entity: ActionConfigParams) => {
-  return _actionHandler({
+  return hassActionHandler({
     hasDoubleClick: entity?.double_tap_action?.action !== 'none',
     hasHold: entity?.hold_action?.action !== 'none',
   });
@@ -137,6 +118,7 @@ export const handleClickAction = (
       const action = ev.detail?.action;
       if (!action) return;
 
+      // @ts-ignore
       fireEvent(element, 'hass-action', {
         config: entity,
         action,

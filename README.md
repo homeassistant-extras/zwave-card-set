@@ -112,7 +112,7 @@ All Z-Wave devices are supported through the universal Device Info card. I have 
 - [x] **`Device Center`**: add docs and pics towards end.
 - [x] **`Themes`**: test default theme, etc.
 - [x] **`Node Info bugs`**: fix title, firmware, etc. - thanks @minchinweb
-- [ ] **`Tests`**: small refactors to simplify testing
+- [x] **`Custom tap actions`**: can ping nodes on the status card and custom actions - thanks @pjschaffer
 
 ## Contributing
 

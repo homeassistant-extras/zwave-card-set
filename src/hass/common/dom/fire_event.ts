@@ -1,3 +1,7 @@
+/**
+ * https://github.com/home-assistant/frontend/blob/dev/src/common/dom/fire_event.ts
+ */
+
 // Polymer legacy event helpers used courtesy of the Polymer project.
 //
 // Copyright (c) 2017 The Polymer Authors. All rights reserved.
@@ -28,33 +32,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import type { Config as HubCardConfig } from '@/cards/controller-info/types';
-import type { Config as NodeStatusConfig } from '@/cards/node-states/types';
-import type { ActionParams } from '@type/action';
-import type { HomeAssistant } from '@type/homeassistant';
-
-/**
- * Event emitted when the configuration changes
- */
-export interface ConfigChangedEvent {
-  config: NodeStatusConfig | HubCardConfig;
-}
-
-export interface HassUpdateEvent {
-  hass: HomeAssistant;
-}
-
-/**
- * Global interface for Home Assistant DOM events
- */
 declare global {
-  // eslint-disable-next-line
-  interface HASSDomEvents {
-    'hass-action': ActionParams;
-    'config-changed': ConfigChangedEvent;
-    'hass-update': HassUpdateEvent;
-    'hass-update-controller': HassUpdateEvent;
-  }
+  interface HASSDomEvents {}
 }
 
 export type ValidHassDomEvent = keyof HASSDomEvents;
@@ -66,24 +45,37 @@ export interface HASSDomEvent<T> extends Event {
 /**
  * Dispatches a custom event with an optional detail value.
  *
- * @param {HTMLElement | Window} element The element to dispatch the event on.
  * @param {string} type Name of event type.
  * @param {*=} detail Detail value containing event-specific
- *   payload.]
+ *   payload.
+ * @param {{ bubbles: (boolean|undefined),
+ *           cancelable: (boolean|undefined),
+ *           composed: (boolean|undefined) }=}
+ *  options Object specifying options.  These may include:
+ *  `bubbles` (boolean, defaults to `true`),
+ *  `cancelable` (boolean, defaults to false), and
+ *  `node` on which to fire the event (HTMLElement, defaults to `this`).
  * @return {Event} The new event that was fired.
  */
 export const fireEvent = <HassEvent extends ValidHassDomEvent>(
-  element: HTMLElement | Window,
+  node: HTMLElement | Window,
   type: HassEvent,
   detail?: HASSDomEvents[HassEvent],
-): CustomEvent => {
-  // Create and dispatch custom event for Home Assistant
-  const event = new CustomEvent(type, {
-    bubbles: true, // Event bubbles up through the DOM
-    composed: true, // Event can cross shadow DOM boundaries
-    detail,
+  options?: {
+    bubbles?: boolean;
+    cancelable?: boolean;
+    composed?: boolean;
+  },
+) => {
+  options = options || {};
+  // @ts-ignore
+  detail = detail === null || detail === undefined ? {} : detail;
+  const event = new Event(type, {
+    bubbles: options.bubbles === undefined ? true : options.bubbles,
+    cancelable: Boolean(options.cancelable),
+    composed: options.composed === undefined ? true : options.composed,
   });
-
-  element.dispatchEvent(event);
+  (event as any).detail = detail;
+  node.dispatchEvent(event);
   return event;
 };

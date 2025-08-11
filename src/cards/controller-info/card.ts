@@ -1,4 +1,4 @@
-import type { HassUpdateEvent } from '@common/fire-event';
+import type { HassUpdateEvent } from '@delegates/action-handler-delegate';
 import type { HomeAssistant } from '@type/homeassistant';
 import type { ZWaveDevice } from '@type/zwave';
 import {

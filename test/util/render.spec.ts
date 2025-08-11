@@ -1,4 +1,4 @@
-import * as actionHandlerModule from '@common/action-handler';
+import * as actionHandlerModule from '@delegates/action-handler-delegate';
 import { fixture } from '@open-wc/testing-helpers';
 import { createState as s } from '@test/test-helpers';
 import type { State } from '@type/homeassistant';

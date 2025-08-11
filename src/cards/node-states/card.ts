@@ -1,8 +1,8 @@
 import {
   actionHandler,
   handleClickAction,
-  moreInfoAction,
-} from '@common/action-handler';
+  userNodeStatusActions,
+} from '@delegates/action-handler-delegate';
 import type { HomeAssistant } from '@type/homeassistant';
 import { CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
@@ -157,6 +157,36 @@ export class ZWaveNodesStatus extends LitElement {
           },
         ],
       },
+      {
+        name: 'interactions',
+        label: 'Interactions',
+        type: 'expandable',
+        flatten: true,
+        icon: 'mdi:gesture-tap',
+        schema: [
+          {
+            name: 'tap_action',
+            label: 'Tap Action',
+            selector: {
+              ui_action: {},
+            },
+          },
+          {
+            name: 'hold_action',
+            label: 'Hold Action',
+            selector: {
+              ui_action: {},
+            },
+          },
+          {
+            name: 'double_tap_action',
+            label: 'Double Tap Action',
+            selector: {
+              ui_action: {},
+            },
+          },
+        ],
+      },
     ];
 
     const editor = document.createElement('basic-editor');
@@ -258,7 +288,10 @@ export class ZWaveNodesStatus extends LitElement {
   _renderNode(node: NodeInfo): TemplateResult {
     const isCompact = this._config.features?.includes('compact');
     const layoutClass = this._config.layout === 'centered' ? 'centered' : '';
-    const entity = moreInfoAction(node.statusState?.entity_id);
+    const entity = userNodeStatusActions(
+      node.statusState?.entity_id,
+      this._config,
+    );
 
     return html`
       <div

@@ -1,5 +1,5 @@
 import { firmware } from '@/html/node-info/firmware';
-import * as actionHandlerModule from '@common/action-handler';
+import * as actionHandlerModule from '@delegates/action-handler-delegate';
 import type { Config, Sensor } from '@node/types';
 import { fixture } from '@open-wc/testing-helpers';
 import { createState as s } from '@test/test-helpers';

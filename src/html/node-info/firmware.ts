@@ -2,7 +2,7 @@ import {
   actionHandler,
   handleClickAction,
   moreInfoAction,
-} from '@common/action-handler';
+} from '@delegates/action-handler-delegate';
 import type { Config, Sensor } from '@node/types';
 import type { HomeAssistant } from '@type/homeassistant';
 import { html } from 'lit';

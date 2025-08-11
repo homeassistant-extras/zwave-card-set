@@ -1,4 +1,4 @@
-import * as actionHandlerModule from '@common/action-handler';
+import * as actionHandlerModule from '@delegates/action-handler-delegate';
 import * as haIconModule from '@html/ha-icon';
 import { stateIcon } from '@html/state-icon';
 import { fixture } from '@open-wc/testing-helpers';

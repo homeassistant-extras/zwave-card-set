@@ -3,7 +3,7 @@ import {
   handleClickAction,
   moreInfoAction,
   toggleAction,
-} from '@common/action-handler';
+} from '@delegates/action-handler-delegate';
 import type { HomeAssistant, State } from '@type/homeassistant';
 import { getEntityIconStyles } from '@util/styles';
 import { html, type TemplateResult } from 'lit';

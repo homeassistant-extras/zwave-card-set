@@ -1,3 +1,4 @@
+import type { ActionConfig } from '@hass/data/lovelace/config/action';
 import type { State } from '@type/homeassistant';
 
 /**
@@ -15,6 +16,15 @@ export interface Config {
 
   /** Layout alignment for nodes */
   layout?: 'centered' | 'left-aligned';
+
+  /** Action to perform on tap */
+  tap_action?: ActionConfig;
+
+  /** Action to perform on hold */
+  hold_action?: ActionConfig;
+
+  /** Action to perform on double tap */
+  double_tap_action?: ActionConfig;
 }
 
 /** Features to enable or disable functionality */

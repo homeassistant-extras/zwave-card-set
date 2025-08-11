@@ -1,5 +1,5 @@
 import * as stateIconModule from '@/html/state-icon';
-import * as actionHandlerModule from '@common/action-handler';
+import * as actionHandlerModule from '@delegates/action-handler-delegate';
 import { ZWaveDeviceInfo } from '@node/card';
 import type { Config } from '@node/types';
 import { fixture, fixtureCleanup } from '@open-wc/testing-helpers';
