@@ -1,6 +1,6 @@
 {
   "name": "zwave-card-set",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "author": "Patrick Masters",
   "license": "ISC",
   "description": "Custom cards for Home Assistant which relate to Z-Wave Devices.",
