@@ -12,6 +12,7 @@ A custom card for Home Assistant that displays the status of all your Z-Wave dev
 - Customizable grid layout (1-3 columns)
 - Node layout alignment options (centered or left-aligned)
 - Support for layout options and custom actions
+- Node filtering options to show/hide specific node types
 - Responsive design that works on both desktop and mobile
 - Easy configuration through the Home Assistant UI
 
@@ -29,9 +30,12 @@ A custom card for Home Assistant that displays the status of all your Z-Wave dev
 
 ### Feature Options
 
-| Name    | Type | Description                |
-| ------- | ---- | -------------------------- |
-| compact | flag | Make the view more compact |
+| Name          | Type | Description                 |
+| ------------- | ---- | --------------------------- |
+| compact       | flag | Make the view more compact  |
+| hide-dead     | flag | Hide dead nodes section     |
+| hide-active   | flag | Hide active nodes section   |
+| hide-sleeping | flag | Hide sleeping nodes section |
 
 Compact Card:
 ![card](../../../assets/cards/node-status/compact.png)
@@ -53,6 +57,27 @@ type: custom:zwave-nodes-status
 title: My Z-Wave Devices
 columns: 2
 layout: centered
+```
+
+## Node Filtering
+
+You can control which types of nodes are displayed using the feature options:
+
+```yaml
+# Show only dead nodes
+type: custom:zwave-nodes-status
+title: Dead Z-Wave Nodes
+features:
+  - hide-active
+  - hide-sleeping
+```
+
+```yaml
+# Show active and sleeping nodes, hide dead nodes
+type: custom:zwave-nodes-status
+title: Functioning Z-Wave Devices
+features:
+  - hide-dead
 ```
 
 ## Layout Options

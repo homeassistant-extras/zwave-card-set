@@ -1,5 +1,6 @@
 import { firmware } from '@/html/node-info/firmware';
 import { stateIcon } from '@/html/state-icon';
+import { hasFeature } from '@config/feature';
 import type { HassUpdateEvent } from '@delegates/action-handler-delegate';
 import { fireEvent } from '@hass/common/dom/fire_event';
 import type { HomeAssistant, State } from '@type/homeassistant';
@@ -402,7 +403,8 @@ export class ZWaveDeviceInfo extends LitElement {
             >
               <div
                 class="sensors"
-                style="${this._config.features?.includes(
+                style="${hasFeature(
+                  this._config,
                   'use_icons_instead_of_names',
                 )
                   ? nothing
@@ -424,7 +426,8 @@ export class ZWaveDeviceInfo extends LitElement {
                             justifyContent: 'space-between',
                           })}"
                     >
-                      ${this._config.features?.includes(
+                      ${hasFeature(
+                        this._config,
                         'use_icons_instead_of_names',
                       )
                         ? stateIcon(this, this._hass, entity, `s${index + 1}`)

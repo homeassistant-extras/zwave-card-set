@@ -1,4 +1,5 @@
 import type { Config as NodeConfig } from '@/cards/node-info/types';
+import { hasFeature } from '@config/feature';
 import { fireEvent } from '@hass/common/dom/fire_event';
 import type { HomeAssistant } from '@type/homeassistant';
 import { getZWaveByArea } from '@util/hass';
@@ -159,7 +160,7 @@ export class ZWaveDeviceCenter extends LitElement {
 
         return html`
           <div class="manufacturer">
-            ${this._config.features?.includes('show_headers')
+            ${hasFeature(this._config, 'show_headers')
               ? html`<h1>${manufacturer}</h1>`
               : nothing}
             ${Object.entries(models).map(([modelName, devices]) => {
@@ -178,7 +179,7 @@ export class ZWaveDeviceCenter extends LitElement {
 
               return html`
                 <div class="model">
-                  ${this._config.features?.includes('show_headers')
+                  ${hasFeature(this._config, 'show_headers')
                     ? html`<h2>${modelName}</h2>`
                     : nothing}
                   <div class="devices">

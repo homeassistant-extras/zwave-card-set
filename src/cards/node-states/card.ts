@@ -1,3 +1,4 @@
+import { hasFeature } from '@config/feature';
 import {
   actionHandler,
   handleClickAction,
@@ -81,7 +82,10 @@ export class ZWaveNodesStatus extends LitElement {
     this._hass = hass;
 
     // Separate dead nodes and live nodes
-    const { deadNodes, liveNodes, sleepingNodes } = getZWaveNodes(hass);
+    const { deadNodes, liveNodes, sleepingNodes } = getZWaveNodes(
+      hass,
+      this._config,
+    );
 
     if (!equal(deadNodes, this._deadNodes)) {
       this._deadNodes = deadNodes;
@@ -150,6 +154,18 @@ export class ZWaveNodesStatus extends LitElement {
                   {
                     label: 'Show the card more compact.',
                     value: 'compact',
+                  },
+                  {
+                    label: 'Hide dead nodes.',
+                    value: 'hide-dead',
+                  },
+                  {
+                    label: 'Hide active nodes.',
+                    value: 'hide-active',
+                  },
+                  {
+                    label: 'Hide sleeping nodes.',
+                    value: 'hide-sleeping',
                   },
                 ],
               },
@@ -286,7 +302,7 @@ export class ZWaveNodesStatus extends LitElement {
   }
 
   _renderNode(node: NodeInfo): TemplateResult {
-    const isCompact = this._config.features?.includes('compact');
+    const isCompact = hasFeature(this._config, 'compact');
     const layoutClass = this._config.layout === 'centered' ? 'centered' : '';
     const entity = userNodeStatusActions(
       node.statusState?.entity_id,

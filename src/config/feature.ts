@@ -2,8 +2,6 @@
  * Configuration utilities for feature flag management
  */
 
-import type { Config, Features } from '@node/types';
-
 /**
  * Determines if a specified feature is enabled in the provided configuration
  *
@@ -12,12 +10,14 @@ import type { Config, Features } from '@node/types';
  * @returns True if the feature is enabled, false otherwise
  *
  * @example
- * // Check if the 'DARK_MODE' feature is enabled
- * const isDarkModeEnabled = hasFeature(appConfig, 'DARK_MODE');
+ * // Check if a feature is enabled
+ * const isCompactEnabled = hasFeature(appConfig, 'compact');
  *
  * @remarks
  * - Returns false if config is null or undefined
  * - Returns false if the features array doesn't exist or doesn't include the specified feature
  */
-export const hasFeature = (config: Config, feature: Features): boolean =>
-  !config || config.features?.includes(feature) || false;
+export const hasFeature = <T extends string>(
+  config: { features?: T[] } | null | undefined,
+  feature: T,
+): boolean => config?.features?.includes(feature) ?? false;

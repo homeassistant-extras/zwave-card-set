@@ -1,4 +1,5 @@
 import { getZWaveNodes } from '@node-states/helpers';
+import type { Config } from '@node-states/types';
 import type { HomeAssistant } from '@type/homeassistant';
 import * as hassUtils from '@util/hass';
 import { expect } from 'chai';
@@ -115,7 +116,7 @@ describe('ZWaveNodesStatus', () => {
         });
 
         // Call the function under test
-        const result = getZWaveNodes(mockHass);
+        const result = getZWaveNodes(mockHass, {} as Config);
 
         // Verify the results
         expect(result.liveNodes).to.have.lengthOf(1);
@@ -209,7 +210,7 @@ describe('ZWaveNodesStatus', () => {
         });
 
         // Call the function under test
-        const result = getZWaveNodes(mockHass);
+        const result = getZWaveNodes(mockHass, {} as Config);
 
         // Verify sorting order - most recent first
         expect(result.liveNodes).to.have.lengthOf(3);
@@ -264,7 +265,7 @@ describe('ZWaveNodesStatus', () => {
         });
 
         // Call the function under test
-        const result = getZWaveNodes(mockHass);
+        const result = getZWaveNodes(mockHass, {} as Config);
 
         // Both devices should be in liveNodes
         expect(result.liveNodes).to.have.lengthOf(2);
@@ -306,7 +307,7 @@ describe('ZWaveNodesStatus', () => {
         });
 
         // Call the function under test
-        const result = getZWaveNodes(mockHass);
+        const result = getZWaveNodes(mockHass, {} as Config);
 
         // Device with status should be categorized as alive
         expect(result.liveNodes).to.have.lengthOf(1);
@@ -328,7 +329,7 @@ describe('ZWaveNodesStatus', () => {
         getZWaveNonHubsStub.returns([]);
 
         // Call the function under test
-        const result = getZWaveNodes(mockHass);
+        const result = getZWaveNodes(mockHass, {} as Config);
 
         // All categories should be empty
         expect(result.liveNodes).to.have.lengthOf(0);
@@ -339,6 +340,281 @@ describe('ZWaveNodesStatus', () => {
         expect(getZWaveNonHubsStub.calledOnce).to.be.true;
         // Ensure processDeviceEntitiesAndCheckIfController was never called
         expect(processDeviceEntitiesStub.called).to.be.false;
+      });
+
+      /**
+       * Tests filtering based on hide-dead feature
+       */
+      it('should filter out dead nodes when hide-dead feature is enabled', () => {
+        // Setup mock devices
+        const mockDevices = [
+          { id: 'device1', name: 'Alive Device' },
+          { id: 'device2', name: 'Dead Device' },
+          { id: 'device3', name: 'Sleeping Device' },
+        ];
+
+        getZWaveNonHubsStub.returns(mockDevices);
+
+        processDeviceEntitiesStub.callsFake((hass, deviceId, callback) => {
+          if (deviceId === 'device1') {
+            callback(
+              {
+                entity_id: 'sensor.device1_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'alive', entity_id: 'sensor.device1_node_status' },
+            );
+          } else if (deviceId === 'device2') {
+            callback(
+              {
+                entity_id: 'sensor.device2_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'dead', entity_id: 'sensor.device2_node_status' },
+            );
+          } else if (deviceId === 'device3') {
+            callback(
+              {
+                entity_id: 'sensor.device3_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'asleep', entity_id: 'sensor.device3_node_status' },
+            );
+          }
+          return false;
+        });
+
+        // Call with hide-dead feature enabled
+        const result = getZWaveNodes(mockHass, {
+          features: ['hide-dead'],
+        } as Config);
+
+        // Verify dead nodes are filtered out
+        expect(result.deadNodes).to.have.lengthOf(0);
+        expect(result.liveNodes).to.have.lengthOf(1);
+        expect(result.sleepingNodes).to.have.lengthOf(1);
+        expect(result.liveNodes[0]!.name).to.equal('Alive Device');
+        expect(result.sleepingNodes[0]!.name).to.equal('Sleeping Device');
+      });
+
+      /**
+       * Tests filtering based on hide-active feature
+       */
+      it('should filter out active nodes when hide-active feature is enabled', () => {
+        // Setup mock devices
+        const mockDevices = [
+          { id: 'device1', name: 'Alive Device' },
+          { id: 'device2', name: 'Dead Device' },
+          { id: 'device3', name: 'Sleeping Device' },
+        ];
+
+        getZWaveNonHubsStub.returns(mockDevices);
+
+        processDeviceEntitiesStub.callsFake((hass, deviceId, callback) => {
+          if (deviceId === 'device1') {
+            callback(
+              {
+                entity_id: 'sensor.device1_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'alive', entity_id: 'sensor.device1_node_status' },
+            );
+          } else if (deviceId === 'device2') {
+            callback(
+              {
+                entity_id: 'sensor.device2_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'dead', entity_id: 'sensor.device2_node_status' },
+            );
+          } else if (deviceId === 'device3') {
+            callback(
+              {
+                entity_id: 'sensor.device3_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'asleep', entity_id: 'sensor.device3_node_status' },
+            );
+          }
+          return false;
+        });
+
+        // Call with hide-active feature enabled
+        const result = getZWaveNodes(mockHass, {
+          features: ['hide-active'],
+        } as Config);
+
+        // Verify active nodes are filtered out
+        expect(result.liveNodes).to.have.lengthOf(0);
+        expect(result.deadNodes).to.have.lengthOf(1);
+        expect(result.sleepingNodes).to.have.lengthOf(1);
+        expect(result.deadNodes[0]!.name).to.equal('Dead Device');
+        expect(result.sleepingNodes[0]!.name).to.equal('Sleeping Device');
+      });
+
+      /**
+       * Tests filtering based on hide-sleeping feature
+       */
+      it('should filter out sleeping nodes when hide-sleeping feature is enabled', () => {
+        // Setup mock devices
+        const mockDevices = [
+          { id: 'device1', name: 'Alive Device' },
+          { id: 'device2', name: 'Dead Device' },
+          { id: 'device3', name: 'Sleeping Device' },
+        ];
+
+        getZWaveNonHubsStub.returns(mockDevices);
+
+        processDeviceEntitiesStub.callsFake((hass, deviceId, callback) => {
+          if (deviceId === 'device1') {
+            callback(
+              {
+                entity_id: 'sensor.device1_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'alive', entity_id: 'sensor.device1_node_status' },
+            );
+          } else if (deviceId === 'device2') {
+            callback(
+              {
+                entity_id: 'sensor.device2_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'dead', entity_id: 'sensor.device2_node_status' },
+            );
+          } else if (deviceId === 'device3') {
+            callback(
+              {
+                entity_id: 'sensor.device3_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'asleep', entity_id: 'sensor.device3_node_status' },
+            );
+          }
+          return false;
+        });
+
+        // Call with hide-sleeping feature enabled
+        const result = getZWaveNodes(mockHass, {
+          features: ['hide-sleeping'],
+        } as Config);
+
+        // Verify sleeping nodes are filtered out
+        expect(result.sleepingNodes).to.have.lengthOf(0);
+        expect(result.liveNodes).to.have.lengthOf(1);
+        expect(result.deadNodes).to.have.lengthOf(1);
+        expect(result.liveNodes[0]!.name).to.equal('Alive Device');
+        expect(result.deadNodes[0]!.name).to.equal('Dead Device');
+      });
+
+      /**
+       * Tests combining multiple filter features
+       */
+      it('should filter out multiple node types when multiple hide features are enabled', () => {
+        // Setup mock devices
+        const mockDevices = [
+          { id: 'device1', name: 'Alive Device' },
+          { id: 'device2', name: 'Dead Device' },
+          { id: 'device3', name: 'Sleeping Device' },
+        ];
+
+        getZWaveNonHubsStub.returns(mockDevices);
+
+        processDeviceEntitiesStub.callsFake((hass, deviceId, callback) => {
+          if (deviceId === 'device1') {
+            callback(
+              {
+                entity_id: 'sensor.device1_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'alive', entity_id: 'sensor.device1_node_status' },
+            );
+          } else if (deviceId === 'device2') {
+            callback(
+              {
+                entity_id: 'sensor.device2_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'dead', entity_id: 'sensor.device2_node_status' },
+            );
+          } else if (deviceId === 'device3') {
+            callback(
+              {
+                entity_id: 'sensor.device3_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'asleep', entity_id: 'sensor.device3_node_status' },
+            );
+          }
+          return false;
+        });
+
+        // Call with multiple hide features enabled
+        const result = getZWaveNodes(mockHass, {
+          features: ['hide-dead', 'hide-sleeping'],
+        } as Config);
+
+        // Verify only active nodes remain
+        expect(result.deadNodes).to.have.lengthOf(0);
+        expect(result.sleepingNodes).to.have.lengthOf(0);
+        expect(result.liveNodes).to.have.lengthOf(1);
+        expect(result.liveNodes[0]!.name).to.equal('Alive Device');
+      });
+
+      /**
+       * Tests that default behavior (no filtering) works when no features are specified
+       */
+      it('should not filter any nodes when no hide features are enabled', () => {
+        // Setup mock devices
+        const mockDevices = [
+          { id: 'device1', name: 'Alive Device' },
+          { id: 'device2', name: 'Dead Device' },
+          { id: 'device3', name: 'Sleeping Device' },
+        ];
+
+        getZWaveNonHubsStub.returns(mockDevices);
+
+        processDeviceEntitiesStub.callsFake((hass, deviceId, callback) => {
+          if (deviceId === 'device1') {
+            callback(
+              {
+                entity_id: 'sensor.device1_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'alive', entity_id: 'sensor.device1_node_status' },
+            );
+          } else if (deviceId === 'device2') {
+            callback(
+              {
+                entity_id: 'sensor.device2_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'dead', entity_id: 'sensor.device2_node_status' },
+            );
+          } else if (deviceId === 'device3') {
+            callback(
+              {
+                entity_id: 'sensor.device3_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'asleep', entity_id: 'sensor.device3_node_status' },
+            );
+          }
+          return false;
+        });
+
+        // Call with no filter features
+        const result = getZWaveNodes(mockHass, {
+          features: ['compact'],
+        } as Config);
+
+        // Verify all nodes are present
+        expect(result.liveNodes).to.have.lengthOf(1);
+        expect(result.deadNodes).to.have.lengthOf(1);
+        expect(result.sleepingNodes).to.have.lengthOf(1);
+        expect(result.liveNodes[0]!.name).to.equal('Alive Device');
+        expect(result.deadNodes[0]!.name).to.equal('Dead Device');
+        expect(result.sleepingNodes[0]!.name).to.equal('Sleeping Device');
       });
     });
   });

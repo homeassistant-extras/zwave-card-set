@@ -131,6 +131,18 @@ describe('ZWaveNodesStatus', () => {
                         label: 'Show the card more compact.',
                         value: 'compact',
                       },
+                      {
+                        label: 'Hide dead nodes.',
+                        value: 'hide-dead',
+                      },
+                      {
+                        label: 'Hide active nodes.',
+                        value: 'hide-active',
+                      },
+                      {
+                        label: 'Hide sleeping nodes.',
+                        value: 'hide-sleeping',
+                      },
                     ],
                   },
                 },
@@ -238,8 +250,12 @@ describe('ZWaveNodesStatus', () => {
         // Call the hass setter
         card.hass = mockHass;
 
-        // Verify getZWaveNodes was called
-        expect(getZWaveNodesStub.calledOnceWith(mockHass)).to.be.true;
+        // Verify getZWaveNodes was called with config
+        expect(
+          getZWaveNodesStub.calledOnceWith(mockHass, {
+            title: 'Test Z-Wave Nodes',
+          }),
+        ).to.be.true;
 
         // Verify arrays were updated
         expect((card as any)._deadNodes).to.deep.equal([deadNode]);
@@ -271,8 +287,12 @@ describe('ZWaveNodesStatus', () => {
         // Call hass setter again with same data
         card.hass = mockHass;
 
-        // Verify getZWaveNodes was called
-        expect(getZWaveNodesStub.calledOnceWith(mockHass)).to.be.true;
+        // Verify getZWaveNodes was called with config
+        expect(
+          getZWaveNodesStub.calledOnceWith(mockHass, {
+            title: 'Test Z-Wave Nodes',
+          }),
+        ).to.be.true;
 
         // Verify references remain the same (arrays were not recreated)
         expect((card as any)._deadNodes).to.equal(originalDeadNodes);
@@ -318,8 +338,12 @@ describe('ZWaveNodesStatus', () => {
         // Call hass setter again with modified data
         card.hass = mockHass;
 
-        // Verify getZWaveNodes was called
-        expect(getZWaveNodesStub.calledOnceWith(mockHass)).to.be.true;
+        // Verify getZWaveNodes was called with config
+        expect(
+          getZWaveNodesStub.calledOnceWith(mockHass, {
+            title: 'Test Z-Wave Nodes',
+          }),
+        ).to.be.true;
 
         // Verify only liveNodes was updated
         expect((card as any)._deadNodes).to.equal(originalDeadNodes);

@@ -28,7 +28,11 @@ export interface Config {
 }
 
 /** Features to enable or disable functionality */
-export type Features = 'compact';
+export type Features =
+  | 'compact'
+  | 'hide-dead'
+  | 'hide-active'
+  | 'hide-sleeping';
 
 /**
  * Represents information about a node (device) in the system
