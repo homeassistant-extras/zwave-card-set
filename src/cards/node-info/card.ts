@@ -19,10 +19,10 @@ import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { property, state } from 'lit/decorators.js';
+import * as equal from 'fast-deep-equal';
+import * as debounce from 'debounce';
 import { styles } from './styles';
 import type { Config, Sensor } from './types';
-const equal = require('fast-deep-equal');
-const debounce = require('debounce');
 
 /**
  * Base component for Z-Wave device cards

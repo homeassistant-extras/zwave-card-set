@@ -8,10 +8,10 @@ import type { HomeAssistant } from '@type/homeassistant';
 import { CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { state } from 'lit/decorators.js';
+import * as equal from 'fast-deep-equal';
 import { getZWaveNodes } from './helpers';
 import { styles } from './styles';
 import type { Config, NodeInfo } from './types';
-const equal = require('fast-deep-equal');
 
 /**
  * Z-Wave Nodes Status Card

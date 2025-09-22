@@ -5,9 +5,9 @@ import type { HomeAssistant } from '@type/homeassistant';
 import { getZWaveByArea } from '@util/hass';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
+import * as equal from 'fast-deep-equal';
 import { styles } from './styles';
 import type { Center, Config } from './types';
-const equal = require('fast-deep-equal');
 
 /**
  * Z-Wave Device Center Card

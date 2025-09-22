@@ -14,9 +14,9 @@ import {
 } from '@util/render';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
+import * as equal from 'fast-deep-equal';
 import { styles } from './styles';
 import type { Config, Controller } from './types';
-const equal = require('fast-deep-equal');
 
 /**
  * Z-Wave Controller Card
