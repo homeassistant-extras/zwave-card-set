@@ -35,18 +35,18 @@ const splitNodes = (
 ): CategorizedNodes => {
   const nodes = Object.values(zWaveNodes);
 
-  // Filter nodes that are neither alive nor asleep (typically dead nodes)
+  // Filter nodes that are neither alive, awake, nor asleep (typically dead nodes)
   const deadNodes = hasFeature(config, 'hide-dead')
     ? []
     : nodes.filter(
-        (node) => !['alive', 'asleep'].includes(node.statusState?.state),
+        (node) => !['alive', 'awake', 'asleep'].includes(node.statusState?.state),
       );
 
-  // Filter nodes that are alive and sort by lastSeen timestamp
+  // Filter nodes that are alive or awake and sort by lastSeen timestamp
   const liveNodes = hasFeature(config, 'hide-active')
     ? []
     : nodes
-        .filter((node) => node.statusState?.state === 'alive')
+        .filter((node) => ['alive', 'awake'].includes(node.statusState?.state))
         .sort((a, b) => {
           if (a.lastSeen && b.lastSeen) {
             return b.lastSeen - a.lastSeen; // Most recent first

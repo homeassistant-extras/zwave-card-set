@@ -133,6 +133,67 @@ describe('ZWaveNodesStatus', () => {
       });
 
       /**
+       * Tests that nodes with 'awake' state are categorized as live nodes
+       */
+      it('should categorize awake nodes as live nodes', () => {
+        // Setup mock devices
+        const mockDevices = [
+          { id: 'device1', name: 'Alive Device' },
+          { id: 'device2', name: 'Awake Device' },
+          { id: 'device3', name: 'Dead Device' },
+        ];
+
+        getZWaveNonHubsStub.returns(mockDevices);
+
+        processDeviceEntitiesStub.callsFake((hass, deviceId, callback) => {
+          if (deviceId === 'device1') {
+            // Device 1 is alive
+            callback(
+              {
+                entity_id: 'sensor.device1_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'alive', entity_id: 'sensor.device1_node_status' },
+            );
+          } else if (deviceId === 'device2') {
+            // Device 2 is awake
+            callback(
+              {
+                entity_id: 'sensor.device2_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'awake', entity_id: 'sensor.device2_node_status' },
+            );
+          } else if (deviceId === 'device3') {
+            // Device 3 is dead
+            callback(
+              {
+                entity_id: 'sensor.device3_node_status',
+                translation_key: 'node_status',
+              },
+              { state: 'dead', entity_id: 'sensor.device3_node_status' },
+            );
+          }
+          return false;
+        });
+
+        // Call the function under test
+        const result = getZWaveNodes(mockHass, {} as Config);
+
+        // Verify the results - both alive and awake should be in liveNodes
+        expect(result.liveNodes).to.have.lengthOf(2);
+        expect(result.liveNodes[0]!.name).to.equal('Alive Device');
+        expect(result.liveNodes[0]!.statusState.state).to.equal('alive');
+        expect(result.liveNodes[1]!.name).to.equal('Awake Device');
+        expect(result.liveNodes[1]!.statusState.state).to.equal('awake');
+
+        expect(result.sleepingNodes).to.have.lengthOf(0);
+        expect(result.deadNodes).to.have.lengthOf(1);
+        expect(result.deadNodes[0]!.name).to.equal('Dead Device');
+        expect(result.deadNodes[0]!.statusState.state).to.equal('dead');
+      });
+
+      /**
        * Tests that nodes are sorted by lastSeen time within each category
        */
       it('should sort nodes by lastSeen timestamp within categories', () => {

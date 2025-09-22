@@ -273,6 +273,7 @@ export class ZWaveNodesStatus extends LitElement {
   _getStatusColor(status: string): string {
     switch (status) {
       case 'alive':
+      case 'awake':
         return 'rgb(var(--rgb-green))';
       case 'asleep':
         return 'rgb(var(--rgb-amber))';

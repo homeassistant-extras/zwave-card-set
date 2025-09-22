@@ -380,6 +380,11 @@ describe('ZWaveNodesStatus', () => {
         expect(color).to.equal('rgb(var(--rgb-green))');
       });
 
+      it('should return the correct color for awake status', () => {
+        const color = (card as any)._getStatusColor('awake');
+        expect(color).to.equal('rgb(var(--rgb-green))');
+      });
+
       it('should return the correct color for asleep status', () => {
         const color = (card as any)._getStatusColor('asleep');
         expect(color).to.equal('rgb(var(--rgb-amber))');

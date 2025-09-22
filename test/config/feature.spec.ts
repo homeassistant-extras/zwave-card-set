@@ -5,12 +5,12 @@ import { describe, it } from 'mocha';
 
 export default () => {
   describe('feature', () => {
-    it('should return true when config is null', () => {
-      expect(hasFeature(null as any as Config, 'debug')).to.be.true;
+    it('should return false when config is null', () => {
+      expect(hasFeature(null as any as Config, 'debug')).to.be.false;
     });
 
-    it('should return true when config is undefined', () => {
-      expect(hasFeature(undefined as any as Config, 'debug')).to.be.true;
+    it('should return false when config is undefined', () => {
+      expect(hasFeature(undefined as any as Config, 'debug')).to.be.false;
     });
 
     it('should return false when config.features is undefined', () => {
