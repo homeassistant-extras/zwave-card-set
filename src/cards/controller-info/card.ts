@@ -12,11 +12,11 @@ import {
   renderError,
   renderStateDisplay,
 } from '@util/render';
+import equal from 'fast-deep-equal';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
 import type { Config, Controller } from './types';
-const equal = require('fast-deep-equal');
 
 /**
  * Z-Wave Controller Card

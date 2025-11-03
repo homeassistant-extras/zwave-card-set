@@ -39,7 +39,8 @@ const splitNodes = (
   const deadNodes = hasFeature(config, 'hide-dead')
     ? []
     : nodes.filter(
-        (node) => !['alive', 'awake', 'asleep'].includes(node.statusState?.state),
+        (node) =>
+          !['alive', 'awake', 'asleep'].includes(node.statusState?.state),
       );
 
   // Filter nodes that are alive or awake and sort by lastSeen timestamp

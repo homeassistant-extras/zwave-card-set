@@ -21,8 +21,10 @@ import { styleMap } from 'lit-html/directives/style-map.js';
 import { property, state } from 'lit/decorators.js';
 import { styles } from './styles';
 import type { Config, Sensor } from './types';
-const equal = require('fast-deep-equal');
-const debounce = require('debounce');
+// @ts-ignore - CommonJS module without proper ES module exports
+import equal from 'fast-deep-equal';
+// @ts-ignore - CommonJS module without proper ES module exports
+import debounce from 'debounce';
 
 /**
  * Base component for Z-Wave device cards
@@ -403,10 +405,7 @@ export class ZWaveDeviceInfo extends LitElement {
             >
               <div
                 class="sensors"
-                style="${hasFeature(
-                  this._config,
-                  'use_icons_instead_of_names',
-                )
+                style="${hasFeature(this._config, 'use_icons_instead_of_names')
                   ? nothing
                   : styleMap({
                       display: 'flex',
@@ -426,10 +425,7 @@ export class ZWaveDeviceInfo extends LitElement {
                             justifyContent: 'space-between',
                           })}"
                     >
-                      ${hasFeature(
-                        this._config,
-                        'use_icons_instead_of_names',
-                      )
+                      ${hasFeature(this._config, 'use_icons_instead_of_names')
                         ? stateIcon(this, this._hass, entity, `s${index + 1}`)
                         : html`<span class="status-label" ellipsis
                             >${entity.attributes?.friendly_name}</span

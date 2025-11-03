@@ -3,11 +3,11 @@ import { hasFeature } from '@config/feature';
 import { fireEvent } from '@hass/common/dom/fire_event';
 import type { HomeAssistant } from '@type/homeassistant';
 import { getZWaveByArea } from '@util/hass';
+import equal from 'fast-deep-equal';
 import { CSSResult, LitElement, html, nothing, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styles } from './styles';
 import type { Center, Config } from './types';
-const equal = require('fast-deep-equal');
 
 /**
  * Z-Wave Device Center Card
