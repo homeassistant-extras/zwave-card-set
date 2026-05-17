@@ -1,9 +1,19 @@
 {
   "name": "zwave-card-set",
   "version": "0.14.0",
-  "author": "Patrick Masters",
+  "author": {
+    "name": "Patrick Masters",
+    "url": "https://curiouscat.consulting/projects/ha-zwave-card-set?utm_source=github-zwave-card-set&utm_medium=package-metadata&utm_campaign=oss-presence&utm_content=author-url"
+  },
   "license": "ISC",
   "description": "Custom cards for Home Assistant which relate to Z-Wave Devices.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/homeassistant-extras/zwave-card-set.git"
+  },
+  "bugs": {
+    "url": "https://github.com/homeassistant-extras/zwave-card-set/issues"
+  },
   "source": "src/index.ts",
   "module": "dist/zwave-card-set.js",
   "targets": {
